@@ -1,14 +1,12 @@
 package com.justinblank.classcompiler;
 
-import com.justinblank.classcompiler.lang.CodeElement;
-import com.justinblank.classcompiler.lang.Conditional;
-import com.justinblank.classcompiler.lang.Expression;
-import com.justinblank.classcompiler.lang.Loop;
+import com.justinblank.classcompiler.lang.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.IRETURN;
 
 public class Method {
 
@@ -139,7 +137,16 @@ public class Method {
     }
 
     void resolve(CodeElement element) {
-
+        if (element instanceof Literal) {
+            var lit = (Literal) element;
+            var value = (Integer) lit.value;
+            this.addBlock().push(value);
+        }
+        else if (element instanceof ReturnExpression) {
+            var returnExpression = (ReturnExpression) element;
+            resolve(returnExpression.expression);
+            this.blocks.get(this.blocks.size() - 1).addReturn(IRETURN);
+        }
     }
 
     public void add(CodeElement element) {

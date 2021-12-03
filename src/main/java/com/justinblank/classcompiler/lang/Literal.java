@@ -2,7 +2,7 @@ package com.justinblank.classcompiler.lang;
 
 public class Literal extends Expression {
 
-    private final Object value;
+    public final Object value;
 
     private Literal(Object value) {
         this.value = value;
