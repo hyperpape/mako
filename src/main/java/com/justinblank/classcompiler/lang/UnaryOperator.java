@@ -1,0 +1,15 @@
+package com.justinblank.classcompiler.lang;
+
+// TODO: this might clash with the standard library
+public enum UnaryOperator {
+
+    NOT;
+
+    Operation op(Expression exp) {
+        return Unary.of(this, exp);
+    }
+
+    public static Operation not(Expression expression) {
+        return NOT.op(expression);
+    }
+}
