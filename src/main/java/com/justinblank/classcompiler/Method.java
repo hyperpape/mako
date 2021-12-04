@@ -160,8 +160,13 @@ public class Method {
             var operation = (Binary) element;
             resolve(operation.left);
             resolve(operation.right);
-            lastBlock().operate(IADD);
+            lastBlock().operate(operation.asmOP());
         }
+    }
+
+    // TODO relocate?
+    public static Type typeOf(Expression expression) {
+        return Type.I;
     }
 
     private Block lastBlock() {

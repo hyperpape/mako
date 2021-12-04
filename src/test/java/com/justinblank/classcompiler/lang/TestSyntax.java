@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.justinblank.classcompiler.lang.BinaryOperator.eq;
 import static com.justinblank.classcompiler.lang.BinaryOperator.plus;
 import static com.justinblank.classcompiler.lang.CodeElement.*;
 import static com.justinblank.classcompiler.lang.Literal.literal;
@@ -31,7 +32,7 @@ public class TestSyntax {
     }
 
     @Test
-    public void testOperation() throws Exception {
+    public void testAddition() throws Exception {
         var vars = new GenericVars();
         var method = new Method("testThingMethod", List.of(), "I", vars);
         method.add(returnValue(plus(literal(1), literal(2))));
@@ -39,7 +40,15 @@ public class TestSyntax {
     }
 
     @Test
-    public void testThingAlt() throws Exception {
+    public void testEquality() throws Exception {
+        var vars = new GenericVars();
+        var method = new Method("testThingMethod", List.of(), "I", vars);
+        method.add(returnValue(eq(literal(1), literal(2))));
+        apply(method);
+    }
+
+    @Test
+    public void testTrivialLoop() throws Exception {
         var method = new Method("testThingMethod", List.of(), "I", null);
         method.add(set("a", literal(1)));
         method.loop(operate(BinaryOperator.EQUALS, literal(5), read("a", Type.I)),

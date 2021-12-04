@@ -1,9 +1,11 @@
 package com.justinblank.classcompiler.lang;
 
+import com.justinblank.classcompiler.Method;
+
 public class Unary extends Operation {
 
-    private final UnaryOperator operator;
-    private final Expression expression;
+    public final UnaryOperator operator;
+    public final Expression expression;
 
     private Unary(UnaryOperator operator, Expression expression) {
         this.operator = operator;
@@ -12,5 +14,10 @@ public class Unary extends Operation {
 
     public static Unary of(UnaryOperator operator, Expression expression) {
         return new Unary(operator, expression);
+    }
+
+    @Override
+    int asmOP() {
+        return operator.asmOP(Method.typeOf(expression));
     }
 }

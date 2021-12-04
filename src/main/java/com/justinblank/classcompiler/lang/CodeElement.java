@@ -41,4 +41,5 @@ public interface CodeElement {
     static Operation operate(BinaryOperator operator, Expression left, Expression right) {
         return Binary.of(operator, left, right);
     }
+
 }

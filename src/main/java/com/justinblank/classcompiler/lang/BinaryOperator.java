@@ -1,5 +1,7 @@
 package com.justinblank.classcompiler.lang;
 
+import static org.objectweb.asm.Opcodes.IADD;
+
 public enum BinaryOperator {
 
     AND,
@@ -24,7 +26,12 @@ public enum BinaryOperator {
         return PLUS.op(left, right);
     }
 
-    public static Operation equals(Expression left, Expression right) {
+    public static Operation eq(Expression left, Expression right) {
         return EQUALS.op(left, right);
     }
+
+    public int asmOP(Type left, Type right) {
+        return IADD;
+    };
+
 }

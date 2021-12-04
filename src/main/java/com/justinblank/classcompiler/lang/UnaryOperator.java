@@ -12,4 +12,8 @@ public enum UnaryOperator {
     public static Operation not(Expression expression) {
         return NOT.op(expression);
     }
+
+    public int asmOP(Type type) {
+        throw new UnsupportedOperationException();
+    }
 }
