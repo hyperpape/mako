@@ -5,8 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.IRETURN;
+import static org.objectweb.asm.Opcodes.*;
 
 public class Method {
 
@@ -130,6 +129,7 @@ public class Method {
     }
 
     public void resolve() {
+        this.addBlock();
         for (var element : elements) {
             resolve(element);
         }
@@ -140,13 +140,34 @@ public class Method {
         if (element instanceof Literal) {
             var lit = (Literal) element;
             var value = (Integer) lit.value;
-            this.addBlock().push(value);
+            this.getBlocks().get(this.blocks.size() - 1).push(value);
         }
         else if (element instanceof ReturnExpression) {
             var returnExpression = (ReturnExpression) element;
             resolve(returnExpression.expression);
-            this.blocks.get(this.blocks.size() - 1).addReturn(IRETURN);
+            lastBlock().addReturn(returnForType(returnExpression.expression));
         }
+        else if (element instanceof VariableRead) {
+            var read = (VariableRead) element;
+            lastBlock().readVar(getMatchingVars().get().indexByName(read.variable), "I");
+        }
+        else if (element instanceof Assignment) {
+            var assignment = (Assignment) element;
+            resolve(assignment.expression);
+            lastBlock().setVar(getMatchingVars().get().indexByName(assignment.variable), descriptorForExpression(assignment.expression));
+        }
+    }
+
+    private Block lastBlock() {
+        return this.blocks.get(this.blocks.size() - 1);
+    }
+
+    private int returnForType(Expression expression) {
+        return IRETURN;
+    }
+
+    private String descriptorForExpression(Expression expression) {
+        return "I";
     }
 
     public void add(CodeElement element) {
