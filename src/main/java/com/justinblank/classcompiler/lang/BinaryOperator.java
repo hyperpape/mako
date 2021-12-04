@@ -14,6 +14,8 @@ public enum BinaryOperator {
     DIVIDE,
     MOD;
 
+
+
     public Operation op(Expression left, Expression right) {
         return Binary.of(this, left, right);
     }

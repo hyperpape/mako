@@ -1,4 +1,4 @@
 package com.justinblank.classcompiler.lang;
 
-public class Operation extends Expression {
+public abstract class Operation extends Expression {
 }

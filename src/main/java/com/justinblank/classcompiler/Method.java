@@ -156,6 +156,12 @@ public class Method {
             resolve(assignment.expression);
             lastBlock().setVar(getMatchingVars().get().indexByName(assignment.variable), descriptorForExpression(assignment.expression));
         }
+        else if (element instanceof Binary) {
+            var operation = (Binary) element;
+            resolve(operation.left);
+            resolve(operation.right);
+            lastBlock().operate(IADD);
+        }
     }
 
     private Block lastBlock() {

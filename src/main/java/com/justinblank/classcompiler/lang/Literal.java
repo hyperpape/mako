@@ -8,7 +8,7 @@ public class Literal extends Expression {
         this.value = value;
     }
 
-    public static Literal of(int i) {
+    public static Literal literal(int i) {
         return new Literal(i);
     }
 }
