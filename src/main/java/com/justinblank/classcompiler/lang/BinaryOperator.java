@@ -1,6 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
-import static org.objectweb.asm.Opcodes.IADD;
+import static org.objectweb.asm.Opcodes.*;
 
 public enum BinaryOperator {
 
@@ -31,7 +31,19 @@ public enum BinaryOperator {
     }
 
     public int asmOP(Type left, Type right) {
-        return IADD;
+        switch (this) {
+            case PLUS:
+                return IADD;
+            case SUBTRACT:
+                return ISUB;
+            case MULTIPLY:
+                return IMUL;
+            case DIVIDE:
+                return IDIV;
+            case EQUALS:
+                return IF_ICMPNE;
+            default:
+                throw new UnsupportedOperationException("");
+        }
     };
-
 }

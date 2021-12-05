@@ -160,7 +160,20 @@ public class Method {
             var operation = (Binary) element;
             resolve(operation.left);
             resolve(operation.right);
-            lastBlock().operate(operation.asmOP());
+            switch (operation.operator) {
+                case EQUALS:
+                    var block = lastBlock();
+                    var neqBlock = addBlock().push(0);
+                    var finalBlock = addBlock();
+
+                    block.jump(neqBlock, operation.asmOP())
+                            .push(1)
+                            .jump(finalBlock, GOTO);
+                    return;
+                default:
+                    lastBlock().operate(operation.asmOP());
+                    return;
+            }
         }
     }
 
