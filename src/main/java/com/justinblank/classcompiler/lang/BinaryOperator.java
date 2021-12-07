@@ -26,6 +26,10 @@ public enum BinaryOperator {
         return PLUS.op(left, right);
     }
 
+    public static Operation mul(Expression left, Expression right) {
+        return MULTIPLY.op(left, right);
+    }
+
     public static Operation eq(Expression left, Expression right) {
         return EQUALS.op(left, right);
     }

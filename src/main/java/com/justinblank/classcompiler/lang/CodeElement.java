@@ -33,13 +33,4 @@ public interface CodeElement {
     static Loop loop(Expression condition, List<CodeElement> body) {
         return new Loop(condition, body);
     }
-
-    static Operation operate(UnaryOperator operator, Expression expression) {
-        return Unary.of(operator, expression);
-    }
-
-    static Operation operate(BinaryOperator operator, Expression left, Expression right) {
-        return Binary.of(operator, left, right);
-    }
-
 }

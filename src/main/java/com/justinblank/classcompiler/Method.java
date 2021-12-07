@@ -4,6 +4,7 @@ import com.justinblank.classcompiler.lang.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -124,10 +125,20 @@ public class Method {
         return conditional;
     }
 
-    public Loop loop(Expression condition, List<CodeElement> body) {
+    public Method loop(Expression condition, List<CodeElement> body) {
         var loop = new Loop(condition, body);
         this.elements.add(loop);
-        return loop;
+        return this;
+    }
+
+    public Method set(String variable, Expression expression) {
+        this.elements.add(CodeElement.set(variable, expression));
+        return this;
+    }
+
+    public Method returnValue(Expression expression) {
+        this.elements.add(CodeElement.returnValue(expression));
+        return this;
     }
 
     public void resolve() {
@@ -156,38 +167,50 @@ public class Method {
             currentBlock().setVar(getMatchingVars().get().indexByName(assignment.variable), descriptorForExpression(assignment.expression));
         } else if (element instanceof Binary) {
             var operation = (Binary) element;
-            resolve(operation.left);
-            resolve(operation.right);
             switch (operation.operator) {
                 case EQUALS:
-                    var block = currentBlock();
-                    var neqBlock = addBlock().push(0);
-                    var finalBlock = addBlock();
+                    var block = addBlock();
+                    withBlock(block, () -> {
+                        resolve(operation.left);
+                        resolve(operation.right);
+                        var eqBlock = addBlock().push(1);
+                        var finalBlock = addBlock();
 
-                    block.jump(neqBlock, operation.asmOP())
-                            .push(1)
-                            .jump(finalBlock, GOTO);
+                        block.jump(eqBlock, operation.asmOP())
+                                .push(0)
+                                .jump(finalBlock, GOTO);
+                    });
+
                     return;
                 default:
+                    resolve(operation.left);
+                    resolve(operation.right);
                     currentBlock().operate(operation.asmOP());
                     return;
             }
         } else if (element instanceof Loop) {
             var loop = (Loop) element;
+            var conditionsBlock = currentBlock.push(addBlock());
+            resolve(loop.condition);
             var block = addBlock();
-            currentBlock.push(block);
             var body = addBlock();
             var afterLoop = addBlock();
-            resolve(loop.condition);
-            currentBlock.push(body);
-            for (var codeElement : loop.body) {
-                resolve(codeElement);
-            }
-            currentBlock.pop();
-            body.jump(block, GOTO);
+
+            withBlock(body, () -> {
+                for (var codeElement : loop.body) {
+                    resolve(codeElement);
+                }
+            });
+            body.jump(conditionsBlock, GOTO);
             block.jump(afterLoop, IFEQ);
-            currentBlock.pop();
+            currentBlock.push(afterLoop);
         }
+    }
+
+    private void withBlock(Block body, Runnable r) {
+        currentBlock.push(body);
+        r.run();
+        currentBlock.pop();
     }
 
     // TODO relocate?
@@ -215,4 +238,5 @@ public class Method {
     public void add(CodeElement element) {
         elements.add(element);
     }
+
 }
