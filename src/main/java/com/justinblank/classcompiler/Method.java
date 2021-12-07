@@ -18,6 +18,8 @@ public class Method {
     private final Map<String, Object> attributes = new HashMap<>();
     private List<CodeElement> elements = new ArrayList<>();
 
+    private Stack<Block> currentBlock = new Stack<>();
+
     public Method(String methodName, List<String> arguments, String returnType, Vars matchingVars) {
         this(methodName, arguments, returnType, matchingVars, ACC_PUBLIC);
     }
@@ -140,29 +142,25 @@ public class Method {
         if (element instanceof Literal) {
             var lit = (Literal) element;
             var value = (Integer) lit.value;
-            this.getBlocks().get(this.blocks.size() - 1).push(value);
-        }
-        else if (element instanceof ReturnExpression) {
+            currentBlock().push(value);
+        } else if (element instanceof ReturnExpression) {
             var returnExpression = (ReturnExpression) element;
             resolve(returnExpression.expression);
-            lastBlock().addReturn(returnForType(returnExpression.expression));
-        }
-        else if (element instanceof VariableRead) {
+            currentBlock().addReturn(returnForType(returnExpression.expression));
+        } else if (element instanceof VariableRead) {
             var read = (VariableRead) element;
-            lastBlock().readVar(getMatchingVars().get().indexByName(read.variable), "I");
-        }
-        else if (element instanceof Assignment) {
+            currentBlock().readVar(getMatchingVars().get().indexByName(read.variable), "I");
+        } else if (element instanceof Assignment) {
             var assignment = (Assignment) element;
             resolve(assignment.expression);
-            lastBlock().setVar(getMatchingVars().get().indexByName(assignment.variable), descriptorForExpression(assignment.expression));
-        }
-        else if (element instanceof Binary) {
+            currentBlock().setVar(getMatchingVars().get().indexByName(assignment.variable), descriptorForExpression(assignment.expression));
+        } else if (element instanceof Binary) {
             var operation = (Binary) element;
             resolve(operation.left);
             resolve(operation.right);
             switch (operation.operator) {
                 case EQUALS:
-                    var block = lastBlock();
+                    var block = currentBlock();
                     var neqBlock = addBlock().push(0);
                     var finalBlock = addBlock();
 
@@ -171,9 +169,24 @@ public class Method {
                             .jump(finalBlock, GOTO);
                     return;
                 default:
-                    lastBlock().operate(operation.asmOP());
+                    currentBlock().operate(operation.asmOP());
                     return;
             }
+        } else if (element instanceof Loop) {
+            var loop = (Loop) element;
+            var block = addBlock();
+            currentBlock.push(block);
+            var body = addBlock();
+            var afterLoop = addBlock();
+            resolve(loop.condition);
+            currentBlock.push(body);
+            for (var codeElement : loop.body) {
+                resolve(codeElement);
+            }
+            currentBlock.pop();
+            body.jump(block, GOTO);
+            block.jump(afterLoop, IFEQ);
+            currentBlock.pop();
         }
     }
 
@@ -182,8 +195,13 @@ public class Method {
         return Type.I;
     }
 
-    private Block lastBlock() {
-        return this.blocks.get(this.blocks.size() - 1);
+    private Block currentBlock() {
+        if (!currentBlock.isEmpty()) {
+            return currentBlock.peek();
+        }
+        else {
+            return this.blocks.get(this.blocks.size() - 1);
+        }
     }
 
     private int returnForType(Expression expression) {

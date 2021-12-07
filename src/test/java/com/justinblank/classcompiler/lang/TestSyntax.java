@@ -49,7 +49,9 @@ public class TestSyntax {
 
     @Test
     public void testTrivialLoop() throws Exception {
-        var method = new Method("testThingMethod", List.of(), "I", null);
+        var vars = new GenericVars();
+        vars.addVar("a");
+        var method = new Method("testThingMethod", List.of(), "I", vars);
         method.add(set("a", literal(1)));
         method.loop(operate(BinaryOperator.EQUALS, literal(5), read("a", Type.I)),
                 List.of(set("a", plus(read("a", Type.I), literal(1)))));
