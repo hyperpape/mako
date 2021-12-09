@@ -60,16 +60,14 @@ public class TestMethods {
         vars.addVar("c");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.set("a", literal(0));
-        method.set("b", literal(0));
         method.set("c", literal(1));
         method.loop(eq(literal(3), read("a", Type.I)),
                 List.of(set("a", plus(read("a", Type.I), literal(1))),
-                        new Loop(eq(literal(3), read("c", Type.I)),
+                        set("b", literal(1)),
+                        new Loop(eq(literal(3), read("b", Type.I)),
                                 List.of(set("c", mul(read("c", Type.I), literal(2))),
                                         set("b", plus(read("b", Type.I), literal(1)))))));
         method.returnValue(read("c", Type.I));
         return method;
     }
-
-
 }

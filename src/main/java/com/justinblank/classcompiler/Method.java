@@ -193,15 +193,15 @@ public class Method {
             var conditionsBlock = currentBlock.push(addBlock());
             resolve(loop.condition);
             var block = addBlock();
-            var body = addBlock();
-            var afterLoop = addBlock();
 
-            withBlock(body, () -> {
+            withBlock(addBlock(), () -> {
                 for (var codeElement : loop.body) {
                     resolve(codeElement);
                 }
             });
-            body.jump(conditionsBlock, GOTO);
+
+            addBlock().jump(conditionsBlock, GOTO);
+            var afterLoop = addBlock();
             block.jump(afterLoop, IFEQ);
             currentBlock.push(afterLoop);
         }

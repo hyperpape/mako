@@ -16,6 +16,7 @@ public class ClassPrinter {
         REPRESENTATIONS.put(Opcodes.POP, "POP");
         REPRESENTATIONS.put(Opcodes.SWAP, "SWAP");
         REPRESENTATIONS.put(Opcodes.IADD, "IADD");
+        REPRESENTATIONS.put(Opcodes.IMUL, "IMUL");
         REPRESENTATIONS.put(Opcodes.IFEQ, "IFEQ");
         REPRESENTATIONS.put(Opcodes.IFNE, "IFNE");
         REPRESENTATIONS.put(Opcodes.IFLT, "IFLT");

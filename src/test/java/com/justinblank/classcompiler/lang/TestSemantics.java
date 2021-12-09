@@ -37,12 +37,17 @@ public class TestSemantics {
         apply(TestMethods.trivialLoop(), 5);
     }
 
+    @Test
+    public void testNestedLoop() throws Exception {
+        apply(TestMethods.nestedLoop(), 64);
+    }
+
     static void apply(Method method, Object o) throws Exception {
         method.resolve();
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});;
         builder.addMethod(method);
         builder.addMethod(builder.emptyConstructor());
-        var cls = new ClassCompiler(builder);
+        var cls = new ClassCompiler(builder, true);
         Class<?> compiled = cls.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();
         var output = compiled.getMethod(TEST_METHOD).invoke(instance);
