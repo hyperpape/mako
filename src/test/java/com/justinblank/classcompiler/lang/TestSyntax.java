@@ -33,6 +33,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testLoopWithSkip() throws Exception {
+        apply(TestMethods.loopWithSkip());
+    }
+
+    @Test
     public void testNestedLoop() throws Exception {
         apply(TestMethods.nestedLoop());
     }

@@ -20,6 +20,7 @@ public class Method {
     private List<CodeElement> elements = new ArrayList<>();
 
     private Stack<Block> currentBlock = new Stack<>();
+    private Stack<Block> currentLoop = new Stack<>();
 
     public Method(String methodName, List<String> arguments, String returnType, Vars matchingVars) {
         this(methodName, arguments, returnType, matchingVars, ACC_PUBLIC);
@@ -191,6 +192,7 @@ public class Method {
         } else if (element instanceof Loop) {
             var loop = (Loop) element;
             var conditionsBlock = currentBlock.push(addBlock());
+            currentLoop.push(conditionsBlock);
             resolve(loop.condition);
             var block = addBlock();
 
@@ -203,7 +205,12 @@ public class Method {
             addBlock().jump(conditionsBlock, GOTO);
             var afterLoop = addBlock();
             block.jump(afterLoop, IFEQ);
+            currentLoop.pop();
             currentBlock.push(afterLoop);
+        }
+        else if (element instanceof Skip) {
+            var loopBlock = currentLoop.peek();
+            currentBlock().jump(loopBlock, GOTO);
         }
     }
 

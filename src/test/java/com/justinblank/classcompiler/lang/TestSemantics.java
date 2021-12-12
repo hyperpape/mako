@@ -38,6 +38,11 @@ public class TestSemantics {
     }
 
     @Test
+    public void testLoopWithSkip() throws Exception {
+        apply(TestMethods.loopWithSkip(), 5);
+    }
+
+    @Test
     public void testNestedLoop() throws Exception {
         apply(TestMethods.nestedLoop(), 64);
     }
