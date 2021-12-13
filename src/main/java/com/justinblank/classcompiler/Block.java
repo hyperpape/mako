@@ -8,6 +8,7 @@ import java.util.List;
 
 public class Block {
 
+    public static final Block POSTLOOP = new Block(-1, Collections.unmodifiableList(new ArrayList<>()));
     int number;
     List<Operation> operations;
     Label label;

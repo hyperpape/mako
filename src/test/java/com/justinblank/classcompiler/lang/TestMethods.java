@@ -65,6 +65,18 @@ public class TestMethods {
         return method;
     }
 
+    public static Method loopWithEscape() {
+        var vars = new GenericVars();
+        vars.addVar("a");
+        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        method.set("a", literal(1));
+        method.loop(eq(literal(5), read("a", Type.I)),
+                List.of(set("a", plus(read("a", Type.I), literal(1))),
+                        escape()));
+        method.returnValue(read("a", Type.I));
+        return method;
+    }
+
     public static Method nestedLoop() {
         var vars = new GenericVars();
         vars.addVar("a");

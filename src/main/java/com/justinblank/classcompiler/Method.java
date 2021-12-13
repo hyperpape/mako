@@ -207,10 +207,20 @@ public class Method {
             block.jump(afterLoop, IFEQ);
             currentLoop.pop();
             currentBlock.push(afterLoop);
+            for (var x : this.blocks) {
+                for (var op : x.operations) {
+                    if (op.inst == Operation.Inst.JUMP && op.target == Block.POSTLOOP) {
+                        op.target = afterLoop;
+                    }
+                }
+            }
         }
         else if (element instanceof Skip) {
             var loopBlock = currentLoop.peek();
             currentBlock().jump(loopBlock, GOTO);
+        }
+        else if (element instanceof Escape) {
+            currentBlock().jump(Block.POSTLOOP, GOTO);
         }
     }
 

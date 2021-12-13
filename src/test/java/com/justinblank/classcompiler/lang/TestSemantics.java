@@ -43,6 +43,12 @@ public class TestSemantics {
     }
 
     @Test
+    public void testLoopWithEscape() throws Exception {
+        apply(TestMethods.loopWithEscape(), 2);
+    }
+
+
+    @Test
     public void testNestedLoop() throws Exception {
         apply(TestMethods.nestedLoop(), 64);
     }

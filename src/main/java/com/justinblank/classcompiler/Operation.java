@@ -8,7 +8,7 @@ public class Operation {
 
     public final Inst inst;
     public final int count;
-    public final Block target;
+    public Block target;
     final List<Block> blockTargets;
     final RefSpec spec;
     final List<Integer> ints;

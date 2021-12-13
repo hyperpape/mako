@@ -38,6 +38,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testLoopWithEscape() throws Exception {
+        apply(TestMethods.loopWithEscape());
+    }
+
+    @Test
     public void testNestedLoop() throws Exception {
         apply(TestMethods.nestedLoop());
     }
