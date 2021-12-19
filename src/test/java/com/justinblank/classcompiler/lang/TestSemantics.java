@@ -5,6 +5,9 @@ import com.justinblank.classcompiler.ClassCompiler;
 import com.justinblank.classcompiler.Method;
 import org.junit.Test;
 
+import java.util.List;
+
+import static com.justinblank.classcompiler.lang.Literal.literal;
 import static com.justinblank.classcompiler.lang.TestMethods.TEST_METHOD;
 import static org.junit.Assert.assertEquals;
 
@@ -53,8 +56,28 @@ public class TestSemantics {
         apply(TestMethods.nestedLoop(), 64);
     }
 
+    @Test
+    public void testCallNoArgMethod() throws Exception {
+        var return0 = new Method("return0", List.of(), "I", null);
+        return0.returnValue(literal(1));
+        apply(0, TestMethods.callNoArgMethod(), return0);
+    }
+
+    @Test
+    public void testCallOneArgMethod() throws Exception {
+        var return0 = new Method("return0", List.of(), "I", null);
+        return0.returnValue(literal(1));
+        apply(0, TestMethods.callOneArgMethod(), return0);
+    }
+
+    @Test
+    public void testTwoArgCall() throws Exception {
+        var return0 = new Method("return0", List.of("I"), "I", null);
+        return0.returnValue(literal(1));
+        apply(1, TestMethods.callTwoArgMethod(), return0);
+    }
+
     static void apply(Method method, Object o) throws Exception {
-        method.resolve();
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});;
         builder.addMethod(method);
         builder.addMethod(builder.emptyConstructor());
@@ -63,5 +86,16 @@ public class TestSemantics {
         var instance = compiled.getConstructors()[0].newInstance();
         var output = compiled.getMethod(TEST_METHOD).invoke(instance);
         assertEquals(o, output);
+    }
+
+    static void apply(Object o, Method...methods) throws Exception {
+        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
+        for (var method : methods) {
+            builder.addMethod(method);
+        }
+        builder.addMethod(builder.emptyConstructor());
+        var cls = new ClassCompiler(builder);
+        Class<?> compiled = cls.generateClass();
+        compiled.getConstructors()[0].newInstance();
     }
 }

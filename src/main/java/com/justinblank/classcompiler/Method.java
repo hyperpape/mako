@@ -4,13 +4,13 @@ import com.justinblank.classcompiler.lang.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 import static org.objectweb.asm.Opcodes.*;
 
 public class Method {
 
     public final String methodName;
+    String className;
     final int modifiers;
     final List<String> arguments;
     final List<Block> blocks;
@@ -142,7 +142,12 @@ public class Method {
         return this;
     }
 
-    public void resolve() {
+    public Method call(String methodName, Expression... expressions) {
+        this.elements.add(CodeElement.call(methodName, expressions));
+        return this;
+    }
+
+    void resolve() {
         this.addBlock();
         for (var element : elements) {
             resolve(element);
@@ -225,6 +230,14 @@ public class Method {
         else if (element instanceof ThisRef) {
             currentBlock().readThis();
         }
+        else if (element instanceof Call) {
+            var call = (Call) element;
+            for (var i = call.arguments.length - 1; i >= 0; i--) {
+                resolve(call.arguments[i]);
+            }
+            var className = getClassName(call.arguments[call.arguments.length - 1]);
+            currentBlock().call(call.methodName, className, buildDescriptor(call));
+        }
     }
 
     private void withBlock(Block body, Runnable r) {
@@ -237,6 +250,27 @@ public class Method {
     public static Type typeOf(Expression expression) {
         return Type.I;
     }
+
+    private String getClassName(Expression argument) {
+        if (argument instanceof ThisRef) {
+            return className;
+        }
+        throw new UnsupportedOperationException("");
+    }
+
+
+    private String buildDescriptor(Call call) {
+        var sb = new StringBuilder();
+        sb.append('(');
+        for (var i = 0; i < call.arguments.length - 1; i++) {
+            var type = typeOf(call.arguments[i]);
+            sb.append(CompilerUtil.descriptor(type));
+        }
+        sb.append(')');
+        sb.append('I');
+        return sb.toString();
+    }
+
 
     private Block currentBlock() {
         if (!currentBlock.isEmpty()) {

@@ -69,6 +69,8 @@ public class ClassCompiler {
 
         writeStaticBlocks();
         for (var method : methodsToWrite(classBuilder.allMethods())) {
+            method.className = getClassName();
+            method.resolve();
             writeMethod(method);
         }
         byte[] classBytes = classWriter.toByteArray();

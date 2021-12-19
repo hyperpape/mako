@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CodeElement {
 
-    static CodeElement call(String methodName, Expression... arguments) {
+    static Expression call(String methodName, Expression... arguments) {
         return new Call(methodName, arguments);
     }
 
@@ -28,6 +28,10 @@ public interface CodeElement {
 
     static Statement returnValue(Expression expression) {
         return new ReturnExpression(expression);
+    }
+
+    static Expression thisRef() {
+        return new ThisRef();
     }
 
     static Loop loop(Expression condition, List<CodeElement> body) {

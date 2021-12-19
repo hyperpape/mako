@@ -3,6 +3,10 @@ package com.justinblank.classcompiler.lang;
 import com.justinblank.classcompiler.*;
 import org.junit.Test;
 
+import java.util.List;
+
+import static com.justinblank.classcompiler.lang.Literal.literal;
+
 public class TestSyntax {
 
     private static int classNumber = 0;
@@ -47,10 +51,42 @@ public class TestSyntax {
         apply(TestMethods.nestedLoop());
     }
 
+    @Test
+    public void testNoArgCall() throws Exception {
+        var return0 = new Method("return0", List.of(), "I", null);
+        return0.returnValue(literal(1));
+        apply(TestMethods.callNoArgMethod(), return0);
+    }
+
+    @Test
+    public void testOneArgCall() throws Exception {
+        var return0 = new Method("return0", List.of("I"), "I", null);
+        return0.returnValue(literal(1));
+        apply(TestMethods.callOneArgMethod(), return0);
+    }
+
+    @Test
+    public void testTwoArgCall() throws Exception {
+        var return0 = new Method("return0", List.of("I", "I"), "I", null);
+        return0.returnValue(literal(1));
+        apply(TestMethods.callTwoArgMethod(), return0);
+    }
+
     static void apply(Method method) throws Exception {
-        method.resolve();
-        var builder = new ClassBuilder("TestSyntaxTestClass" + classNumber++, "java/lang/Object", new String[]{});;
+        var builder = new ClassBuilder("TestSyntaxTestClass" + classNumber++, "java/lang/Object", new String[]{});
         builder.addMethod(method);
+        builder.addMethod(builder.emptyConstructor());
+
+        var cls = new ClassCompiler(builder);
+        Class<?> compiled = cls.generateClass();
+        compiled.getConstructors()[0].newInstance();
+    }
+
+    static void apply(Method...methods) throws Exception {
+        var builder = new ClassBuilder("TestSyntaxTestClass" + classNumber++, "java/lang/Object", new String[]{});
+        for (var method : methods) {
+            builder.addMethod(method);
+        }
         builder.addMethod(builder.emptyConstructor());
         var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();

@@ -94,4 +94,25 @@ public class TestMethods {
         method.returnValue(read("c", Type.I));
         return method;
     }
+
+    public static Method callNoArgMethod() {
+        var vars = new GenericVars();
+        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        method.returnValue(call("return0", thisRef()));
+        return method;
+    }
+
+    public static Method callOneArgMethod() {
+        var vars = new GenericVars();
+        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        method.returnValue(call("return0", literal(0), thisRef()));
+        return method;
+    }
+
+    public static Method callTwoArgMethod() {
+        var vars = new GenericVars();
+        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        method.returnValue(call("return0", literal(0), literal(1), thisRef()));
+        return method;
+    }
 }

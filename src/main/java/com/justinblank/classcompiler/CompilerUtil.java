@@ -1,5 +1,6 @@
 package com.justinblank.classcompiler;
 
+import com.justinblank.classcompiler.lang.Type;
 import org.objectweb.asm.MethodVisitor;
 
 import static org.objectweb.asm.Opcodes.*;
@@ -58,6 +59,10 @@ public class CompilerUtil {
 
     public static String descriptor(Class<?> cls) {
         return descriptor(cls.getCanonicalName());
+    }
+
+    public static String descriptor(Type type) {
+        return "I";
     }
 
     public static String descriptor(String className) {
