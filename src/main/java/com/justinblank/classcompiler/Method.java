@@ -222,6 +222,9 @@ public class Method {
         else if (element instanceof Escape) {
             currentBlock().jump(Block.POSTLOOP, GOTO);
         }
+        else if (element instanceof ThisRef) {
+            currentBlock().readThis();
+        }
     }
 
     private void withBlock(Block body, Runnable r) {
