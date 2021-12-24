@@ -16,4 +16,13 @@ public enum UnaryOperator {
     public int asmOP(Type type) {
         throw new UnsupportedOperationException();
     }
+
+    public Type type(Type expressionType) {
+        switch (this) {
+            case NOT:
+                return Builtin.BOOL;
+            default:
+                throw new UnsupportedOperationException("");
+        }
+    }
 }

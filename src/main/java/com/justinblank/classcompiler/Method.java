@@ -10,7 +10,9 @@ import static org.objectweb.asm.Opcodes.*;
 public class Method {
 
     public final String methodName;
-    String className;
+    private TypeInference typeInference;
+    private Map<String, TypeVariable> typeEnvironment = new HashMap<>();
+    private String className;
     final int modifiers;
     final List<String> arguments;
     final List<Block> blocks;
@@ -232,11 +234,26 @@ public class Method {
         }
         else if (element instanceof Call) {
             var call = (Call) element;
-            for (var i = call.arguments.length - 1; i >= 0; i--) {
+            for (var i = 0; i <= call.arguments.length - 1; i++) {
                 resolve(call.arguments[i]);
             }
-            var className = getClassName(call.arguments[call.arguments.length - 1]);
+            var className = getClassName(call.receiver());
             currentBlock().call(call.methodName, className, buildDescriptor(call));
+        }
+        else if (element instanceof Conditional) {
+            var cond = (Conditional) element;
+            currentBlock.push(addBlock());
+            resolve(cond.condition);
+            var block = addBlock();
+
+            withBlock(addBlock(), () -> {
+                for (var codeElement : cond.body) {
+                    resolve(codeElement);
+                }
+            });
+            var afterLoop = addBlock();
+            block.jump(afterLoop, IFEQ);
+            currentBlock.push(afterLoop);
         }
     }
 
@@ -248,14 +265,30 @@ public class Method {
 
     // TODO relocate?
     public static Type typeOf(Expression expression) {
-        return Type.I;
+        return Builtin.I;
     }
 
     private String getClassName(Expression argument) {
         if (argument instanceof ThisRef) {
             return className;
         }
-        throw new UnsupportedOperationException("");
+        else {
+            var type = typeInference.analyze(argument, typeEnvironment);
+            if (type instanceof Builtin) {
+                return type.toString();
+            }
+            else if (type instanceof ReferenceType) {
+                return ((ReferenceType) type).typeString;
+            }
+            else {
+                var typeVar = (TypeVariable) type;
+                var resolved = typeVar.type();
+                if (resolved != null) {
+                    return resolved.toString();
+                }
+                throw new UnsupportedOperationException("TODO");
+            }
+        }
     }
 
 
@@ -293,4 +326,8 @@ public class Method {
         elements.add(element);
     }
 
+    public void setClassName(String className) {
+        this.className = className;
+        this.typeInference = new TypeInference(className);
+    }
 }

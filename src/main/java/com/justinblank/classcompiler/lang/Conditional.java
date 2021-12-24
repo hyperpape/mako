@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Conditional implements CodeElement {
 
-    private final Conditional parent;
-    private final Expression condition;
+    public final Conditional parent;
+    public final Expression condition;
     private boolean finished = false;
-    private List<CodeElement> body;
+    public List<CodeElement> body;
 
     public Conditional(Expression condition) {
         this.condition = condition;

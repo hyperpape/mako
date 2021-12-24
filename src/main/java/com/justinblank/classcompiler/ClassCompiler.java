@@ -58,19 +58,22 @@ public class ClassCompiler {
     }
 
     public byte[] writeClassAsBytes() {
+        for (var method : methodsToWrite(classBuilder.allMethods())) {
+            method.setClassName(getClassName());
+            method.resolve();
+        }
         if (debug) {
             var stringWriter = new StringWriter();
             var printer = new ClassPrinter(new PrintWriter(stringWriter));
             printer.printClass(classBuilder);
             System.out.println(stringWriter);
         }
+
         defineClass(classBuilder);
         addFields();
 
         writeStaticBlocks();
         for (var method : methodsToWrite(classBuilder.allMethods())) {
-            method.className = getClassName();
-            method.resolve();
             writeMethod(method);
         }
         byte[] classBytes = classWriter.toByteArray();

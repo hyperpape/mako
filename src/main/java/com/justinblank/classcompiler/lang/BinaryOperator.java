@@ -16,8 +16,6 @@ public enum BinaryOperator {
     DIVIDE,
     MOD;
 
-
-
     public Operation op(Expression left, Expression right) {
         return Binary.of(this, left, right);
     }
@@ -53,5 +51,24 @@ public enum BinaryOperator {
             default:
                 throw new UnsupportedOperationException("");
         }
-    };
+    }
+
+    public Type type(Type left, Type right) {
+        switch (this) {
+            case PLUS:
+            case SUBTRACT:
+            case MULTIPLY:
+            case DIVIDE:
+                return left;
+            case EQUALS:
+            case NOT_EQUALS:
+            case GREATER_THAN:
+            case LESS_THAN:
+            case AND:
+            case OR:
+                return Builtin.BOOL;
+            default:
+                throw new IllegalStateException("");
+        }
+    }
 }

@@ -9,4 +9,8 @@ public class Call extends Expression {
         this.methodName = methodName;
         this.arguments = arguments;
     }
+
+    public Expression receiver() {
+        return this.arguments[0];
+    }
 }

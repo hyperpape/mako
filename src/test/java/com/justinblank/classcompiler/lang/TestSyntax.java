@@ -72,12 +72,22 @@ public class TestSyntax {
         apply(TestMethods.callTwoArgMethod(), return0);
     }
 
+    @Test
+    public void testConditional() throws Exception {
+        apply(TestMethods.testConditional());
+    }
+
+    @Test
+    public void testRecursion() throws Exception {
+        apply(TestMethods.recursion());
+    }
+
     static void apply(Method method) throws Exception {
         var builder = new ClassBuilder("TestSyntaxTestClass" + classNumber++, "java/lang/Object", new String[]{});
         builder.addMethod(method);
         builder.addMethod(builder.emptyConstructor());
 
-        var cls = new ClassCompiler(builder);
+        var cls = new ClassCompiler(builder, true);
         Class<?> compiled = cls.generateClass();
         compiled.getConstructors()[0].newInstance();
     }

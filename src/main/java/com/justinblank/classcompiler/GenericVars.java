@@ -17,6 +17,6 @@ public class GenericVars implements Vars {
     }
 
     public void addVar(String name) {
-        vars.put(name, vars.size());
+        vars.put(name, vars.size() + 1);
     }
 }

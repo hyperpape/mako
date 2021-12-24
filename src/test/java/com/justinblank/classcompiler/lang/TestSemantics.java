@@ -60,42 +60,45 @@ public class TestSemantics {
     public void testCallNoArgMethod() throws Exception {
         var return0 = new Method("return0", List.of(), "I", null);
         return0.returnValue(literal(1));
-        apply(0, TestMethods.callNoArgMethod(), return0);
+        apply(1, TestMethods.callNoArgMethod(), List.of(), return0);
     }
 
     @Test
     public void testCallOneArgMethod() throws Exception {
-        var return0 = new Method("return0", List.of(), "I", null);
+        var return0 = new Method("return0", List.of("I"), "I", null);
         return0.returnValue(literal(1));
-        apply(0, TestMethods.callOneArgMethod(), return0);
+        apply(1, TestMethods.callOneArgMethod(), List.of(), return0);
     }
 
     @Test
     public void testTwoArgCall() throws Exception {
-        var return0 = new Method("return0", List.of("I"), "I", null);
+        var return0 = new Method("return0", List.of("I", "I"), "I", null);
         return0.returnValue(literal(1));
-        apply(1, TestMethods.callTwoArgMethod(), return0);
+        apply(1, TestMethods.callTwoArgMethod(), List.of(), return0);
     }
 
     static void apply(Method method, Object o) throws Exception {
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});;
         builder.addMethod(method);
         builder.addMethod(builder.emptyConstructor());
-        var cls = new ClassCompiler(builder, true);
+        var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();
         var output = compiled.getMethod(TEST_METHOD).invoke(instance);
         assertEquals(o, output);
     }
 
-    static void apply(Object o, Method...methods) throws Exception {
+    static void apply(Object o, Method method, List<Object> arguments, Method...methods) throws Exception {
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
-        for (var method : methods) {
-            builder.addMethod(method);
+        builder.addMethod(method);
+        for (var otherMethod : methods) {
+            builder.addMethod(otherMethod);
         }
         builder.addMethod(builder.emptyConstructor());
         var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
-        compiled.getConstructors()[0].newInstance();
+        var instance = compiled.getConstructors()[0].newInstance();
+        var output = compiled.getMethod(TEST_METHOD).invoke(instance, arguments.toArray());
+        assertEquals(o, output);
     }
 }
