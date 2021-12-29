@@ -34,8 +34,42 @@ public class TypeInference {
             return TypeVariable.of(thisType);
         } else if (element instanceof VariableRead) {
             return TypeVariable.fresh();
+        } else if (element instanceof Assignment) {
+            var assignment = (Assignment) element;
+            var type = analyze(assignment.expression, environment);
+            var existingType = environment.get(assignment.variable);
+            if (existingType != null) {
+                unify(type, existingType);
+            }
+            if (type instanceof TypeVariable) {
+                environment.put(assignment.variable, (TypeVariable) type);
+            }
+            else {
+                environment.put(assignment.variable, TypeVariable.of(type));
+            }
+            return type;
+        } else if (element instanceof Loop) {
+            var loop = (Loop) element;
+            analyze(loop.condition, environment);
+            for (var loopElt : loop.body) {
+                analyze(loopElt, environment);
+            }
+            // This is ok;
+            return null;
+        } else if (element instanceof Conditional) {
+            var cond = (Conditional) element;
+            analyze(cond.condition, environment);
+            for (var e : cond.body) {
+                analyze(e, environment);
+            }
+            return null;
+        } else if (element instanceof ReturnExpression) {
+            var returnExp = (ReturnExpression) element;
+            return analyze(returnExp.expression, environment);
+        } else if (element instanceof Skip || element instanceof Escape) {
+            return null;
         } else {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Unhandled instance: " + element);
         }
     }
 

@@ -152,6 +152,7 @@ public class Method {
     void resolve() {
         this.addBlock();
         for (var element : elements) {
+            typeInference.analyze(element, typeEnvironment);
             resolve(element);
         }
         this.elements = new ArrayList<>();
