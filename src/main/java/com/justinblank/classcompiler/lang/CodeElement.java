@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface CodeElement {
 
-    static Expression call(String methodName, Expression... arguments) {
-        return new Call(methodName, arguments);
+    static Expression call(String methodName, Type type, Expression... arguments) {
+        return new Call(methodName, type, arguments);
     }
 
     static Expression read(String variable, Type type) {

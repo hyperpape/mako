@@ -17,6 +17,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testReturnThis() throws Exception {
+        apply("SomeObject", TestMethods.returnThis());
+    }
+
+    @Test
     public void testSetAndReadVars() throws Exception {
         apply(TestMethods.setAndGetVariable());
     }
@@ -83,7 +88,11 @@ public class TestSyntax {
     }
 
     static void apply(Method method) throws Exception {
-        var builder = new ClassBuilder("TestSyntaxTestClass" + classNumber++, "java/lang/Object", new String[]{});
+        apply("TestSyntaxTestClass" + classNumber++, method);
+    }
+
+    static void apply(String className, Method method) throws Exception {
+        var builder = new ClassBuilder(className, "java/lang/Object", new String[]{});
         builder.addMethod(method);
         builder.addMethod(builder.emptyConstructor());
 

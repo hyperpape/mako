@@ -22,7 +22,7 @@ public class TypeVariable implements Type {
         return new TypeVariable(COUNTER.incrementAndGet());
     }
 
-    static TypeVariable of(Type type) {
+    public static TypeVariable of(Type type) {
         var variable = fresh();
         variable.type = type;
         return variable;

@@ -19,6 +19,12 @@ public class TestMethods {
         return method;
     }
 
+    public static Method returnThis() {
+        var method = new Method(TEST_METHOD, List.of(), "LSomeObject;", new GenericVars());
+        method.returnValue(thisRef());
+        return method;
+    }
+
     public static Method setAndGetVariable() {
         var vars = new GenericVars();
         vars.addVar("a");
@@ -109,28 +115,28 @@ public class TestMethods {
         vars.addVar("i");
         var method = new Method(TEST_METHOD, List.of("I"), "I", vars);
         method.cond(eq(read("i", Builtin.I), literal(1))).withBody(List.of(returnValue(literal(1))));
-        method.returnValue(call(TEST_METHOD, thisRef(), sub(read("i", Builtin.I), literal(1))));
+        method.returnValue(call(TEST_METHOD, Builtin.I, thisRef(), sub(read("i", Builtin.I), literal(1))));
         return method;
     }
 
     public static Method callNoArgMethod() {
         var vars = new GenericVars();
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
-        method.returnValue(call("return0", thisRef()));
+        method.returnValue(call("return0", Builtin.I, thisRef()));
         return method;
     }
 
     public static Method callOneArgMethod() {
         var vars = new GenericVars();
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
-        method.returnValue(call("return0", thisRef(), literal(0)));
+        method.returnValue(call("return0", Builtin.I, thisRef(), literal(0)));
         return method;
     }
 
     public static Method callTwoArgMethod() {
         var vars = new GenericVars();
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
-        method.returnValue(call("return0", thisRef(), literal(0), literal(1)));
+        method.returnValue(call("return0", Builtin.I, thisRef(), literal(0), literal(1)));
         return method;
     }
 }

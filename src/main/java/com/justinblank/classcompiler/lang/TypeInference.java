@@ -15,8 +15,7 @@ public class TypeInference {
     public Type analyze(CodeElement element, Map<String, TypeVariable> environment) {
         if (element instanceof Call) {
             var call = (Call) element;
-            var receiverType = analyze(call.receiver(), environment);
-            return null;
+            return call.returnType;
         } else if (element instanceof Literal) {
             return TypeVariable.of(Builtin.I);
         } else if (element instanceof Binary) {
@@ -33,7 +32,7 @@ public class TypeInference {
         } else if (element instanceof ThisRef) {
             return TypeVariable.of(thisType);
         } else if (element instanceof VariableRead) {
-            return TypeVariable.fresh();
+            return environment.computeIfAbsent(((VariableRead) element).variable, (k) -> TypeVariable.fresh());
         } else if (element instanceof Assignment) {
             var assignment = (Assignment) element;
             var type = analyze(assignment.expression, environment);

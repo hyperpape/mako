@@ -144,18 +144,44 @@ public class Method {
         return this;
     }
 
-    public Method call(String methodName, Expression... expressions) {
-        this.elements.add(CodeElement.call(methodName, expressions));
+    public Method call(String methodName, Type type, Expression... expressions) {
+        this.elements.add(CodeElement.call(methodName, type, expressions));
         return this;
     }
 
     void resolve() {
         this.addBlock();
+        if (this.matchingVars != null) {
+            for (var v : this.matchingVars.allVars()) {
+                if (v.getRight() < this.arguments.size()) {
+                    typeEnvironment.put(v.getLeft(), typeVariableFor(this.arguments.get(v.getRight())));
+                }
+            }
+        }
         for (var element : elements) {
             typeInference.analyze(element, typeEnvironment);
             resolve(element);
         }
         this.elements = new ArrayList<>();
+    }
+
+    private TypeVariable typeVariableFor(String s) {
+        switch (s) {
+            case "I":
+                return TypeVariable.of(Builtin.I);
+            case "F":
+                return TypeVariable.of(Builtin.F);
+            case "L":
+                return TypeVariable.of(Builtin.L);
+            case "D":
+                return TypeVariable.of(Builtin.D);
+            case "Z":
+                return TypeVariable.of(Builtin.BOOL);
+            case "B":
+                return TypeVariable.of(Builtin.OCTET);
+            default:
+                throw new IllegalStateException("");
+        }
     }
 
     void resolve(CodeElement element) {
@@ -316,7 +342,28 @@ public class Method {
     }
 
     private int returnForType(Expression expression) {
-        return IRETURN;
+        var type = typeInference.analyze(expression, typeEnvironment);
+        if (type instanceof TypeVariable) {
+            type = ((TypeVariable) type).type();
+        }
+        if (type instanceof Builtin) {
+            switch ((Builtin) type) {
+                case F:
+                    return FRETURN;
+                case L:
+                    return LRETURN;
+                case D:
+                    return DRETURN;
+                default:
+                    return IRETURN;
+            }
+        }
+        else if (type instanceof ReferenceType) {
+            return ARETURN;
+        }
+        else {
+            throw new IllegalStateException("Unrecognized type: " + type);
+        }
     }
 
     private String descriptorForExpression(Expression expression) {

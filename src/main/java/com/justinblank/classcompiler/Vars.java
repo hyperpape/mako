@@ -1,5 +1,9 @@
 package com.justinblank.classcompiler;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
+
 public interface Vars {
 
     /**
@@ -9,4 +13,6 @@ public interface Vars {
      * @throws {@link IllegalArgumentException} if the variable is not contained in this method
      */
     int indexByName(String name);
+
+    List<Pair<String, Integer>> allVars();
 }
