@@ -195,7 +195,7 @@ public class Method {
             currentBlock().addReturn(returnForType(returnExpression.expression));
         } else if (element instanceof VariableRead) {
             var read = (VariableRead) element;
-            currentBlock().readVar(getMatchingVars().get().indexByName(read.variable), "I");
+            currentBlock().readVar(getMatchingVars().get().indexByName(read.variable), descriptorForExpression(read));
         } else if (element instanceof Assignment) {
             var assignment = (Assignment) element;
             resolve(assignment.expression);
@@ -386,7 +386,8 @@ public class Method {
     }
 
     private String descriptorForExpression(Expression expression) {
-        return "I";
+        var type = typeInference.analyze(expression, typeEnvironment);
+        return CompilerUtil.descriptorForType(type);
     }
 
     public void add(CodeElement element) {

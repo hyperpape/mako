@@ -1,6 +1,9 @@
 package com.justinblank.classcompiler;
 
+import com.justinblank.classcompiler.lang.Builtin;
+import com.justinblank.classcompiler.lang.ReferenceType;
 import com.justinblank.classcompiler.lang.Type;
+import com.justinblank.classcompiler.lang.TypeVariable;
 import org.objectweb.asm.MethodVisitor;
 
 import static org.objectweb.asm.Opcodes.*;
@@ -63,6 +66,26 @@ public class CompilerUtil {
 
     public static String descriptor(Type type) {
         return "I";
+    }
+
+    public static String descriptorForType(Type type) {
+        if (type instanceof Builtin) {
+            return type.toString();
+        }
+        else if (type instanceof ReferenceType) {
+            return ((ReferenceType) type).typeString;
+        }
+        else {
+            var typeVar = (TypeVariable) type;
+            var resolved = typeVar.type();
+            if (resolved instanceof Builtin) {
+                return resolved.toString();
+            }
+            if (resolved != null) {
+                return descriptor(resolved.toString());
+            }
+            throw new UnsupportedOperationException("TODO");
+        }
     }
 
     public static String descriptor(String className) {
