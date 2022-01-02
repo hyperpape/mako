@@ -20,7 +20,7 @@ public class TestMethods {
     }
 
     public static Method returnThis() {
-        var method = new Method(TEST_METHOD, List.of(), "LSomeObject;", new GenericVars());
+        var method = new Method(TEST_METHOD, List.of(), "LTestReturnThis;", new GenericVars());
         method.returnValue(thisRef());
         return method;
     }
@@ -137,6 +137,22 @@ public class TestMethods {
         var vars = new GenericVars();
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.returnValue(call("return0", Builtin.I, thisRef(), literal(0), literal(1)));
+        return method;
+    }
+
+    public static Method methodWithIgnoredCall() {
+        var vars = new GenericVars();
+        vars.addVar("a");
+        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        method.set("a", literal(1));
+        method.loop(read("a", Builtin.I), List.of(
+                call("returnThis", ReferenceType.of("SomeObject"), thisRef()),
+                set("a",
+                        plus(
+                                read("a", Builtin.I),
+                                literal(1)))));
+        method.call("return0", Builtin.I, thisRef());
+        method.returnValue(literal(5));
         return method;
     }
 }

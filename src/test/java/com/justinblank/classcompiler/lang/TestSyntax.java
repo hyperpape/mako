@@ -18,7 +18,7 @@ public class TestSyntax {
 
     @Test
     public void testReturnThis() throws Exception {
-        apply("SomeObject", TestMethods.returnThis());
+        apply("TestReturnThis", TestMethods.returnThis());
     }
 
     @Test
@@ -87,6 +87,13 @@ public class TestSyntax {
         apply(TestMethods.recursion());
     }
 
+    @Test
+    public void testMethodWithIgnoredCall() throws Exception {
+        var return0 = new Method("return0", List.of(), "I", null);
+        return0.returnValue(literal(0));
+        apply("SomeObject" + classNumber++, TestMethods.methodWithIgnoredCall(), return0);
+    }
+
     static void apply(Method method) throws Exception {
         apply("TestSyntaxTestClass" + classNumber++, method);
     }
@@ -101,13 +108,17 @@ public class TestSyntax {
         compiled.getConstructors()[0].newInstance();
     }
 
-    static void apply(Method...methods) throws Exception {
-        var builder = new ClassBuilder("TestSyntaxTestClass" + classNumber++, "java/lang/Object", new String[]{});
+    static void apply(Method... methods) throws Exception {
+        apply("TestSyntaxTestClass" + classNumber++, methods);
+    }
+
+    static void apply(String className, Method...methods) throws Exception {
+        var builder = new ClassBuilder(className, "java/lang/Object", new String[]{});
         for (var method : methods) {
             builder.addMethod(method);
         }
         builder.addMethod(builder.emptyConstructor());
-        var cls = new ClassCompiler(builder);
+        var cls = new ClassCompiler(builder, true);
         Class<?> compiled = cls.generateClass();
         compiled.getConstructors()[0].newInstance();
     }

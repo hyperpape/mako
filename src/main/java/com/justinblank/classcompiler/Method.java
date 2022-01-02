@@ -233,6 +233,9 @@ public class Method {
             withBlock(addBlock(), () -> {
                 for (var codeElement : loop.body) {
                     resolve(codeElement);
+                    if (producesValue(codeElement)) {
+                        currentBlock().operate(POP);
+                    }
                 }
             });
 
@@ -282,6 +285,22 @@ public class Method {
             block.jump(afterLoop, IFEQ);
             currentBlock.push(afterLoop);
         }
+    }
+
+    private boolean producesValue(CodeElement codeElement) {
+        // TODO: void call?
+        if (codeElement instanceof Expression) {
+            if (codeElement instanceof Call) {
+                var call = (Call) codeElement;
+                if (call.returnType != null) {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void withBlock(Block body, Runnable r) {
