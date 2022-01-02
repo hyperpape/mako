@@ -10,8 +10,8 @@ public interface CodeElement {
         return new Call(methodName, type, arguments);
     }
 
-    static Expression read(String variable, Type type) {
-        return new VariableRead(variable, type);
+    static Expression read(String variable) {
+        return new VariableRead(variable);
     }
 
     static Statement set(String name, Expression value) {

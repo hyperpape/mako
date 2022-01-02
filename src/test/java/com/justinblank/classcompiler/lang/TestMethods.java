@@ -30,7 +30,7 @@ public class TestMethods {
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.set("a", literal(1));
-        method.returnValue(read("a", Builtin.I));
+        method.returnValue(read("a"));
         return method;
     }
 
@@ -53,9 +53,9 @@ public class TestMethods {
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.set("a", literal(1));
-        method.loop(eq(literal(5), read("a", Builtin.I)),
-                List.of(set("a", plus(read("a", Builtin.I), literal(1)))));
-        method.returnValue(read("a", Builtin.I));
+        method.loop(eq(literal(5), read("a")),
+                List.of(set("a", plus(read("a"), literal(1)))));
+        method.returnValue(read("a"));
         return method;
     }
 
@@ -64,10 +64,10 @@ public class TestMethods {
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.set("a", literal(1));
-        method.loop(eq(literal(5), read("a", Builtin.I)),
-                List.of(set("a", plus(read("a", Builtin.I), literal(1))),
+        method.loop(eq(literal(5), read("a")),
+                List.of(set("a", plus(read("a"), literal(1))),
                         skip()));
-        method.returnValue(read("a", Builtin.I));
+        method.returnValue(read("a"));
         return method;
     }
 
@@ -76,10 +76,10 @@ public class TestMethods {
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.set("a", literal(1));
-        method.loop(eq(literal(5), read("a", Builtin.I)),
-                List.of(set("a", plus(read("a", Builtin.I), literal(1))),
+        method.loop(eq(literal(5), read("a")),
+                List.of(set("a", plus(read("a"), literal(1))),
                         escape()));
-        method.returnValue(read("a", Builtin.I));
+        method.returnValue(read("a"));
         return method;
     }
 
@@ -91,13 +91,13 @@ public class TestMethods {
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.set("a", literal(0));
         method.set("c", literal(1));
-        method.loop(eq(literal(3), read("a", Builtin.I)),
-                List.of(set("a", plus(read("a", Builtin.I), literal(1))),
+        method.loop(eq(literal(3), read("a")),
+                List.of(set("a", plus(read("a"), literal(1))),
                         set("b", literal(1)),
-                        new Loop(eq(literal(3), read("b", Builtin.I)),
-                                List.of(set("c", mul(read("c", Builtin.I), literal(2))),
-                                        set("b", plus(read("b", Builtin.I), literal(1)))))));
-        method.returnValue(read("c", Builtin.I));
+                        new Loop(eq(literal(3), read("b")),
+                                List.of(set("c", mul(read("c"), literal(2))),
+                                        set("b", plus(read("b"), literal(1)))))));
+        method.returnValue(read("c"));
         return method;
     }
 
@@ -105,7 +105,7 @@ public class TestMethods {
         var vars = new GenericVars();
         vars.addVar("i");
         var method = new Method(TEST_METHOD, List.of("I"), "I", vars);
-        method.cond(eq(read("i", Builtin.I), literal(2))).withBody(List.of(returnValue(literal(3))));
+        method.cond(eq(read("i"), literal(2))).withBody(List.of(returnValue(literal(3))));
         method.returnValue(literal(4));
         return method;
     }
@@ -114,8 +114,8 @@ public class TestMethods {
         var vars = new GenericVars();
         vars.addVar("i");
         var method = new Method(TEST_METHOD, List.of("I"), "I", vars);
-        method.cond(eq(read("i", Builtin.I), literal(1))).withBody(List.of(returnValue(literal(1))));
-        method.returnValue(call(TEST_METHOD, Builtin.I, thisRef(), sub(read("i", Builtin.I), literal(1))));
+        method.cond(eq(read("i"), literal(1))).withBody(List.of(returnValue(literal(1))));
+        method.returnValue(call(TEST_METHOD, Builtin.I, thisRef(), sub(read("i"), literal(1))));
         return method;
     }
 
@@ -145,11 +145,11 @@ public class TestMethods {
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.set("a", literal(1));
-        method.loop(read("a", Builtin.I), List.of(
+        method.loop(read("a"), List.of(
                 call("returnThis", ReferenceType.of("SomeObject"), thisRef()),
                 set("a",
                         plus(
-                                read("a", Builtin.I),
+                                read("a"),
                                 literal(1)))));
         method.call("return0", Builtin.I, thisRef());
         method.returnValue(literal(5));
