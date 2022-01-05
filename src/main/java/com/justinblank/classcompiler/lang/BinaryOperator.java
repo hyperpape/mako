@@ -1,5 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
+import static com.justinblank.classcompiler.lang.Literal.literal;
 import static org.objectweb.asm.Opcodes.*;
 
 public enum BinaryOperator {
@@ -24,17 +25,66 @@ public enum BinaryOperator {
         return PLUS.op(left, right);
     }
 
+    public static Operation plus(Number left, Expression right) {
+        return PLUS.op(literal(left),right);
+    }
+
+    public static Operation plus(Expression left, Number right) {
+        return PLUS.op(left, literal(right));
+    }
+
+    public static Operation plus(Number left, Number right) {
+        return PLUS.op(literal(left), literal(right));
+    }
+
     public static Operation sub(Expression left, Expression right) {
         return SUBTRACT.op(left, right);
+    }
+
+    public static Operation sub(Number left, Expression right) {
+        return SUBTRACT.op(literal(left), right);
+    }
+
+    public static Operation sub(Expression left, Number right) {
+        return SUBTRACT.op(left, literal(right));
+    }
+
+    public static Operation sub(Number left, Number right) {
+        return SUBTRACT.op(literal(left), literal(right));
     }
 
     public static Operation mul(Expression left, Expression right) {
         return MULTIPLY.op(left, right);
     }
 
+    public static Operation mul(Number left, Expression right) {
+        return MULTIPLY.op(literal(left), right);
+    }
+
+    public static Operation mul(Expression left, Number right) {
+        return MULTIPLY.op(left, literal(right));
+    }
+
+    public static Operation mul(Number left, Number right) {
+        return MULTIPLY.op(literal(left), literal(right));
+    }
+
     public static Operation eq(Expression left, Expression right) {
         return EQUALS.op(left, right);
     }
+
+    public static Operation eq(Number left, Expression right) {
+        return EQUALS.op(literal(left), right);
+    }
+
+    public static Operation eq(Expression left, Number right) {
+        return EQUALS.op(left, literal(right));
+    }
+
+    public static Operation eq(Number left, Number right) {
+        return EQUALS.op(literal(left), literal(right));
+    }
+
 
     public int asmOP(Type left, Type right) {
         switch (this) {
