@@ -32,6 +32,14 @@ public class TestMethods {
         return method;
     }
 
+    public static Method arraySetAndGet() {
+        var vars = new GenericVars();
+        vars.addVar("a");
+        var method = new Method(TEST_METHOD, List.of(), "B", vars);
+        method.set("a", newArray(literal(1), Builtin.OCTET));
+        return method;
+    }
+
     public static Method setAndGetVariable() {
         var vars = new GenericVars();
         vars.addVar("a");

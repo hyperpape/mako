@@ -8,6 +8,7 @@ public enum Builtin implements Type {
     D,
     BOOL,
     OCTET;
+    // TODO: Forgot char, did ye?
 
     public Type type() {
         return this;

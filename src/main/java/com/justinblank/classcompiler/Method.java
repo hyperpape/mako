@@ -314,6 +314,64 @@ public class Method {
                 currentBlock.peek().newArray(((ReferenceType) newArray.type).typeString);
             }
         }
+        else if (element instanceof ArrayRead) {
+            var arraySet = (ArraySet) element;
+            resolve(arraySet.arrayRef);
+            resolve(arraySet.index);
+            var arrayType = typeInference.analyze(arraySet.arrayRef, typeEnvironment);
+            if (arrayType instanceof Builtin) {
+                switch ((Builtin) arrayType) {
+                    case I:
+                        currentBlock().operate(IALOAD);
+                        return;
+                    case F:
+                        currentBlock().operate(FALOAD);
+                        return;
+                    case L:
+                        currentBlock().operate(LALOAD);
+                        return;
+                    case D:
+                        currentBlock().operate(DALOAD);
+                        return;
+                    case BOOL:
+                    case OCTET:
+                        currentBlock().operate(BALOAD);
+                        return;
+                }
+            }
+            else {
+                currentBlock().operate(AALOAD);
+            }
+        }
+        else if (element instanceof ArraySet) {
+            var arraySet = (ArraySet) element;
+            resolve(arraySet.arrayRef);
+            resolve(arraySet.index);
+            var arrayType = typeInference.analyze(arraySet.arrayRef, typeEnvironment);
+            if (arrayType instanceof Builtin) {
+                switch ((Builtin) arrayType) {
+                    case I:
+                        currentBlock().operate(IASTORE);
+                        return;
+                    case F:
+                        currentBlock().operate(FASTORE);
+                        return;
+                    case L:
+                        currentBlock().operate(LASTORE);
+                        return;
+                    case D:
+                        currentBlock().operate(DASTORE);
+                        return;
+                    case BOOL:
+                    case OCTET:
+                        currentBlock().operate(BASTORE);
+                        return;
+                }
+            }
+            else {
+                currentBlock().operate(AASTORE);
+            }
+        }
     }
 
     private boolean producesValue(CodeElement codeElement) {
