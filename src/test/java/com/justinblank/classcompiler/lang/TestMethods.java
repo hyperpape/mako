@@ -8,6 +8,7 @@ import java.util.List;
 import static com.justinblank.classcompiler.lang.BinaryOperator.*;
 import static com.justinblank.classcompiler.lang.CodeElement.*;
 import static com.justinblank.classcompiler.lang.Literal.literal;
+import static com.justinblank.classcompiler.lang.NewArray.newArray;
 
 public class TestMethods {
 
@@ -22,6 +23,12 @@ public class TestMethods {
     public static Method returnThis() {
         var method = new Method(TEST_METHOD, List.of(), "LTestReturnThis;", new GenericVars());
         method.returnValue(thisRef());
+        return method;
+    }
+
+    public static Method returnNewArray() {
+        var method = new Method(TEST_METHOD, List.of(), "[B", new GenericVars());
+        method.returnValue(newArray(literal(1), Builtin.OCTET));
         return method;
     }
 

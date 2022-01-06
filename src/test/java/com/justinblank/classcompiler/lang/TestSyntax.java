@@ -22,6 +22,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testNewArray() throws Exception {
+        apply(TestMethods.returnNewArray());
+    }
+
+    @Test
     public void testSetAndReadVars() throws Exception {
         apply(TestMethods.setAndGetVariable());
     }

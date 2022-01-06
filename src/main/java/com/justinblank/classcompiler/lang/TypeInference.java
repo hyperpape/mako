@@ -67,6 +67,8 @@ public class TypeInference {
             return analyze(returnExp.expression, environment);
         } else if (element instanceof Skip || element instanceof Escape) {
             return null;
+        } else if (element instanceof NewArray) {
+            return new ArrayType(((NewArray) element).type);
         } else {
             throw new IllegalStateException("Unhandled instance: " + element);
         }

@@ -285,6 +285,35 @@ public class Method {
             block.jump(afterLoop, IFEQ);
             currentBlock.push(afterLoop);
         }
+        else if (element instanceof NewArray) {
+            var newArray = (NewArray) element;
+            resolve(newArray.size);
+            if (newArray.type instanceof Builtin) {
+                switch ((Builtin) newArray.type) {
+                    case I:
+                        currentBlock().newArray(T_INT);
+                        return;
+                    case F:
+                        currentBlock().newArray(T_FLOAT);
+                        return;
+                    case D:
+                        currentBlock().newArray(T_DOUBLE);
+                        return;
+                    case L:
+                        currentBlock().newArray(T_LONG);
+                        return;
+                    case BOOL:
+                        currentBlock().newArray(T_BOOLEAN);
+                        return;
+                    case OCTET:
+                        currentBlock().newArray(T_BYTE);
+                        return;
+                }
+            }
+            else if (newArray.type instanceof ReferenceType) {
+                currentBlock.peek().newArray(((ReferenceType) newArray.type).typeString);
+            }
+        }
     }
 
     private boolean producesValue(CodeElement codeElement) {
@@ -377,7 +406,7 @@ public class Method {
                     return IRETURN;
             }
         }
-        else if (type instanceof ReferenceType) {
+        else if (type instanceof ReferenceType || type instanceof ArrayType) {
             return ARETURN;
         }
         else {
