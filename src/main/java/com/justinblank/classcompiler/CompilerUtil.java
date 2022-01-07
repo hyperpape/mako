@@ -1,9 +1,6 @@
 package com.justinblank.classcompiler;
 
-import com.justinblank.classcompiler.lang.Builtin;
-import com.justinblank.classcompiler.lang.ReferenceType;
-import com.justinblank.classcompiler.lang.Type;
-import com.justinblank.classcompiler.lang.TypeVariable;
+import com.justinblank.classcompiler.lang.*;
 import org.objectweb.asm.MethodVisitor;
 
 import static org.objectweb.asm.Opcodes.*;
@@ -74,6 +71,9 @@ public class CompilerUtil {
         }
         else if (type instanceof ReferenceType) {
             return ((ReferenceType) type).typeString;
+        }
+        else if (type instanceof ArrayType) {
+            return "[" + descriptorForType(((ArrayType) type).elementType);
         }
         else {
             var typeVar = (TypeVariable) type;

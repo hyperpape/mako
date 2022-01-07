@@ -2,10 +2,10 @@ package com.justinblank.classcompiler.lang;
 
 public class ArrayType implements Type {
 
-    private final Type type;
+    public final Type elementType;
 
-    public ArrayType(Type type) {
-        this.type = type;
+    public ArrayType(Type elementType) {
+        this.elementType = elementType;
     }
 
     @Override

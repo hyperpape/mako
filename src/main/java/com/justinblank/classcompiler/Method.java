@@ -139,6 +139,16 @@ public class Method {
         return this;
     }
 
+    public Method arraySet(Expression arrayRef, Expression index, Expression value) {
+        this.elements.add(ArraySet.arraySet(arrayRef, index, value));
+        return this;
+    }
+
+    public Method arrayRead(Expression arrayRef, Expression index) {
+        this.elements.add(ArrayRead.arrayRead(arrayRef, index));
+        return this;
+    }
+
     public Method returnValue(Expression expression) {
         this.elements.add(CodeElement.returnValue(expression));
         return this;
@@ -315,12 +325,12 @@ public class Method {
             }
         }
         else if (element instanceof ArrayRead) {
-            var arraySet = (ArraySet) element;
-            resolve(arraySet.arrayRef);
-            resolve(arraySet.index);
-            var arrayType = typeInference.analyze(arraySet.arrayRef, typeEnvironment);
-            if (arrayType instanceof Builtin) {
-                switch ((Builtin) arrayType) {
+            var arrayRead = (ArrayRead) element;
+            resolve(arrayRead.arrayRef);
+            resolve(arrayRead.index);
+            var arrayType = determineArrayType(arrayRead.arrayRef);
+            if (arrayType.elementType instanceof Builtin) {
+                switch ((Builtin) arrayType.elementType) {
                     case I:
                         currentBlock().operate(IALOAD);
                         return;
@@ -347,9 +357,10 @@ public class Method {
             var arraySet = (ArraySet) element;
             resolve(arraySet.arrayRef);
             resolve(arraySet.index);
-            var arrayType = typeInference.analyze(arraySet.arrayRef, typeEnvironment);
-            if (arrayType instanceof Builtin) {
-                switch ((Builtin) arrayType) {
+            resolve(arraySet.value);
+            ArrayType arrayType = determineArrayType(arraySet.arrayRef);
+            if (arrayType.elementType instanceof Builtin) {
+                switch ((Builtin) arrayType.elementType) {
                     case I:
                         currentBlock().operate(IASTORE);
                         return;
@@ -372,6 +383,15 @@ public class Method {
                 currentBlock().operate(AASTORE);
             }
         }
+    }
+
+    private ArrayType determineArrayType(Expression arrayRef) {
+        var analyzedType = typeInference.analyze(arrayRef, typeEnvironment);
+        if (analyzedType instanceof TypeVariable) {
+            analyzedType = analyzedType.type();
+        }
+        var arrayType = (ArrayType) analyzedType;
+        return arrayType;
     }
 
     private boolean producesValue(CodeElement codeElement) {

@@ -27,6 +27,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testArraySetAndGet() throws Exception {
+        apply(TestMethods.arraySetAndGet());
+    }
+
+    @Test
     public void testSetAndReadVars() throws Exception {
         apply(TestMethods.setAndGetVariable());
     }

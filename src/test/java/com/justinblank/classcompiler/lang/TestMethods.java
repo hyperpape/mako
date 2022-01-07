@@ -5,6 +5,7 @@ import com.justinblank.classcompiler.Method;
 
 import java.util.List;
 
+import static com.justinblank.classcompiler.lang.ArrayRead.arrayRead;
 import static com.justinblank.classcompiler.lang.BinaryOperator.*;
 import static com.justinblank.classcompiler.lang.CodeElement.*;
 import static com.justinblank.classcompiler.lang.Literal.literal;
@@ -35,8 +36,10 @@ public class TestMethods {
     public static Method arraySetAndGet() {
         var vars = new GenericVars();
         vars.addVar("a");
-        var method = new Method(TEST_METHOD, List.of(), "B", vars);
+        var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.set("a", newArray(literal(1), Builtin.OCTET));
+        method.arraySet(read("a"), literal(0), literal(2));
+        method.returnValue(arrayRead(read("a"), literal(0)));
         return method;
     }
 

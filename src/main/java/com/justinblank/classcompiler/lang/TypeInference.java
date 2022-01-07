@@ -69,6 +69,11 @@ public class TypeInference {
             return null;
         } else if (element instanceof NewArray) {
             return new ArrayType(((NewArray) element).type);
+        } else if (element instanceof ArrayRead) {
+            var arrayType = analyze(((ArrayRead) element).arrayRef, environment);
+            return ((ArrayType) arrayType.type()).elementType;
+        } else if (element instanceof ArraySet) {
+            return null; // TODO is this right?
         } else {
             throw new IllegalStateException("Unhandled instance: " + element);
         }
