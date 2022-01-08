@@ -7,7 +7,11 @@ import java.util.List;
 public interface CodeElement {
 
     static Expression call(String methodName, Type type, Expression... arguments) {
-        return new Call(methodName, type, arguments);
+        return new Call(null, methodName, type, false, arguments);
+    }
+
+    static Expression callStatic(String className, String methodName, Type type, Expression... arguments) {
+        return new Call(className, methodName, type, true, arguments);
     }
 
     static Expression read(String variable) {

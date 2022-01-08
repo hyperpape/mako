@@ -62,7 +62,36 @@ public class CompilerUtil {
     }
 
     public static String descriptor(Type type) {
-        return "I";
+        if (type instanceof Builtin) {
+            switch ((Builtin) type) {
+                case I:
+                    return "I";
+                case F:
+                    return "F";
+                case L:
+                    return "L";
+                case D:
+                    return "D";
+                case OCTET:
+                    return "B";
+                case BOOL:
+                    return "Z";
+                default:
+                    throw new IllegalStateException("Unhandled primitive");
+            }
+        }
+        else if (type instanceof ArrayType) {
+            return "[" + descriptor(((ArrayType) type).elementType);
+        }
+        else if (type instanceof ReferenceType) {
+            return descriptor(((ReferenceType) type).typeString);
+        }
+        else if (type instanceof TypeVariable) {
+            return descriptor(type.type());
+        }
+        else {
+            throw new IllegalStateException("Got an unrecognized type:" + type);
+        }
     }
 
     public static String descriptorForType(Type type) {
@@ -91,5 +120,9 @@ public class CompilerUtil {
     public static String descriptor(String className) {
         className = className.replaceAll("\\.", "/");
         return "L" + className + ";";
+    }
+
+    public static String internalName(Class<?> cls) {
+        return cls.getCanonicalName().replaceAll("\\.", "/");
     }
 }

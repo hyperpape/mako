@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
+import static com.justinblank.classcompiler.lang.Literal.literal;
 import static org.objectweb.asm.Opcodes.*;
 
 public class Method {
@@ -154,8 +155,18 @@ public class Method {
         return this;
     }
 
+    public Method returnValue(Number number) {
+        this.elements.add(CodeElement.returnValue(literal(number)));
+        return this;
+    }
+
     public Method call(String methodName, Type type, Expression... expressions) {
         this.elements.add(CodeElement.call(methodName, type, expressions));
+        return this;
+    }
+
+    public Method callStatic(String className, String methodName, Type type, Expression...expressions) {
+        this.elements.add(CodeElement.callStatic(className, methodName, type, expressions));
         return this;
     }
 
@@ -221,7 +232,7 @@ public class Method {
                         var eqBlock = addBlock().push(1);
                         var finalBlock = addBlock();
 
-                        block.jump(eqBlock, operation.asmOP())
+                        block.jump(eqBlock, operation.asmOP(this))
                                 .push(0)
                                 .jump(finalBlock, GOTO);
                     });
@@ -230,7 +241,7 @@ public class Method {
                 default:
                     resolve(operation.left);
                     resolve(operation.right);
-                    currentBlock().operate(operation.asmOP());
+                    currentBlock().operate(operation.asmOP(this));
                     return;
             }
         } else if (element instanceof Loop) {
@@ -277,8 +288,13 @@ public class Method {
             for (var i = 0; i <= call.arguments.length - 1; i++) {
                 resolve(call.arguments[i]);
             }
-            var className = getClassName(call.receiver());
-            currentBlock().call(call.methodName, className, buildDescriptor(call));
+            var className = call.isStatic ? call.className : getClassName(call.receiver());
+            if (call.isStatic) {
+                currentBlock().callStatic(call.methodName, className, buildDescriptor(call));
+            }
+            else {
+                currentBlock().call(call.methodName, className, buildDescriptor(call));
+            }
         }
         else if (element instanceof Conditional) {
             var cond = (Conditional) element;
@@ -417,8 +433,8 @@ public class Method {
     }
 
     // TODO relocate?
-    public static Type typeOf(Expression expression) {
-        return Builtin.I;
+    public Type typeOf(Expression expression) {
+        return typeInference.analyze(expression, typeEnvironment);
     }
 
     private String getClassName(Expression argument) {
@@ -448,12 +464,13 @@ public class Method {
     private String buildDescriptor(Call call) {
         var sb = new StringBuilder();
         sb.append('(');
-        for (var i = 0; i < call.arguments.length - 1; i++) {
+        int initialIndex = call.isStatic ? 0 : 1;
+        for (var i = initialIndex; i < call.arguments.length; i++) {
             var type = typeOf(call.arguments[i]);
             sb.append(CompilerUtil.descriptor(type));
         }
         sb.append(')');
-        sb.append('I');
+        sb.append(CompilerUtil.descriptor(call.returnType));
         return sb.toString();
     }
 

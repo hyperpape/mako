@@ -50,6 +50,10 @@ public class TestSemantics {
         apply(TestMethods.loopWithEscape(), 2);
     }
 
+    @Test
+    public void testStaticCall() throws Exception {
+        apply(TestMethods.staticCall(), 0);
+    }
 
     @Test
     public void testNestedLoop() throws Exception {

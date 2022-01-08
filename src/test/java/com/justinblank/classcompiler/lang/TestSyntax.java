@@ -98,6 +98,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testStaticCall() throws Exception {
+        apply(TestMethods.staticCall());
+    }
+
+    @Test
     public void testMethodWithIgnoredCall() throws Exception {
         var return0 = new Method("return0", List.of(), "I", null);
         return0.returnValue(literal(0));

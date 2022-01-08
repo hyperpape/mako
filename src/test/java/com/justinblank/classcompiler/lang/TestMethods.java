@@ -1,5 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
+import com.justinblank.classcompiler.CompilerUtil;
 import com.justinblank.classcompiler.GenericVars;
 import com.justinblank.classcompiler.Method;
 
@@ -134,6 +135,13 @@ public class TestMethods {
         var method = new Method(TEST_METHOD, List.of("I"), "I", vars);
         method.cond(eq(read("i"), 1)).withBody(List.of(returnValue(literal(1))));
         method.returnValue(call(TEST_METHOD, Builtin.I, thisRef(), sub(read("i"), 1)));
+        return method;
+    }
+
+    public static Method staticCall() {
+        var method = new Method(TEST_METHOD, List.of(), CompilerUtil.descriptor(Integer.class), new GenericVars());
+        method.returnValue(callStatic(CompilerUtil.internalName(Integer.class), "valueOf", ReferenceType.of(Integer.class),
+                literal(0)));
         return method;
     }
 

@@ -17,7 +17,7 @@ public class Unary extends Operation {
     }
 
     @Override
-    int asmOP() {
-        return operator.asmOP(Method.typeOf(expression));
+    int asmOP(Method method) {
+        return operator.asmOP(method.typeOf(expression));
     }
 }

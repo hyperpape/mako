@@ -4,8 +4,12 @@ public class ArrayType implements Type {
 
     public final Type elementType;
 
-    public ArrayType(Type elementType) {
+    private ArrayType(Type elementType) {
         this.elementType = elementType;
+    }
+
+    public static ArrayType of(Type elementType) {
+        return new ArrayType(elementType);
     }
 
     @Override

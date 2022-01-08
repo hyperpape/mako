@@ -11,6 +11,15 @@ public class GenericVars implements Vars {
 
     private final Map<String, Integer> vars = new HashMap<>();
 
+    public GenericVars() {
+    }
+
+    public GenericVars(String... vars) {
+        for (var s : vars) {
+            addVar(s);
+        }
+    }
+
     @Override
     public int indexByName(String name) {
         Integer index = vars.get(name);

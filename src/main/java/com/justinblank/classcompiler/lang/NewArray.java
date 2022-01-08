@@ -1,5 +1,7 @@
 package com.justinblank.classcompiler.lang;
 
+import static com.justinblank.classcompiler.lang.Literal.literal;
+
 public class NewArray extends Expression {
 
     public final Expression size;
@@ -12,5 +14,9 @@ public class NewArray extends Expression {
 
     public static NewArray newArray(Expression size, Type type) {
         return new NewArray(size, type);
+    }
+
+    public static NewArray newArray(int size, Type type) {
+        return new NewArray(literal(size), type);
     }
 }

@@ -68,7 +68,7 @@ public class TypeInference {
         } else if (element instanceof Skip || element instanceof Escape) {
             return null;
         } else if (element instanceof NewArray) {
-            return new ArrayType(((NewArray) element).type);
+            return ArrayType.of(((NewArray) element).type);
         } else if (element instanceof ArrayRead) {
             var arrayType = analyze(((ArrayRead) element).arrayRef, environment);
             return ((ArrayType) arrayType.type()).elementType;

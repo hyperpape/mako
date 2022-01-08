@@ -12,11 +12,11 @@ public class ReferenceType implements Type {
         this.typeString = type;
     }
 
-    static ReferenceType of(Class<?> clz) {
+    public static ReferenceType of(Class<?> clz) {
         return of(clz.getCanonicalName());
     }
 
-    static ReferenceType of(String className) {
+    public static ReferenceType of(String className) {
         return new ReferenceType(className);
     }
 }

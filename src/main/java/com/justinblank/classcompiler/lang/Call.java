@@ -5,11 +5,15 @@ public class Call extends Expression {
     public final String methodName;
     public final Expression[] arguments;
     public final Type returnType;
+    public final boolean isStatic;
+    public final String className;
 
-    public Call(String methodName, Type returnType, Expression... arguments) {
+    Call(String className, String methodName, Type returnType, boolean isStatic, Expression... arguments) {
+        this.className = className;
         this.methodName = methodName;
         this.arguments = arguments;
         this.returnType = returnType;
+        this.isStatic = isStatic;
     }
 
     public Expression receiver() {

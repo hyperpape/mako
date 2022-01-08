@@ -18,7 +18,7 @@ public class Binary extends Operation {
         return new Binary(operator, left, right);
     }
 
-    public int asmOP() {
-        return operator.asmOP(Method.typeOf(left), Method.typeOf(right));
+    public int asmOP(Method method) {
+        return operator.asmOP(method.typeOf(left), method.typeOf(right));
     }
 }
