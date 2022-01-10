@@ -1,0 +1,82 @@
+package com.justinblank.classcompiler.aocexamples;
+
+import com.justinblank.classcompiler.*;
+import com.justinblank.classcompiler.lang.ArrayType;
+import com.justinblank.classcompiler.lang.Builtin;
+import com.justinblank.classcompiler.lang.ReferenceType;
+import org.junit.Test;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+import static com.justinblank.classcompiler.lang.ArrayRead.arrayRead;
+import static com.justinblank.classcompiler.lang.BinaryOperator.*;
+import static com.justinblank.classcompiler.lang.CodeElement.*;
+import static com.justinblank.classcompiler.lang.Literal.literal;
+import static junit.framework.TestCase.fail;
+
+public class Problem7 {
+
+    @Test
+    public void problem7() {
+        try {
+            var builder = new ClassBuilder("Problem7", "java/lang/Object", new String[]{});
+            builder.addMethod(builder.emptyConstructor());
+            builder.addMethod(mkSolveMethod());
+
+            var cls = new ClassCompiler(builder);
+            Class<?> compiled = cls.generateClass();
+            var instance = compiled.getDeclaredConstructors()[0].newInstance();
+            System.out.println(compiled.getDeclaredMethod("solve").invoke(instance));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+
+    }
+
+    private Method mkSolveMethod() {
+        var vars = new GenericVars("crabPositions", "min", "index", "guess", "total", "difference");
+        var method = new Method("solve", List.of(), CompilerUtil.descriptor(Integer.class), vars);
+        method.set("crabPositions", callStatic("com/justinblank/classcompiler/aocexamples/Problem7",
+                "readInput", ArrayType.of(Builtin.I)));
+        method.set("min", literal(Integer.MAX_VALUE));
+        method.set("guess", literal(0));
+
+        method.loop(null,
+                List.of(
+                    set("index", literal(0)),
+                    set("total", literal(0)),
+                    loop(eq(read("index"), arrayLength(read("crabPositions"))),
+                        List.of(
+                                set("difference", callStatic(Math.class, "abs", Builtin.I,
+                                    sub(read("guess"), arrayRead(read("crabPositions"), read("index"))))),
+                                set("total", plus(read("total"), read("difference"))),
+                                set("index", plus(read("index"), 1))
+                    )),
+                    set("guess", plus(read("guess"), literal(1))),
+                    cond(lt(read("total"), read("min"))).withBody(List.of(
+                        set("min", read("total"))
+                    )),
+                    cond(gt(read("total"), read("min"))).withBody(List.of(
+                            returnValue(callStatic(CompilerUtil.internalName(Integer.class), "valueOf",
+                                    ReferenceType.of(Integer.class), read("min"))))
+                    ))
+                );
+        method.returnValue(callStatic(CompilerUtil.internalName(Integer.class), "valueOf", ReferenceType.of(Integer.class), read("min")));
+        return method;
+    }
+
+    public static int[] readInput() throws Exception {
+        var url = Problem7.class.getClassLoader().getResource("aoc7.txt");
+        var lines = Files.readAllLines(Path.of(url.toURI()));
+        String[] input = lines.get(0).split(",");
+        int[] ints = new int[input.length];
+        for (var i = 0; i < input.length; i++) {
+            ints[i] = Integer.parseInt(input[i]);
+        }
+        return ints;
+    }
+}

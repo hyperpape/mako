@@ -1,6 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
-public class Call extends Expression {
+public class Call implements Expression {
 
     public final String methodName;
     public final Expression[] arguments;

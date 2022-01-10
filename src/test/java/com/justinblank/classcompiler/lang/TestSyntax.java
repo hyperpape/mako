@@ -62,6 +62,16 @@ public class TestSyntax {
     }
 
     @Test
+    public void testReadField() throws Exception {
+        apply(TestMethods.readField());
+    }
+
+    @Test
+    public void testArrayLength() throws Exception {
+        apply(TestMethods.arrayLength());
+    }
+
+    @Test
     public void testNestedLoop() throws Exception {
         apply(TestMethods.nestedLoop());
     }

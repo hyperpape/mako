@@ -145,6 +145,22 @@ public class TestMethods {
         return method;
     }
 
+    public static Method readField() {
+        var method = new Method(TEST_METHOD, List.of(), "I", new GenericVars());
+        method.returnValue(get("i", Builtin.I,
+                callStatic(
+                        CompilerUtil.internalName(ClassWithField.class),
+                        "create", ReferenceType.of(ClassWithField.class))));
+        return method;
+    }
+
+    public static Method arrayLength() {
+        var method = new Method(TEST_METHOD, List.of(), "I", new GenericVars());
+        method.returnValue(CodeElement.arrayLength(newArray(5, Builtin.I)));
+        return method;
+    }
+
+
     public static Method callNoArgMethod() {
         var vars = new GenericVars();
         var method = new Method(TEST_METHOD, List.of(), "I", vars);

@@ -63,22 +63,7 @@ public class CompilerUtil {
 
     public static String descriptor(Type type) {
         if (type instanceof Builtin) {
-            switch ((Builtin) type) {
-                case I:
-                    return "I";
-                case F:
-                    return "F";
-                case L:
-                    return "L";
-                case D:
-                    return "D";
-                case OCTET:
-                    return "B";
-                case BOOL:
-                    return "Z";
-                default:
-                    throw new IllegalStateException("Unhandled primitive");
-            }
+            return getTypeString((Builtin) type);
         }
         else if (type instanceof ArrayType) {
             return "[" + descriptor(((ArrayType) type).elementType);
@@ -91,6 +76,25 @@ public class CompilerUtil {
         }
         else {
             throw new IllegalStateException("Got an unrecognized type:" + type);
+        }
+    }
+
+    private static String getTypeString(Builtin type) {
+        switch (type) {
+            case I:
+                return "I";
+            case F:
+                return "F";
+            case L:
+                return "L";
+            case D:
+                return "D";
+            case OCTET:
+                return "B";
+            case BOOL:
+                return "Z";
+            default:
+                throw new IllegalStateException("Unhandled primitive");
         }
     }
 
@@ -124,5 +128,23 @@ public class CompilerUtil {
 
     public static String internalName(Class<?> cls) {
         return cls.getCanonicalName().replaceAll("\\.", "/");
+    }
+
+    public static String internalName(Type type) {
+        if (type instanceof Builtin) {
+            return getTypeString((Builtin) type);
+        }
+        else if (type instanceof ReferenceType) {
+            return ((ReferenceType) type).typeString.replaceAll("\\.", "/");
+        }
+        else if (type instanceof ArrayType) {
+            return "[" + internalName(((ArrayType) type).elementType);
+        }
+        else if (type instanceof TypeVariable) {
+            return internalName(type.type());
+        }
+        else {
+            throw new IllegalStateException("Unhandled variant:" + type);
+        }
     }
 }

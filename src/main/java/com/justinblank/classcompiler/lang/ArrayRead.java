@@ -1,6 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
-public class ArrayRead extends Expression {
+public class ArrayRead implements Expression {
 
     public final Expression arrayRef;
     public final Expression index;

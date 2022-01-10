@@ -63,6 +63,12 @@ public class Block {
         return this;
     }
 
+    public Block readField(String field, String className, String descriptor) {
+        var spec = new RefSpec(field, className, descriptor);
+        addOperation(new Operation(Operation.Inst.READ_FIELD, -1, null, spec, null));
+        return this;
+    }
+
     public Block setField(String field, String className, String descriptor) {
         addOperation(Operation.mkSetField(field, className, descriptor));
         return this;

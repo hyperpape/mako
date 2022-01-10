@@ -1,6 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
-public class Literal extends Expression {
+public class Literal implements Expression {
 
     public final Object value;
 

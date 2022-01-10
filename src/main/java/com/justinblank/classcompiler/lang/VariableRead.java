@@ -1,6 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
-public class VariableRead extends Expression {
+public class VariableRead implements Expression {
 
     public final String variable;
 

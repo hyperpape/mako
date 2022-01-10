@@ -85,6 +85,38 @@ public enum BinaryOperator {
         return EQUALS.op(literal(left), literal(right));
     }
 
+    public static Operation lt(Expression left, Expression right) {
+        return LESS_THAN.op(left, right);
+    }
+
+    public static Operation lt(Number left, Expression right) {
+        return LESS_THAN.op(literal(left),right);
+    }
+
+    public static Operation lt(Expression left, Number right) {
+        return LESS_THAN.op(left, literal(right));
+    }
+
+    public static Operation lt(Number left, Number right) {
+        return LESS_THAN.op(literal(left), literal(right));
+    }
+
+    public static Operation gt(Expression left, Expression right) {
+        return GREATER_THAN.op(left, right);
+    }
+
+    public static Operation gt(Number left, Expression right) {
+        return GREATER_THAN.op(literal(left),right);
+    }
+
+    public static Operation gt(Expression left, Number right) {
+        return GREATER_THAN.op(left, literal(right));
+    }
+
+    public static Operation gt(Number left, Number right) {
+        return GREATER_THAN.op(literal(left), literal(right));
+    }
+
 
     public int asmOP(Type left, Type right) {
         switch (this) {
@@ -98,6 +130,10 @@ public enum BinaryOperator {
                 return IDIV;
             case EQUALS:
                 return IF_ICMPNE;
+            case LESS_THAN:
+                return IF_ICMPLT;
+            case GREATER_THAN:
+                return IF_ICMPGT;
             default:
                 throw new UnsupportedOperationException("");
         }

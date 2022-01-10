@@ -217,6 +217,12 @@ public class Method {
         } else if (element instanceof VariableRead) {
             var read = (VariableRead) element;
             currentBlock().readVar(getMatchingVars().get().indexByName(read.variable), descriptorForExpression(read));
+        } else if (element instanceof FieldReference) {
+            var fieldReference = (FieldReference) element;
+            resolve(fieldReference.expression);
+            var type = typeInference.analyze(fieldReference.expression, typeEnvironment);
+            currentBlock().readField(fieldReference.fieldName, CompilerUtil.internalName(type),
+                    CompilerUtil.descriptor(fieldReference.type));
         } else if (element instanceof Assignment) {
             var assignment = (Assignment) element;
             resolve(assignment.expression);
@@ -225,6 +231,9 @@ public class Method {
             var operation = (Binary) element;
             switch (operation.operator) {
                 case EQUALS:
+                case LESS_THAN:
+                case GREATER_THAN:
+                case NOT_EQUALS:
                     var block = addBlock();
                     withBlock(block, () -> {
                         resolve(operation.left);
@@ -248,7 +257,9 @@ public class Method {
             var loop = (Loop) element;
             var conditionsBlock = currentBlock.push(addBlock());
             currentLoop.push(conditionsBlock);
-            resolve(loop.condition);
+            if (loop.condition != null) {
+                resolve(loop.condition);
+            }
             var block = addBlock();
 
             withBlock(addBlock(), () -> {
@@ -262,7 +273,9 @@ public class Method {
 
             addBlock().jump(conditionsBlock, GOTO);
             var afterLoop = addBlock();
-            block.jump(afterLoop, IFEQ);
+            if (loop.condition != null) {
+                block.jump(afterLoop, IFEQ);
+            }
             currentLoop.pop();
             currentBlock.push(afterLoop);
             for (var x : this.blocks) {
@@ -398,6 +411,11 @@ public class Method {
             else {
                 currentBlock().operate(AASTORE);
             }
+        } else if (element instanceof ArrayLength) {
+            var arrayLength = (ArrayLength) element;
+            resolve(arrayLength.expression);
+            currentBlock().operate(ARRAYLENGTH);
+
         }
     }
 

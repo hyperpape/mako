@@ -1,4 +1,4 @@
 package com.justinblank.classcompiler.lang;
 
-public class ThisRef extends Expression {
+public class ThisRef implements Expression {
 }

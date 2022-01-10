@@ -1,4 +1,5 @@
 package com.justinblank.classcompiler.lang;
 
-public class Expression implements CodeElement {
+public interface Expression extends CodeElement {
+
 }

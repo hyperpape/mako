@@ -2,7 +2,7 @@ package com.justinblank.classcompiler.lang;
 
 import static com.justinblank.classcompiler.lang.Literal.literal;
 
-public class NewArray extends Expression {
+public class NewArray implements Expression {
 
     public final Expression size;
     public final Type type;

@@ -2,9 +2,15 @@ package com.justinblank.classcompiler.lang;
 
 // Interface representing an expression or statements
 
+import com.justinblank.classcompiler.CompilerUtil;
+
 import java.util.List;
 
 public interface CodeElement {
+
+    static Conditional cond(Expression expression) {
+        return new Conditional(expression);
+    }
 
     static Expression call(String methodName, Type type, Expression... arguments) {
         return new Call(null, methodName, type, false, arguments);
@@ -14,8 +20,20 @@ public interface CodeElement {
         return new Call(className, methodName, type, true, arguments);
     }
 
+    static Expression callStatic(Class<?> cls, String methodName, Type type, Expression... arguments) {
+        return new Call(CompilerUtil.internalName(cls), methodName, type, true, arguments);
+    }
+
+    static ArrayLength arrayLength(Expression expression) {
+        return new ArrayLength(expression);
+    }
+
     static Expression read(String variable) {
         return new VariableRead(variable);
+    }
+
+    static FieldReference get(String fieldName, Type type, Expression expression) {
+        return new FieldReference(fieldName, type, expression);
     }
 
     static Statement set(String name, Expression value) {

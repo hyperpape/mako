@@ -1,5 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
+import java.lang.reflect.Array;
 import java.util.Map;
 
 import static com.justinblank.classcompiler.lang.TypeVariable.fresh;
@@ -49,7 +50,9 @@ public class TypeInference {
             return type;
         } else if (element instanceof Loop) {
             var loop = (Loop) element;
-            analyze(loop.condition, environment);
+            if (loop.condition != null) {
+                analyze(loop.condition, environment);
+            }
             for (var loopElt : loop.body) {
                 analyze(loopElt, environment);
             }
@@ -74,6 +77,10 @@ public class TypeInference {
             return ((ArrayType) arrayType.type()).elementType;
         } else if (element instanceof ArraySet) {
             return null; // TODO is this right?
+        } else if (element instanceof FieldReference) {
+            return ((FieldReference) element).type;
+        } else if (element instanceof ArrayLength) {
+            return Builtin.I;
         } else {
             throw new IllegalStateException("Unhandled instance: " + element);
         }
