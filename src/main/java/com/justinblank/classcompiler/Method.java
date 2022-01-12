@@ -140,6 +140,11 @@ public class Method {
         return this;
     }
 
+    public Method set(String variable, Number expression) {
+        this.elements.add(CodeElement.set(variable, literal(expression)));
+        return this;
+    }
+
     public Method arraySet(Expression arrayRef, Expression index, Expression value) {
         this.elements.add(ArraySet.arraySet(arrayRef, index, value));
         return this;
@@ -156,7 +161,7 @@ public class Method {
     }
 
     public Method returnValue(Number number) {
-        this.elements.add(CodeElement.returnValue(literal(number)));
+        this.elements.add(CodeElement.returnValue(number));
         return this;
     }
 

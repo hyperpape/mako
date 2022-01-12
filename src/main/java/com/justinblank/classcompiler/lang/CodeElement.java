@@ -6,6 +6,8 @@ import com.justinblank.classcompiler.CompilerUtil;
 
 import java.util.List;
 
+import static com.justinblank.classcompiler.lang.Literal.literal;
+
 public interface CodeElement {
 
     static Conditional cond(Expression expression) {
@@ -40,6 +42,10 @@ public interface CodeElement {
         return new Assignment(name, value);
     }
 
+    static Statement set(String name, Number value) {
+        return new Assignment(name, literal(value));
+    }
+
     static Escape escape() {
         return new Escape();
     }
@@ -50,6 +56,10 @@ public interface CodeElement {
 
     static Statement returnValue(Expression expression) {
         return new ReturnExpression(expression);
+    }
+
+    static Statement returnValue(Number number) {
+        return new ReturnExpression(literal(number));
     }
 
     static Expression thisRef() {

@@ -18,7 +18,7 @@ public class TestMethods {
 
     public static Method returnLiteral() {
         var method = new Method(TEST_METHOD, List.of(), "I", null);
-        method.returnValue(literal(1));
+        method.returnValue(1);
         return method;
     }
 
@@ -48,7 +48,7 @@ public class TestMethods {
         var vars = new GenericVars();
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
-        method.set("a", literal(1));
+        method.set("a", 1);
         method.returnValue(read("a"));
         return method;
     }
@@ -71,7 +71,7 @@ public class TestMethods {
         var vars = new GenericVars();
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
-        method.set("a", literal(1));
+        method.set("a", 1);
         method.loop(eq(literal(5), read("a")),
                 List.of(set("a", plus(read("a"), 1))));
         method.returnValue(read("a"));
@@ -82,7 +82,7 @@ public class TestMethods {
         var vars = new GenericVars();
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
-        method.set("a", literal(1));
+        method.set("a", 1);
         method.loop(eq(5, read("a")),
                 List.of(set("a", plus(read("a"), 1)),
                         skip()));
@@ -94,7 +94,7 @@ public class TestMethods {
         var vars = new GenericVars();
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
-        method.set("a", literal(1));
+        method.set("a", 1);
         method.loop(eq(5, read("a")),
                 List.of(set("a", plus(read("a"), 1)),
                         escape()));
@@ -108,11 +108,11 @@ public class TestMethods {
         vars.addVar("b");
         vars.addVar("c");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
-        method.set("a", literal(0));
-        method.set("c", literal(1));
+        method.set("a", 0);
+        method.set("c", 1);
         method.loop(eq(3, read("a")),
                 List.of(set("a", plus(read("a"), 1)),
-                        set("b", literal(1)),
+                        set("b", 1),
                         new Loop(eq(3, read("b")),
                                 List.of(set("c", mul(read("c"), 2)),
                                         set("b", plus(read("b"), 1))))));
@@ -124,8 +124,8 @@ public class TestMethods {
         var vars = new GenericVars();
         vars.addVar("i");
         var method = new Method(TEST_METHOD, List.of("I"), "I", vars);
-        method.cond(eq(read("i"), 2)).withBody(List.of(returnValue(literal(3))));
-        method.returnValue(literal(4));
+        method.cond(eq(read("i"), 2)).withBody(List.of(returnValue(3)));
+        method.returnValue(4);
         return method;
     }
 
@@ -133,7 +133,7 @@ public class TestMethods {
         var vars = new GenericVars();
         vars.addVar("i");
         var method = new Method(TEST_METHOD, List.of("I"), "I", vars);
-        method.cond(eq(read("i"), 1)).withBody(List.of(returnValue(literal(1))));
+        method.cond(eq(read("i"), 1)).withBody(List.of(returnValue(1)));
         method.returnValue(call(TEST_METHOD, Builtin.I, thisRef(), sub(read("i"), 1)));
         return method;
     }
@@ -186,13 +186,13 @@ public class TestMethods {
         var vars = new GenericVars();
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
-        method.set("a", literal(1));
+        method.set("a", 1);
         method.loop(read("a"), List.of(
                 call("returnThis", ReferenceType.of("SomeObject"), thisRef()),
                 set("a",
                         plus(read("a"), 1))));
         method.call("return0", Builtin.I, thisRef());
-        method.returnValue(literal(5));
+        method.returnValue(5);
         return method;
     }
 }

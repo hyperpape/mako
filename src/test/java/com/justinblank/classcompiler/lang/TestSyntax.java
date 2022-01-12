@@ -5,8 +5,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.justinblank.classcompiler.lang.Literal.literal;
-
 public class TestSyntax {
 
     private static int classNumber = 0;
@@ -79,21 +77,21 @@ public class TestSyntax {
     @Test
     public void testNoArgCall() throws Exception {
         var return0 = new Method("return0", List.of(), "I", null);
-        return0.returnValue(literal(1));
+        return0.returnValue(1);
         apply(TestMethods.callNoArgMethod(), return0);
     }
 
     @Test
     public void testOneArgCall() throws Exception {
         var return0 = new Method("return0", List.of("I"), "I", null);
-        return0.returnValue(literal(1));
+        return0.returnValue(1);
         apply(TestMethods.callOneArgMethod(), return0);
     }
 
     @Test
     public void testTwoArgCall() throws Exception {
         var return0 = new Method("return0", List.of("I", "I"), "I", null);
-        return0.returnValue(literal(1));
+        return0.returnValue(1);
         apply(TestMethods.callTwoArgMethod(), return0);
     }
 
@@ -115,7 +113,7 @@ public class TestSyntax {
     @Test
     public void testMethodWithIgnoredCall() throws Exception {
         var return0 = new Method("return0", List.of(), "I", null);
-        return0.returnValue(literal(0));
+        return0.returnValue(0);
         apply("SomeObject" + classNumber++, TestMethods.methodWithIgnoredCall(), return0);
     }
 

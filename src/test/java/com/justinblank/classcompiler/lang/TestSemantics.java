@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.justinblank.classcompiler.lang.Literal.literal;
 import static com.justinblank.classcompiler.lang.TestMethods.TEST_METHOD;
 import static org.junit.Assert.assertEquals;
 
@@ -63,21 +62,21 @@ public class TestSemantics {
     @Test
     public void testCallNoArgMethod() throws Exception {
         var return0 = new Method("return0", List.of(), "I", null);
-        return0.returnValue(literal(1));
+        return0.returnValue(1);
         apply(1, TestMethods.callNoArgMethod(), List.of(), return0);
     }
 
     @Test
     public void testCallOneArgMethod() throws Exception {
         var return0 = new Method("return0", List.of("I"), "I", null);
-        return0.returnValue(literal(1));
+        return0.returnValue(1);
         apply(1, TestMethods.callOneArgMethod(), List.of(), return0);
     }
 
     @Test
     public void testTwoArgCall() throws Exception {
         var return0 = new Method("return0", List.of("I", "I"), "I", null);
-        return0.returnValue(literal(1));
+        return0.returnValue(1);
         apply(1, TestMethods.callTwoArgMethod(), List.of(), return0);
     }
 

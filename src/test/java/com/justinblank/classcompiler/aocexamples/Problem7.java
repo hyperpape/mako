@@ -42,13 +42,13 @@ public class Problem7 {
         var method = new Method("solve", List.of(), CompilerUtil.descriptor(Integer.class), vars);
         method.set("crabPositions", callStatic("com/justinblank/classcompiler/aocexamples/Problem7",
                 "readInput", ArrayType.of(Builtin.I)));
-        method.set("min", literal(Integer.MAX_VALUE));
-        method.set("guess", literal(0));
+        method.set("min", Integer.MAX_VALUE);
+        method.set("guess", 0);
 
         method.loop(null,
                 List.of(
-                    set("index", literal(0)),
-                    set("total", literal(0)),
+                    set("index", 0),
+                    set("total", 0),
                     loop(eq(read("index"), arrayLength(read("crabPositions"))),
                         List.of(
                                 set("difference", callStatic(Math.class, "abs", Builtin.I,
