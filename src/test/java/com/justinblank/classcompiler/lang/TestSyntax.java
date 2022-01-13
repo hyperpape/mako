@@ -97,8 +97,19 @@ public class TestSyntax {
 
     @Test
     public void testConditional() throws Exception {
-        apply(TestMethods.testConditional());
+        apply(TestMethods.conditional());
     }
+
+    @Test
+    public void testTwoSequentialConditionals() throws Exception {
+        apply(TestMethods.twoSequentialConditionals());
+    }
+
+    @Test
+    public void testThreeSequentialConditionals() throws Exception {
+        apply(TestMethods.threeSequentialConditionals());
+    }
+
 
     @Test
     public void testRecursion() throws Exception {
@@ -115,6 +126,11 @@ public class TestSyntax {
         var return0 = new Method("return0", List.of(), "I", null);
         return0.returnValue(0);
         apply("SomeObject" + classNumber++, TestMethods.methodWithIgnoredCall(), return0);
+    }
+
+    @Test
+    public void testFibonacci() throws Exception {
+        apply(TestMethods.fibonacci());
     }
 
     static void apply(Method method) throws Exception {

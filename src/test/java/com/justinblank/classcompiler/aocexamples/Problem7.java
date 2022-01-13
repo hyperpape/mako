@@ -14,6 +14,7 @@ import static com.justinblank.classcompiler.lang.ArrayRead.arrayRead;
 import static com.justinblank.classcompiler.lang.BinaryOperator.*;
 import static com.justinblank.classcompiler.lang.CodeElement.*;
 import static com.justinblank.classcompiler.lang.Literal.literal;
+import static com.justinblank.classcompiler.lang.UnaryOperator.not;
 import static junit.framework.TestCase.fail;
 
 public class Problem7 {
@@ -49,7 +50,7 @@ public class Problem7 {
                 List.of(
                     set("index", 0),
                     set("total", 0),
-                    loop(eq(read("index"), arrayLength(read("crabPositions"))),
+                    loop(lt(read("index"), arrayLength(read("crabPositions"))),
                         List.of(
                                 set("difference", callStatic(Math.class, "abs", Builtin.I,
                                     sub(read("guess"), arrayRead(read("crabPositions"), read("index"))))),

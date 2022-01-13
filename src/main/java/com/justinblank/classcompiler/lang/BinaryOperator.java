@@ -129,6 +129,8 @@ public enum BinaryOperator {
             case DIVIDE:
                 return IDIV;
             case EQUALS:
+                return IF_ICMPEQ;
+            case NOT_EQUALS:
                 return IF_ICMPNE;
             case LESS_THAN:
                 return IF_ICMPLT;

@@ -72,7 +72,7 @@ public class TestMethods {
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.set("a", 1);
-        method.loop(eq(literal(5), read("a")),
+        method.loop(lt(read("a"), 5),
                 List.of(set("a", plus(read("a"), 1))));
         method.returnValue(read("a"));
         return method;
@@ -83,7 +83,7 @@ public class TestMethods {
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.set("a", 1);
-        method.loop(eq(5, read("a")),
+        method.loop(lt( read("a"), 5),
                 List.of(set("a", plus(read("a"), 1)),
                         skip()));
         method.returnValue(read("a"));
@@ -95,7 +95,7 @@ public class TestMethods {
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.set("a", 1);
-        method.loop(eq(5, read("a")),
+        method.loop(lt(read("a"), 5),
                 List.of(set("a", plus(read("a"), 1)),
                         escape()));
         method.returnValue(read("a"));
@@ -110,22 +110,46 @@ public class TestMethods {
         var method = new Method(TEST_METHOD, List.of(), "I", vars);
         method.set("a", 0);
         method.set("c", 1);
-        method.loop(eq(3, read("a")),
+        method.loop(lt(read("a"), 3),
                 List.of(set("a", plus(read("a"), 1)),
                         set("b", 1),
-                        new Loop(eq(3, read("b")),
+                        new Loop(lt( read("b"), 3),
                                 List.of(set("c", mul(read("c"), 2)),
                                         set("b", plus(read("b"), 1))))));
         method.returnValue(read("c"));
         return method;
     }
 
-    public static Method testConditional() {
+    public static Method conditional() {
         var vars = new GenericVars();
         vars.addVar("i");
-        var method = new Method(TEST_METHOD, List.of("I"), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        method.set("i", 2);
         method.cond(eq(read("i"), 2)).withBody(List.of(returnValue(3)));
         method.returnValue(4);
+        return method;
+    }
+
+    public static Method twoSequentialConditionals() {
+        var vars = new GenericVars();
+        vars.addVar("i");
+        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        method.set("i", 2);
+        method.cond(eq(read("i"), 1)).withBody(List.of(returnValue(2)));
+        method.cond(eq(read("i"), 2)).withBody(List.of(returnValue(3)));
+        method.returnValue(4);
+        return method;
+    }
+
+    public static Method threeSequentialConditionals() {
+        var vars = new GenericVars();
+        vars.addVar("i");
+        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        method.set("i", 2);
+        method.cond(eq(read("i"), 1)).withBody(List.of(returnValue(2)));
+        method.cond(eq(read("i"), 2)).withBody(List.of(returnValue(3)));
+        method.cond(eq(read("i"), 3)).withBody(List.of(returnValue(4)));
+        method.returnValue(5);
         return method;
     }
 
@@ -193,6 +217,18 @@ public class TestMethods {
                         plus(read("a"), 1))));
         method.call("return0", Builtin.I, thisRef());
         method.returnValue(5);
+        return method;
+    }
+
+    public static Method fibonacci() {
+        var method = new Method(TEST_METHOD, List.of("I"), "I", new GenericVars("x"));
+        method.cond(eq(read("x"), 0)).withBody(List.of(
+                returnValue(1)));
+        method.cond(eq(read("x"), 1)).withBody(List.of(
+                returnValue(1)));
+        method.returnValue(plus(
+                call(TEST_METHOD, Builtin.I, thisRef(), sub(read("x"), 1)),
+                call(TEST_METHOD, Builtin.I, thisRef(), sub(read("x"), 2))));
         return method;
     }
 }

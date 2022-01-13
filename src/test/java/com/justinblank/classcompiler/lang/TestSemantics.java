@@ -5,7 +5,9 @@ import com.justinblank.classcompiler.ClassCompiler;
 import com.justinblank.classcompiler.Method;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.justinblank.classcompiler.lang.TestMethods.TEST_METHOD;
 import static org.junit.Assert.assertEquals;
@@ -31,7 +33,7 @@ public class TestSemantics {
 
     @Test
     public void testEquality() throws Exception {
-        apply(TestMethods.equality(), 1); // TODO
+        apply(TestMethods.equality(), 0); // TODO
     }
 
     @Test
@@ -67,6 +69,21 @@ public class TestSemantics {
     }
 
     @Test
+    public void testConditional() throws Exception {
+        apply(TestMethods.conditional(), 3);
+    }
+
+    @Test
+    public void testTwoSequentialConditionals() throws Exception {
+        apply(TestMethods.twoSequentialConditionals(), 3);
+    }
+
+    @Test
+    public void testThreeSequentialConditionals() throws Exception {
+        apply(TestMethods.threeSequentialConditionals(), 3);
+    }
+
+    @Test
     public void testCallOneArgMethod() throws Exception {
         var return0 = new Method("return0", List.of("I"), "I", null);
         return0.returnValue(1);
@@ -80,11 +97,23 @@ public class TestSemantics {
         apply(1, TestMethods.callTwoArgMethod(), List.of(), return0);
     }
 
+    @Test
+    public void testFibonacci() throws Exception {
+        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
+        builder.addMethod(TestMethods.fibonacci());
+        builder.addMethod(builder.emptyConstructor());
+        var cls = new ClassCompiler(builder, true);
+        Class<?> compiled = cls.generateClass();
+        var instance = compiled.getConstructors()[0].newInstance();
+        var output = compiled.getMethod(TEST_METHOD, List.of(int.class).toArray(new Class[0])).invoke(instance, 5);
+        assertEquals(8, output);
+    }
+
     static void apply(Method method, Object o) throws Exception {
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});;
         builder.addMethod(method);
         builder.addMethod(builder.emptyConstructor());
-        var cls = new ClassCompiler(builder);
+        var cls = new ClassCompiler(builder, true);
         Class<?> compiled = cls.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();
         var output = compiled.getMethod(TEST_METHOD).invoke(instance);
@@ -101,7 +130,11 @@ public class TestSemantics {
         var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();
-        var output = compiled.getMethod(TEST_METHOD).invoke(instance, arguments.toArray());
+        List<Class<?>> clsArgs = new ArrayList<>();
+        for (var obj : arguments) {
+            clsArgs.add(obj.getClass());
+        }
+        var output = compiled.getMethod(TEST_METHOD, clsArgs.toArray(new Class[0])).invoke(instance, arguments.toArray());
         assertEquals(o, output);
     }
 }
