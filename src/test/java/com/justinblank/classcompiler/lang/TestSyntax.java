@@ -142,7 +142,7 @@ public class TestSyntax {
         builder.addMethod(method);
         builder.addMethod(builder.emptyConstructor());
 
-        var cls = new ClassCompiler(builder, true);
+        var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
         compiled.getConstructors()[0].newInstance();
     }
@@ -157,7 +157,7 @@ public class TestSyntax {
             builder.addMethod(method);
         }
         builder.addMethod(builder.emptyConstructor());
-        var cls = new ClassCompiler(builder, true);
+        var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
         compiled.getConstructors()[0].newInstance();
     }

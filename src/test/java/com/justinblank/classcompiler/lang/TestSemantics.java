@@ -102,7 +102,7 @@ public class TestSemantics {
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
         builder.addMethod(TestMethods.fibonacci());
         builder.addMethod(builder.emptyConstructor());
-        var cls = new ClassCompiler(builder, true);
+        var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();
         var output = compiled.getMethod(TEST_METHOD, List.of(int.class).toArray(new Class[0])).invoke(instance, 5);
@@ -113,7 +113,7 @@ public class TestSemantics {
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});;
         builder.addMethod(method);
         builder.addMethod(builder.emptyConstructor());
-        var cls = new ClassCompiler(builder, true);
+        var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();
         var output = compiled.getMethod(TEST_METHOD).invoke(instance);
