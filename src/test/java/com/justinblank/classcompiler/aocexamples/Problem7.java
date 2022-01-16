@@ -3,33 +3,37 @@ package com.justinblank.classcompiler.aocexamples;
 import com.justinblank.classcompiler.*;
 import com.justinblank.classcompiler.lang.ArrayType;
 import com.justinblank.classcompiler.lang.Builtin;
+import com.justinblank.classcompiler.lang.CodeElement;
 import com.justinblank.classcompiler.lang.ReferenceType;
 import org.junit.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import static com.justinblank.classcompiler.lang.ArrayRead.arrayRead;
 import static com.justinblank.classcompiler.lang.BinaryOperator.*;
 import static com.justinblank.classcompiler.lang.CodeElement.*;
 import static com.justinblank.classcompiler.lang.Literal.literal;
-import static com.justinblank.classcompiler.lang.UnaryOperator.not;
 import static junit.framework.TestCase.fail;
+import static org.objectweb.asm.Opcodes.*;
 
 public class Problem7 {
 
     @Test
     public void problem7() {
         try {
-            var builder = new ClassBuilder("Problem7", "java/lang/Object", new String[]{});
+            var builder = new ClassBuilder("Problem7", "java/lang/Object", new String[]{CompilerUtil.internalName(Supplier.class)});
             builder.addMethod(builder.emptyConstructor());
             builder.addMethod(mkSolveMethod());
+            builder.addMethod(mkGetMethod());
 
             var cls = new ClassCompiler(builder);
             Class<?> compiled = cls.generateClass();
-            var instance = compiled.getDeclaredConstructors()[0].newInstance();
-            System.out.println(compiled.getDeclaredMethod("solve").invoke(instance));
+            var instance = (Supplier<Integer>) compiled.getDeclaredConstructors()[0].newInstance();
+            System.out.println(instance.get());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -67,6 +71,13 @@ public class Problem7 {
                     ))
                 );
         method.returnValue(callStatic(CompilerUtil.internalName(Integer.class), "valueOf", ReferenceType.of(Integer.class), read("min")));
+        return method;
+    }
+
+    private Method mkGetMethod() {
+        var vars = new GenericVars("crabPositions", "min", "index", "guess", "total", "difference");
+        var method = new Method("get", List.of(), CompilerUtil.descriptor(Object.class), vars, ACC_PUBLIC | ACC_BRIDGE| ACC_SYNTHETIC);
+        method.returnValue(CodeElement.call("solve", ReferenceType.of(Integer.class), thisRef()));
         return method;
     }
 

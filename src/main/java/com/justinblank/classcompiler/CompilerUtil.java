@@ -79,6 +79,25 @@ public class CompilerUtil {
         }
     }
 
+    public static int returnForType(String string) {
+        switch (string) {
+            case "I":
+            case "B":
+            case "Z":
+                return IRETURN;
+            case "L":
+                return LRETURN;
+            case "F":
+                return FRETURN;
+            case "D":
+                return DRETURN;
+            case "()":
+                return RETURN;
+            default:
+                return ARETURN;
+        }
+    }
+
     private static String getTypeString(Builtin type) {
         switch (type) {
             case I:

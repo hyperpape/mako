@@ -29,7 +29,7 @@ public class Method {
         this(methodName, arguments, returnType, matchingVars, ACC_PUBLIC);
     }
 
-    Method(String methodName, List<String> arguments, String returnType, Vars matchingVars, int modifiers) {
+    public Method(String methodName, List<String> arguments, String returnType, Vars matchingVars, int modifiers) {
         Objects.requireNonNull(methodName);
         Objects.requireNonNull(arguments);
         Objects.requireNonNull(returnType);
@@ -218,7 +218,7 @@ public class Method {
         } else if (element instanceof ReturnExpression) {
             var returnExpression = (ReturnExpression) element;
             resolve(returnExpression.expression);
-            currentBlock().addReturn(returnForType(returnExpression.expression));
+            currentBlock().addReturn(CompilerUtil.returnForType(returnType));
         } else if (element instanceof VariableRead) {
             var read = (VariableRead) element;
             currentBlock().readVar(getMatchingVars().get().indexByName(read.variable), descriptorForExpression(read));
@@ -504,31 +504,6 @@ public class Method {
         }
         else {
             return this.blocks.get(this.blocks.size() - 1);
-        }
-    }
-
-    private int returnForType(Expression expression) {
-        var type = typeInference.analyze(expression, typeEnvironment);
-        if (type instanceof TypeVariable) {
-            type = ((TypeVariable) type).type();
-        }
-        if (type instanceof Builtin) {
-            switch ((Builtin) type) {
-                case F:
-                    return FRETURN;
-                case L:
-                    return LRETURN;
-                case D:
-                    return DRETURN;
-                default:
-                    return IRETURN;
-            }
-        }
-        else if (type instanceof ReferenceType || type instanceof ArrayType) {
-            return ARETURN;
-        }
-        else {
-            throw new IllegalStateException("Unrecognized type: " + type);
         }
     }
 
