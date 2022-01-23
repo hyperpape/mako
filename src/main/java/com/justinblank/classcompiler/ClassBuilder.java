@@ -64,7 +64,7 @@ public class ClassBuilder {
         return b;
     }
 
-    public Method emptyConstructor() {
+    public Method addEmptyConstructor() {
         var method = new Method("<init>", List.of(), "V", null);
         var block = method.addBlock();
         block.readThis();

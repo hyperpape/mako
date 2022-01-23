@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.justinblank.classcompiler.lang.TestMethods.TEST_METHOD;
 import static org.junit.Assert.assertEquals;
@@ -101,7 +100,7 @@ public class TestSemantics {
     public void testFibonacci() throws Exception {
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
         builder.addMethod(TestMethods.fibonacci());
-        builder.addMethod(builder.emptyConstructor());
+        builder.addMethod(builder.addEmptyConstructor());
         var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();
@@ -112,7 +111,7 @@ public class TestSemantics {
     static void apply(Method method, Object o) throws Exception {
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});;
         builder.addMethod(method);
-        builder.addMethod(builder.emptyConstructor());
+        builder.addMethod(builder.addEmptyConstructor());
         var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();
@@ -126,7 +125,7 @@ public class TestSemantics {
         for (var otherMethod : methods) {
             builder.addMethod(otherMethod);
         }
-        builder.addMethod(builder.emptyConstructor());
+        builder.addMethod(builder.addEmptyConstructor());
         var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();

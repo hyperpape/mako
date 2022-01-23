@@ -10,7 +10,6 @@ import org.junit.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.justinblank.classcompiler.lang.ArrayRead.arrayRead;
@@ -26,7 +25,7 @@ public class Problem7 {
     public void problem7() {
         try {
             var builder = new ClassBuilder("Problem7", "java/lang/Object", new String[]{CompilerUtil.internalName(Supplier.class)});
-            builder.addMethod(builder.emptyConstructor());
+            builder.addMethod(builder.addEmptyConstructor());
             builder.addMethod(mkSolveMethod());
             builder.addMethod(mkGetMethod());
 

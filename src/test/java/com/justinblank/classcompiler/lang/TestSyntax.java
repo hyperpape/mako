@@ -140,7 +140,7 @@ public class TestSyntax {
     static void apply(String className, Method method) throws Exception {
         var builder = new ClassBuilder(className, "java/lang/Object", new String[]{});
         builder.addMethod(method);
-        builder.addMethod(builder.emptyConstructor());
+        builder.addMethod(builder.addEmptyConstructor());
 
         var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
@@ -156,7 +156,7 @@ public class TestSyntax {
         for (var method : methods) {
             builder.addMethod(method);
         }
-        builder.addMethod(builder.emptyConstructor());
+        builder.addMethod(builder.addEmptyConstructor());
         var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
         compiled.getConstructors()[0].newInstance();

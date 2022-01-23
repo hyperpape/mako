@@ -22,7 +22,7 @@ public class ClassCompilerTest {
     public void testLoop() throws Exception {
         String testClassName = testClassName();
         ClassBuilder builder = new ClassBuilder(testClassName, "java/lang/Object", new String[]{});
-        builder.emptyConstructor();
+        builder.addEmptyConstructor();
         var method = builder.mkMethod("iterate", List.of(), "I");
 
         int counter = 1;
@@ -56,7 +56,7 @@ public class ClassCompilerTest {
     public void testCall() throws Exception {
         String testClassName = testClassName();
         ClassBuilder builder = new ClassBuilder(testClassName, "java/lang/Object", new String[]{});
-        builder.emptyConstructor();
+        builder.addEmptyConstructor();
         var vars = new GenericVars();
         vars.addVar("string");
         var method = builder.mkMethod("foo", List.of(CompilerUtil.STRING_DESCRIPTOR), "I", vars);
@@ -75,7 +75,7 @@ public class ClassCompilerTest {
     public void testEliminatesDeadPrivateMethods() throws Exception {
         var testClassName = testClassName();
         ClassBuilder builder = new ClassBuilder(testClassName, "java/lang/Object", new String[]{});
-        builder.emptyConstructor();
+        builder.addEmptyConstructor();
         var vars = new GenericVars();
         vars.addVar("string");
 
