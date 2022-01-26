@@ -210,7 +210,12 @@ public class ClassCompiler {
                 mv.visitMethodInsn(opcode, name, spec.name, spec.descriptor, isInterface);
                 return;
             case VALUE:
-                pushInt(mv, op.count);
+                if (op.number == null) {
+                    pushInt(mv, op.count);
+                }
+                else {
+                    mv.visitLdcInsn(op.number);
+                }
                 return;
             case READ_VAR:
                 handleReadVar(mv, op, vars);

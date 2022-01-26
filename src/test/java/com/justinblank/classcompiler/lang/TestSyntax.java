@@ -40,6 +40,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testFloatAddition() throws Exception {
+        apply(TestMethods.floatAddition());
+    }
+
+    @Test
     public void testEquality() throws Exception {
         apply(TestMethods.equality());
     }

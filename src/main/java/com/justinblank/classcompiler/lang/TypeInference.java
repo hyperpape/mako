@@ -18,7 +18,22 @@ public class TypeInference {
             var call = (Call) element;
             return call.returnType;
         } else if (element instanceof Literal) {
-            return TypeVariable.of(Builtin.I);
+            var lit = (Literal) element;
+            if (lit.value instanceof Integer) {
+                return TypeVariable.of(Builtin.I);
+            }
+            else if (lit.value instanceof Float) {
+                return TypeVariable.of(Builtin.F);
+            }
+            else if (lit.value instanceof Long) {
+                return TypeVariable.of(Builtin.L);
+            }
+            else if (lit.value instanceof Double) {
+                return TypeVariable.of(Builtin.D);
+            }
+            else {
+                throw new IllegalStateException("Unrecognized class for literal value:" + lit.value.getClass());
+            }
         } else if (element instanceof Binary) {
             var binary = (Binary) element;
             var leftType = analyze(binary.left, environment);

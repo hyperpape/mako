@@ -60,6 +60,13 @@ public class TestMethods {
         return method;
     }
 
+    public static Method floatAddition() {
+        var vars = new GenericVars();
+        var method = new Method(TEST_METHOD, List.of(), "F", vars);
+        method.returnValue(plus(1.0f, 2.0f));
+        return method;
+    }
+
     public static Method equality() {
         var vars = new GenericVars();
         var method = new Method(TEST_METHOD, List.of(), "I", vars);

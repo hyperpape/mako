@@ -79,6 +79,21 @@ public class Block {
         return this;
     }
 
+    public Block push(float f) {
+        addOperation(Operation.pushValue(f));
+        return this;
+    }
+
+    public Block push(double d) {
+        addOperation(Operation.pushValue(d));
+        return this;
+    }
+
+    public Block push(long l) {
+        addOperation(Operation.pushValue(l));
+        return this;
+    }
+
     public Block cmp(Block target, int i) {
         addOperation(Operation.mkJump(target, i));
         return this;

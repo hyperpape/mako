@@ -78,7 +78,12 @@ public class ClassPrinter {
                 }
                 break;
             case VALUE:
-                println(op.count);
+                if (op.number == null) {
+                    println(op.count);
+                }
+                else {
+                    println(op.number);
+                }
                 return;
             case JUMP:
                 print(REPRESENTATIONS.get(op.count));

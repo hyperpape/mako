@@ -8,6 +8,8 @@ public class Operation {
 
     public final Inst inst;
     public final int count;
+    // TODO: ugh, just ugh...refactor
+    public final Number number;
     public Block target;
     final List<Block> blockTargets;
     final RefSpec spec;
@@ -27,9 +29,16 @@ public class Operation {
                 '}';
     }
 
-    protected Operation(Operation.Inst inst, int count, Block blockTarget, RefSpec spec, List<Integer> ints) {
+    protected Operation(Operation.Inst inst, Number count, Block blockTarget, RefSpec spec, List<Integer> ints) {
         this.inst = inst;
-        this.count = count;
+        if (count instanceof Integer) {
+            this.count = (Integer) count;
+            this.number = null;
+        }
+        else {
+            this.count = -1;
+            number = count;
+        }
         this.target = blockTarget;
         this.spec = spec;
         this.ints = ints;
@@ -45,6 +54,7 @@ public class Operation {
         this.spec = null;
         this.ints = null;
         this.blockTargets = targets;
+        this.number = null;
     }
 
     public static Operation checkBounds(Block returnBlock) {
@@ -82,6 +92,18 @@ public class Operation {
     }
 
     public static Operation pushValue(int val) {
+        return new Operation(Inst.VALUE, val, null, null, null);
+    }
+
+    public static Operation pushValue(float val) {
+        return new Operation(Inst.VALUE, val, null, null, null);
+    }
+
+    public static Operation pushValue(double val) {
+        return new Operation(Inst.VALUE, val, null, null, null);
+    }
+
+    public static Operation pushValue(long val) {
         return new Operation(Inst.VALUE, val, null, null, null);
     }
 

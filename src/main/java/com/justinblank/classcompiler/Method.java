@@ -213,8 +213,22 @@ public class Method {
     void resolve(CodeElement element) {
         if (element instanceof Literal) {
             var lit = (Literal) element;
-            var value = (Integer) lit.value;
-            currentBlock().push(value);
+            if (lit.value instanceof Integer) {
+                var value = (Integer) lit.value;
+                currentBlock().push(value);
+            }
+            else if (lit.value instanceof Double) {
+                var value = (Double) lit.value;
+                currentBlock().push(value);
+            }
+            else if (lit.value instanceof Float) {
+                var value = (Float) lit.value;
+                currentBlock().push(value);
+            }
+            else if (lit.value instanceof Long) {
+                var value = (Long) lit.value;
+                currentBlock().push(value);
+            }
         } else if (element instanceof ReturnExpression) {
             var returnExpression = (ReturnExpression) element;
             resolve(returnExpression.expression);

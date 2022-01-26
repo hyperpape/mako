@@ -121,12 +121,29 @@ public enum BinaryOperator {
     public int asmOP(Type left, Type right) {
         switch (this) {
             case PLUS:
-                return IADD;
+                // TODO: do we throw with mis-matched types, or automatically insert casts? 
+                if (left.type() instanceof Builtin) {
+                    var builtin = (Builtin) left.type();
+                    return builtin.addOperation();
+                }
+                throw new IllegalStateException("");
             case SUBTRACT:
+                if (left.type() instanceof Builtin) {
+                    var builtin = (Builtin) left.type();
+                    return builtin.subtractionOperation();
+                }
                 return ISUB;
             case MULTIPLY:
+                if (left.type() instanceof Builtin) {
+                    var builtin = (Builtin) left.type();
+                    return builtin.multiplicationOperation();
+                }
                 return IMUL;
             case DIVIDE:
+                if (left.type() instanceof Builtin) {
+                    var builtin = (Builtin) left.type();
+                    return builtin.divisionOperation();
+                }
                 return IDIV;
             case EQUALS:
                 return IF_ICMPEQ;
