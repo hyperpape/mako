@@ -41,6 +41,7 @@ public class Problem7 {
 
     }
 
+    // TODO: why do I have a separate solve method?
     private Method mkSolveMethod() {
         var vars = new GenericVars("crabPositions", "min", "index", "guess", "total", "difference");
         var method = new Method("solve", List.of(), CompilerUtil.descriptor(Integer.class), vars);
