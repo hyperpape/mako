@@ -109,17 +109,27 @@ public class TestSemantics {
     }
 
     static void apply(Method method, Object o) throws Exception {
-        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});;
+        Object output = call(method);
+        assertEquals(o, output);
+    }
+
+    private static Object call(Method method) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
+        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
+        ;
         builder.addMethod(method);
         builder.addMethod(builder.addEmptyConstructor());
         var cls = new ClassCompiler(builder);
         Class<?> compiled = cls.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();
-        var output = compiled.getMethod(TEST_METHOD).invoke(instance);
-        assertEquals(o, output);
+        return compiled.getMethod(TEST_METHOD).invoke(instance);
     }
 
     static void apply(Object o, Method method, List<Object> arguments, Method...methods) throws Exception {
+        Object output = call(method, arguments, methods);
+        assertEquals(o, output);
+    }
+
+    private static Object call(Method method, List<Object> arguments, Method[] methods) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
         builder.addMethod(method);
         for (var otherMethod : methods) {
@@ -133,7 +143,6 @@ public class TestSemantics {
         for (var obj : arguments) {
             clsArgs.add(obj.getClass());
         }
-        var output = compiled.getMethod(TEST_METHOD, clsArgs.toArray(new Class[0])).invoke(instance, arguments.toArray());
-        assertEquals(o, output);
+        return compiled.getMethod(TEST_METHOD, clsArgs.toArray(new Class[0])).invoke(instance, arguments.toArray());
     }
 }
