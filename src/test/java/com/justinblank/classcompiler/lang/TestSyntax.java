@@ -15,6 +15,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testReturnNewDate() throws Exception {
+        apply(TestMethods.returnNewDate());
+    }
+
+    @Test
     public void testReturnThis() throws Exception {
         apply("TestReturnThis", TestMethods.returnThis());
     }

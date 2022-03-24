@@ -1,9 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
-import java.lang.reflect.Array;
 import java.util.Map;
-
-import static com.justinblank.classcompiler.lang.TypeVariable.fresh;
 
 public class TypeInference {
 
@@ -17,6 +14,12 @@ public class TypeInference {
         if (element instanceof Call) {
             var call = (Call) element;
             return call.returnType;
+        } else if (element instanceof Constructor) {
+            var constructor = (Constructor) element;
+            for (var arg : constructor.arguments) {
+                analyze(arg, environment);
+            }
+            return constructor.returnType;
         } else if (element instanceof Literal) {
             var lit = (Literal) element;
             if (lit.value instanceof Integer) {

@@ -1,16 +1,11 @@
-package com.justinblank.strings;
+package com.justinblank.classcompiler;
 
-import com.justinblank.classcompiler.ClassBuilder;
-import com.justinblank.classcompiler.ClassCompiler;
-import com.justinblank.classcompiler.CompilerUtil;
-import com.justinblank.classcompiler.GenericVars;
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
 

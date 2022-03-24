@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
 import static com.justinblank.classcompiler.CompilerUtil.pushInt;
 import static org.objectweb.asm.Opcodes.*;
 
-// TODO: Properly decouple this class and collaborators from DFA specific operations to make it truly general purpose
-// OR merge them together again
 // TODO: Simplify/remove functionality that just passes through to ASM
 public class ClassCompiler {
 

@@ -4,6 +4,7 @@ import com.justinblank.classcompiler.CompilerUtil;
 import com.justinblank.classcompiler.GenericVars;
 import com.justinblank.classcompiler.Method;
 
+import java.util.Date;
 import java.util.List;
 
 import static com.justinblank.classcompiler.lang.ArrayRead.arrayRead;
@@ -25,6 +26,12 @@ public class TestMethods {
     public static Method returnThis() {
         var method = new Method(TEST_METHOD, List.of(), "LTestReturnThis;", new GenericVars());
         method.returnValue(thisRef());
+        return method;
+    }
+
+    public static Method returnNewDate() {
+        var method = new Method(TEST_METHOD, List.of(), CompilerUtil.descriptor(Date.class), new GenericVars());
+        method.returnValue(construct(ReferenceType.of(Date.class)));
         return method;
     }
 

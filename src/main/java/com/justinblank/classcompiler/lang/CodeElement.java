@@ -15,15 +15,19 @@ public interface CodeElement {
     }
 
     static Expression call(String methodName, Type type, Expression... arguments) {
-        return new Call(null, methodName, type, false, arguments);
+        return new Call(null, methodName, type, false, false, arguments);
     }
 
     static Expression callStatic(String className, String methodName, Type type, Expression... arguments) {
-        return new Call(className, methodName, type, true, arguments);
+        return new Call(className, methodName, type, true, false, arguments);
     }
 
     static Expression callStatic(Class<?> cls, String methodName, Type type, Expression... arguments) {
-        return new Call(CompilerUtil.internalName(cls), methodName, type, true, arguments);
+        return new Call(CompilerUtil.internalName(cls), methodName, type, true, false, arguments);
+    }
+
+    static Constructor construct(Type type, Expression...arguments) {
+        return new Constructor(type, arguments);
     }
 
     static ArrayLength arrayLength(Expression expression) {

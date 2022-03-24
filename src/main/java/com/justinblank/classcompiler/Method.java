@@ -328,6 +328,15 @@ public class Method {
                 currentBlock().call(call.methodName, className, buildDescriptor(call));
             }
         }
+        else if (element instanceof Constructor) {
+            var constructor = (Constructor) element;
+            for (var arg : constructor.arguments) {
+                resolve(arg);
+            }
+            currentBlock().addOperation(Operation.mkConstructor(CompilerUtil.internalName(constructor.returnType)));
+            currentBlock().operate(DUP);
+            currentBlock().call("<init>", CompilerUtil.internalName(constructor.returnType), "()V", true);
+        }
         else if (element instanceof Conditional) {
             var cond = (Conditional) element;
             currentBlock.push(addBlock());

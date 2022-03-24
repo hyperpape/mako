@@ -6,10 +6,12 @@ import com.justinblank.classcompiler.Method;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.justinblank.classcompiler.lang.TestMethods.TEST_METHOD;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestSemantics {
 
@@ -18,6 +20,12 @@ public class TestSemantics {
     @Test
     public void testReturnLiteral() throws Exception {
         apply(TestMethods.returnLiteral(), 1);
+    }
+
+    @Test
+    public void testNewDate() throws Exception {
+        var date = call(TestMethods.returnNewDate());
+        assertTrue(date instanceof Date);
     }
 
     @Test
@@ -115,7 +123,6 @@ public class TestSemantics {
 
     private static Object call(Method method) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
-        ;
         builder.addMethod(method);
         builder.addMethod(builder.addEmptyConstructor());
         var cls = new ClassCompiler(builder);
