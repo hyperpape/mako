@@ -205,6 +205,12 @@ public class TestMethods {
         return method;
     }
 
+    public static Method readStatic() {
+        var method = new Method(TEST_METHOD, List.of(), "I", new GenericVars());
+        method.returnValue(getStatic("TRUE", ReferenceType.of(Integer.class), Builtin.I));
+        return method;
+    }
+
     public static Method arrayLength() {
         var method = new Method(TEST_METHOD, List.of(), "I", new GenericVars());
         method.returnValue(CodeElement.arrayLength(newArray(5, Builtin.I)));

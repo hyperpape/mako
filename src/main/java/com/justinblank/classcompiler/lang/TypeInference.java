@@ -97,6 +97,8 @@ public class TypeInference {
             return null; // TODO is this right?
         } else if (element instanceof FieldReference) {
             return ((FieldReference) element).type;
+        } else if (element instanceof StaticFieldReference) {
+            return ((StaticFieldReference) element).type;
         } else if (element instanceof ArrayLength) {
             return Builtin.I;
         } else {

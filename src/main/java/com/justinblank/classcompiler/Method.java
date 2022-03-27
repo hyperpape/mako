@@ -12,7 +12,7 @@ public class Method {
 
     public final String methodName;
     private TypeInference typeInference;
-    private Map<String, TypeVariable> typeEnvironment = new HashMap<>();
+    private final Map<String, TypeVariable> typeEnvironment = new HashMap<>();
     private String className;
     final int modifiers;
     final List<String> arguments;
@@ -22,8 +22,8 @@ public class Method {
     private final Map<String, Object> attributes = new HashMap<>();
     private List<CodeElement> elements = new ArrayList<>();
 
-    private Stack<Block> currentBlock = new Stack<>();
-    private Stack<Block> currentLoop = new Stack<>();
+    private final Stack<Block> currentBlock = new Stack<>();
+    private final Stack<Block> currentLoop = new Stack<>();
 
     public Method(String methodName, List<String> arguments, String returnType, Vars matchingVars) {
         this(methodName, arguments, returnType, matchingVars, ACC_PUBLIC);
@@ -242,6 +242,11 @@ public class Method {
             var type = typeInference.analyze(fieldReference.expression, typeEnvironment);
             currentBlock().readField(fieldReference.fieldName, CompilerUtil.internalName(type),
                     CompilerUtil.descriptor(fieldReference.type));
+        } else if (element instanceof StaticFieldReference) {
+            var staticFieldReference = (StaticFieldReference) element;
+            currentBlock().readStatic(staticFieldReference.fieldName,
+                    CompilerUtil.internalName(staticFieldReference.receiver),
+                    CompilerUtil.descriptor(staticFieldReference.type));
         } else if (element instanceof Assignment) {
             var assignment = (Assignment) element;
             resolve(assignment.expression);

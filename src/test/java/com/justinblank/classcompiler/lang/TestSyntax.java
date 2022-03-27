@@ -82,6 +82,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testReadStatic() throws Exception {
+        apply(TestMethods.readStatic());
+    }
+
+    @Test
     public void testArrayLength() throws Exception {
         apply(TestMethods.arrayLength());
     }

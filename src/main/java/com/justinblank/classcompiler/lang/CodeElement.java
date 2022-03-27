@@ -42,6 +42,10 @@ public interface CodeElement {
         return new FieldReference(fieldName, type, expression);
     }
 
+    static StaticFieldReference getStatic(String fieldName, Type classType, Type type) {
+        return new StaticFieldReference(fieldName, classType, type);
+    }
+
     static Statement set(String name, Expression value) {
         return new Assignment(name, value);
     }
