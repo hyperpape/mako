@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 public class TestSyntax {
 
     private static int classNumber = 0;
@@ -15,8 +17,13 @@ public class TestSyntax {
     }
 
     @Test
-    public void testReturnNewDate() throws Exception {
+    public void testNoArgConstructor() throws Exception {
         apply(TestMethods.returnNewDate());
+    }
+
+    @Test
+    public void testOneArgConstructor() throws Exception {
+        apply(TestMethods.callOneArgumentConstructor());
     }
 
     @Test

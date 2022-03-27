@@ -23,9 +23,15 @@ public class TestSemantics {
     }
 
     @Test
-    public void testNewDate() throws Exception {
+    public void testNoArgConstructor() throws Exception {
         var date = call(TestMethods.returnNewDate());
         assertTrue(date instanceof Date);
+    }
+
+    @Test
+    public void testOneArgConstructor() throws Exception {
+        var sb = call(TestMethods.callOneArgumentConstructor());
+        assertEquals("", sb.toString());
     }
 
     @Test
