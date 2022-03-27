@@ -35,6 +35,12 @@ public class TestSemantics {
     }
 
     @Test
+    public void testStringBuilderToString() throws Exception {
+        var s = call(TestMethods.stringBuilderToString());
+        assertEquals("", s);
+    }
+
+    @Test
     public void testSetAndReadVars() throws Exception {
         apply(TestMethods.setAndGetVariable(), 1);
     }

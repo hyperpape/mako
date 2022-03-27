@@ -154,7 +154,7 @@ public class CompilerUtil {
             return getTypeString((Builtin) type);
         }
         else if (type instanceof ReferenceType) {
-            return ((ReferenceType) type).typeString.replaceAll("\\.", "/");
+            return internalName(((ReferenceType) type).typeString);
         }
         else if (type instanceof ArrayType) {
             return "[" + internalName(((ArrayType) type).elementType);
@@ -165,5 +165,9 @@ public class CompilerUtil {
         else {
             throw new IllegalStateException("Unhandled variant:" + type);
         }
+    }
+
+    public static String internalName(String typeString) {
+        return typeString.replaceAll("\\.", "/");
     }
 }

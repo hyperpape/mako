@@ -320,7 +320,7 @@ public class Method {
             for (var i = 0; i <= call.arguments.length - 1; i++) {
                 resolve(call.arguments[i]);
             }
-            var className = call.isStatic ? call.className : getClassName(call.receiver());
+            var className = call.isStatic ? call.className : CompilerUtil.internalName(getClassName(call.receiver()));
             if (call.isStatic) {
                 currentBlock().callStatic(call.methodName, className, buildDescriptor(call));
             }

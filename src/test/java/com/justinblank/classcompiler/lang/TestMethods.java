@@ -41,6 +41,13 @@ public class TestMethods {
         return method;
     }
 
+    public static Method stringBuilderToString() {
+        var method = new Method(TEST_METHOD, List.of(), CompilerUtil.descriptor(String.class), new GenericVars());
+        method.returnValue(call("toString", ReferenceType.of(String.class),
+                construct(ReferenceType.of(StringBuilder.class), literal(16))));
+        return method;
+    }
+
     public static Method returnNewArray() {
         var method = new Method(TEST_METHOD, List.of(), "[B", new GenericVars());
         method.returnValue(newArray(literal(1), Builtin.OCTET));
