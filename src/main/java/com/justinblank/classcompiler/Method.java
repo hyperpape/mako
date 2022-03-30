@@ -358,32 +358,42 @@ public class Method {
             currentBlock.push(afterLoop);
         }
         else if (element instanceof NewArray) {
+            currentBlock.push(this.addBlock());
             var newArray = (NewArray) element;
             resolve(newArray.size);
             if (newArray.type instanceof Builtin) {
                 switch ((Builtin) newArray.type) {
                     case I:
                         currentBlock().newArray(T_INT);
-                        return;
+                        break;
                     case F:
                         currentBlock().newArray(T_FLOAT);
-                        return;
+                        break;
                     case D:
                         currentBlock().newArray(T_DOUBLE);
-                        return;
+                        break;
                     case L:
                         currentBlock().newArray(T_LONG);
-                        return;
+                        break;
                     case BOOL:
                         currentBlock().newArray(T_BOOLEAN);
-                        return;
+                        break;
                     case OCTET:
                         currentBlock().newArray(T_BYTE);
-                        return;
+                        break;
                 }
+                currentBlock.pop();
             }
             else if (newArray.type instanceof ReferenceType) {
-                currentBlock.peek().newArray(((ReferenceType) newArray.type).typeString);
+                currentBlock.peek().newArray(CompilerUtil.internalName(newArray.type.typeString()));
+                currentBlock.pop();
+            }
+            else if (newArray.type instanceof ArrayType) {
+                currentBlock.peek().newArray(CompilerUtil.internalName(newArray.type.typeString()));
+                currentBlock.pop();
+            }
+            else {
+                throw new IllegalStateException("Unhandled variant of newArray type" + newArray.type);
             }
         }
         else if (element instanceof ArrayRead) {
@@ -504,7 +514,7 @@ public class Method {
                 var typeVar = (TypeVariable) type;
                 var resolved = typeVar.type();
                 if (resolved != null) {
-                    return resolved.toString();
+                    return resolved.typeString();
                 }
                 throw new UnsupportedOperationException("TODO");
             }

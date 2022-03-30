@@ -46,4 +46,8 @@ public class ReferenceType implements Type {
                 "typeString='" + typeString + '\'' +
                 '}';
     }
+
+    public String typeString() {
+        return typeString;
+    }
 }

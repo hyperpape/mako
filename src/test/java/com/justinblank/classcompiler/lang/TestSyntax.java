@@ -33,7 +33,17 @@ public class TestSyntax {
 
     @Test
     public void testNewArray() throws Exception {
-        apply(TestMethods.returnNewArray());
+        apply(TestMethods.returnNewByteArray());
+    }
+
+    @Test
+    public void testNewArrayOfReferenceType() throws Exception {
+        apply(TestMethods.returnNewArrayOfReferenceType());
+    }
+
+    @Test
+    public void testReturnNewArrayOfArrays() throws Exception {
+        apply(TestMethods.returnNewArrayOfArrays());
     }
 
     @Test

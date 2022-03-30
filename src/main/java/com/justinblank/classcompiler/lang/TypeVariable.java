@@ -28,4 +28,8 @@ public class TypeVariable implements Type {
         return variable;
     }
 
+    public String typeString() {
+        return this.type.typeString();
+    }
+
 }

@@ -134,7 +134,7 @@ public class CompilerUtil {
                 return resolved.toString();
             }
             if (resolved != null) {
-                return descriptor(resolved.toString());
+                return descriptor(resolved);
             }
             throw new UnsupportedOperationException("TODO");
         }

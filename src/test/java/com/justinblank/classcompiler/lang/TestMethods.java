@@ -48,9 +48,37 @@ public class TestMethods {
         return method;
     }
 
-    public static Method returnNewArray() {
+    public static Method stringBuilderAppend() {
+        var method = new Method(TEST_METHOD, List.of(), CompilerUtil.descriptor(String.class), new GenericVars());
+        method.returnValue(call("toString", ReferenceType.of(String.class),
+                call("append", ReferenceType.of(StringBuilder.class),
+                        construct(ReferenceType.of(StringBuilder.class), literal(16)), literal(1))));
+        return method;
+    }
+
+    public static Method readWriteLocalVariableStringBuilder() {
+        var method = new Method(TEST_METHOD, List.of(), CompilerUtil.descriptor(String.class), new GenericVars("sb"));
+        method.set("sb", construct(ReferenceType.of(StringBuilder.class), literal(16)));
+        method.returnValue(call("toString", ReferenceType.of(String.class),
+                read("sb")));
+        return method;
+    }
+
+    public static Method returnNewByteArray() {
         var method = new Method(TEST_METHOD, List.of(), "[B", new GenericVars());
         method.returnValue(newArray(literal(1), Builtin.OCTET));
+        return method;
+    }
+
+    public static Method returnNewArrayOfReferenceType() {
+        var method = new Method(TEST_METHOD, List.of(), "[Ljava/lang/String;", new GenericVars());
+        method.returnValue(newArray(literal(1), ReferenceType.of(String.class)));
+        return method;
+    }
+
+    public static Method returnNewArrayOfArrays() {
+        var method = new Method(TEST_METHOD, List.of(), "[[B", new GenericVars());
+        method.returnValue(newArray(literal(1), ArrayType.of(Builtin.OCTET)));
         return method;
     }
 

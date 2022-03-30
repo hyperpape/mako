@@ -16,4 +16,8 @@ public class ArrayType implements Type {
     public Type type() {
         return this;
     }
+
+    public String typeString() {
+        return "[" + elementType.typeString();
+    }
 }

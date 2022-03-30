@@ -55,4 +55,20 @@ public enum Builtin implements Type {
         }
         throw new IllegalArgumentException("Tried to get an add operation on a type not supporting it" + this.toString());
     }
+
+    public String typeString() {
+        switch (this) {
+            case L:
+            case D:
+            case F:
+            case I:
+                return toString();
+            case BOOL:
+                return "Z";
+            case OCTET:
+                return "B";
+            default:
+                throw new IllegalStateException("Unrecognized Builtin enum member: this error should be impossible");
+        }
+    }
 }

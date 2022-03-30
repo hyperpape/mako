@@ -5,7 +5,9 @@ import com.justinblank.classcompiler.ClassCompiler;
 import com.justinblank.classcompiler.Method;
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +25,21 @@ public class TestSemantics {
     }
 
     @Test
+    public void testReturnNewArray() throws Exception {
+        apply(TestMethods.returnNewByteArray(), new byte[0]);
+    }
+
+    @Test
+    public void testReturnNewArrayOfReferenceType() throws Exception {
+        apply(TestMethods.returnNewArrayOfReferenceType(), new String[1]);
+    }
+
+    @Test
+    public void testReturnNewArrayOfArrays() throws Exception {
+        apply(TestMethods.returnNewArrayOfArrays(), new byte[1][]);
+    }
+
+    @Test
     public void testNoArgConstructor() throws Exception {
         var date = call(TestMethods.returnNewDate());
         assertTrue(date instanceof Date);
@@ -37,6 +54,18 @@ public class TestSemantics {
     @Test
     public void testStringBuilderToString() throws Exception {
         var s = call(TestMethods.stringBuilderToString());
+        assertEquals("", s);
+    }
+
+    @Test
+    public void testCallMethodOnReferenceTypeReturningReferenceType() throws Exception {
+        var s = call(TestMethods.stringBuilderAppend());
+        assertEquals("1", s);
+    }
+
+    @Test
+    public void testReadWriteReferenceTypeLocalVariables() throws Exception {
+        var s = call(TestMethods.readWriteLocalVariableStringBuilder());
         assertEquals("", s);
     }
 
@@ -130,7 +159,14 @@ public class TestSemantics {
 
     static void apply(Method method, Object o) throws Exception {
         Object output = call(method);
-        assertEquals(o, output);
+        Class c = o.getClass();
+        // TODO: improve comparison
+        if (c.getName().startsWith("[")) {
+            assertEquals(c, output.getClass());
+        }
+        else {
+            assertEquals(o, output);
+        }
     }
 
     private static Object call(Method method) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
