@@ -18,8 +18,16 @@ public interface CodeElement {
         return new Call(null, methodName, type, false, false, arguments);
     }
 
+    static Expression call(String methodName, Class<?> type, Expression... arguments) {
+        return new Call(null, methodName, ReferenceType.of(type), false, false, arguments);
+    }
+
     static Expression callStatic(String className, String methodName, Type type, Expression... arguments) {
         return new Call(className, methodName, type, true, false, arguments);
+    }
+
+    static Expression callStatic(String className, String methodName, Class<?> type, Expression... arguments) {
+        return new Call(className, methodName, ReferenceType.of(type), true, false, arguments);
     }
 
     static Expression callStatic(Class<?> cls, String methodName, Type type, Expression... arguments) {
@@ -28,6 +36,10 @@ public interface CodeElement {
 
     static Constructor construct(Type type, Expression...arguments) {
         return new Constructor(type, arguments);
+    }
+
+    static Constructor construct(Class<?> type, Expression...arguments) {
+        return new Constructor(ReferenceType.of(type), arguments);
     }
 
     static ArrayLength arrayLength(Expression expression) {
@@ -40,6 +52,10 @@ public interface CodeElement {
 
     static FieldReference get(String fieldName, Type type, Expression expression) {
         return new FieldReference(fieldName, type, expression);
+    }
+
+    static FieldReference get(String fieldName, Class<?> type, Expression expression) {
+        return new FieldReference(fieldName, ReferenceType.of(type), expression);
     }
 
     static StaticFieldReference getStatic(String fieldName, Type classType, Type type) {

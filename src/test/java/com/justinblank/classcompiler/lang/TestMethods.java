@@ -18,38 +18,38 @@ public class TestMethods {
     public static final String TEST_METHOD = "testThingMethod";
 
     public static Method returnLiteral() {
-        var method = new Method(TEST_METHOD, List.of(), "I", null);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, null);
         method.returnValue(1);
         return method;
     }
 
     public static Method returnThis() {
-        var method = new Method(TEST_METHOD, List.of(), "LTestReturnThis;", new GenericVars());
+        var method = new Method(TEST_METHOD, List.of(), ReferenceType.of("TestReturnThis"), new GenericVars());
         method.returnValue(thisRef());
         return method;
     }
 
     public static Method returnNewDate() {
-        var method = new Method(TEST_METHOD, List.of(), CompilerUtil.descriptor(Date.class), new GenericVars());
+        var method = new Method(TEST_METHOD, List.of(), Date.class, new GenericVars());
         method.returnValue(construct(ReferenceType.of(Date.class)));
         return method;
     }
 
     public static Method callOneArgumentConstructor() {
-        var method = new Method(TEST_METHOD, List.of(), CompilerUtil.descriptor(StringBuilder.class), new GenericVars());
+        var method = new Method(TEST_METHOD, List.of(), StringBuilder.class, new GenericVars());
         method.returnValue(construct(ReferenceType.of(StringBuilder.class), literal(16)));
         return method;
     }
 
     public static Method stringBuilderToString() {
-        var method = new Method(TEST_METHOD, List.of(), CompilerUtil.descriptor(String.class), new GenericVars());
+        var method = new Method(TEST_METHOD, List.of(), String.class, new GenericVars());
         method.returnValue(call("toString", ReferenceType.of(String.class),
                 construct(ReferenceType.of(StringBuilder.class), literal(16))));
         return method;
     }
 
     public static Method stringBuilderAppend() {
-        var method = new Method(TEST_METHOD, List.of(), CompilerUtil.descriptor(String.class), new GenericVars());
+        var method = new Method(TEST_METHOD, List.of(), String.class, new GenericVars());
         method.returnValue(call("toString", ReferenceType.of(String.class),
                 call("append", ReferenceType.of(StringBuilder.class),
                         construct(ReferenceType.of(StringBuilder.class), literal(16)), literal(1))));
@@ -57,7 +57,7 @@ public class TestMethods {
     }
 
     public static Method readWriteLocalVariableStringBuilder() {
-        var method = new Method(TEST_METHOD, List.of(), CompilerUtil.descriptor(String.class), new GenericVars("sb"));
+        var method = new Method(TEST_METHOD, List.of(), String.class, new GenericVars("sb"));
         method.set("sb", construct(ReferenceType.of(StringBuilder.class), literal(16)));
         method.returnValue(call("toString", ReferenceType.of(String.class),
                 read("sb")));
@@ -85,7 +85,7 @@ public class TestMethods {
     public static Method arraySetAndGet() {
         var vars = new GenericVars();
         vars.addVar("a");
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.set("a", newArray(literal(1), Builtin.OCTET));
         method.arraySet(read("a"), literal(0), literal(2));
         method.returnValue(arrayRead(read("a"), literal(0)));
@@ -95,7 +95,7 @@ public class TestMethods {
     public static Method setAndGetVariable() {
         var vars = new GenericVars();
         vars.addVar("a");
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.set("a", 1);
         method.returnValue(read("a"));
         return method;
@@ -103,21 +103,21 @@ public class TestMethods {
 
     public static Method addition() {
         var vars = new GenericVars();
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.returnValue(plus(1, 2));
         return method;
     }
 
     public static Method floatAddition() {
         var vars = new GenericVars();
-        var method = new Method(TEST_METHOD, List.of(), "F", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.F, vars);
         method.returnValue(plus(1.0f, 2.0f));
         return method;
     }
 
     public static Method equality() {
         var vars = new GenericVars();
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.returnValue(eq(1, 2));
         return method;
     }
@@ -125,7 +125,7 @@ public class TestMethods {
     public static Method trivialLoop() {
         var vars = new GenericVars();
         vars.addVar("a");
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.set("a", 1);
         method.loop(lt(read("a"), 5),
                 List.of(set("a", plus(read("a"), 1))));
@@ -136,7 +136,7 @@ public class TestMethods {
     public static Method loopWithSkip() {
         var vars = new GenericVars();
         vars.addVar("a");
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.set("a", 1);
         method.loop(lt( read("a"), 5),
                 List.of(set("a", plus(read("a"), 1)),
@@ -148,7 +148,7 @@ public class TestMethods {
     public static Method loopWithEscape() {
         var vars = new GenericVars();
         vars.addVar("a");
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.set("a", 1);
         method.loop(lt(read("a"), 5),
                 List.of(set("a", plus(read("a"), 1)),
@@ -162,7 +162,7 @@ public class TestMethods {
         vars.addVar("a");
         vars.addVar("b");
         vars.addVar("c");
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.set("a", 0);
         method.set("c", 1);
         method.loop(lt(read("a"), 3),
@@ -178,7 +178,7 @@ public class TestMethods {
     public static Method conditional() {
         var vars = new GenericVars();
         vars.addVar("i");
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.set("i", 2);
         method.cond(eq(read("i"), 2)).withBody(List.of(returnValue(3)));
         method.returnValue(4);
@@ -188,7 +188,7 @@ public class TestMethods {
     public static Method twoSequentialConditionals() {
         var vars = new GenericVars();
         vars.addVar("i");
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.set("i", 2);
         method.cond(eq(read("i"), 1)).withBody(List.of(returnValue(2)));
         method.cond(eq(read("i"), 2)).withBody(List.of(returnValue(3)));
@@ -199,7 +199,7 @@ public class TestMethods {
     public static Method threeSequentialConditionals() {
         var vars = new GenericVars();
         vars.addVar("i");
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.set("i", 2);
         method.cond(eq(read("i"), 1)).withBody(List.of(returnValue(2)));
         method.cond(eq(read("i"), 2)).withBody(List.of(returnValue(3)));
@@ -211,21 +211,21 @@ public class TestMethods {
     public static Method recursion() {
         var vars = new GenericVars();
         vars.addVar("i");
-        var method = new Method(TEST_METHOD, List.of("I"), "I", vars);
+        var method = new Method(TEST_METHOD, List.of("I"), Builtin.I, vars);
         method.cond(eq(read("i"), 1)).withBody(List.of(returnValue(1)));
         method.returnValue(call(TEST_METHOD, Builtin.I, thisRef(), sub(read("i"), 1)));
         return method;
     }
 
     public static Method staticCall() {
-        var method = new Method(TEST_METHOD, List.of(), CompilerUtil.descriptor(Integer.class), new GenericVars());
+        var method = new Method(TEST_METHOD, List.of(), Integer.class, new GenericVars());
         method.returnValue(callStatic(CompilerUtil.internalName(Integer.class), "valueOf", ReferenceType.of(Integer.class),
                 literal(0)));
         return method;
     }
 
     public static Method readField() {
-        var method = new Method(TEST_METHOD, List.of(), "I", new GenericVars());
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars());
         method.returnValue(get("i", Builtin.I,
                 callStatic(
                         CompilerUtil.internalName(ClassWithField.class),
@@ -234,13 +234,13 @@ public class TestMethods {
     }
 
     public static Method readStatic() {
-        var method = new Method(TEST_METHOD, List.of(), "I", new GenericVars());
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars());
         method.returnValue(getStatic("TRUE", ReferenceType.of(Integer.class), Builtin.I));
         return method;
     }
 
     public static Method arrayLength() {
-        var method = new Method(TEST_METHOD, List.of(), "I", new GenericVars());
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars());
         method.returnValue(CodeElement.arrayLength(newArray(5, Builtin.I)));
         return method;
     }
@@ -248,21 +248,21 @@ public class TestMethods {
 
     public static Method callNoArgMethod() {
         var vars = new GenericVars();
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.returnValue(call("return0", Builtin.I, thisRef()));
         return method;
     }
 
     public static Method callOneArgMethod() {
         var vars = new GenericVars();
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.returnValue(call("return0", Builtin.I, thisRef(), literal(0)));
         return method;
     }
 
     public static Method callTwoArgMethod() {
         var vars = new GenericVars();
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.returnValue(call("return0", Builtin.I, thisRef(), literal(0), literal(1)));
         return method;
     }
@@ -270,7 +270,7 @@ public class TestMethods {
     public static Method methodWithIgnoredCall() {
         var vars = new GenericVars();
         vars.addVar("a");
-        var method = new Method(TEST_METHOD, List.of(), "I", vars);
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.set("a", 1);
         method.loop(read("a"), List.of(
                 call("returnThis", ReferenceType.of("SomeObject"), thisRef()),
@@ -282,7 +282,7 @@ public class TestMethods {
     }
 
     public static Method fibonacci() {
-        var method = new Method(TEST_METHOD, List.of("I"), "I", new GenericVars("x"));
+        var method = new Method(TEST_METHOD, List.of("I"), Builtin.I, new GenericVars("x"));
         method.cond(eq(read("x"), 0)).withBody(List.of(
                 returnValue(1)));
         method.cond(eq(read("x"), 1)).withBody(List.of(

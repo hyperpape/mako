@@ -29,6 +29,14 @@ public class Method {
         this(methodName, arguments, returnType, matchingVars, ACC_PUBLIC);
     }
 
+    public Method(String methodName, List<String> arguments, Class<?> cls, Vars matchingVars) {
+        this(methodName, arguments, ReferenceType.of(cls), matchingVars);
+    }
+
+    public Method(String methodName, List<String> arguments, Type returnType, Vars matchingVars) {
+        this(methodName, arguments, CompilerUtil.descriptor(returnType), matchingVars, ACC_PUBLIC);
+    }
+
     public Method(String methodName, List<String> arguments, String returnType, Vars matchingVars, int modifiers) {
         Objects.requireNonNull(methodName);
         Objects.requireNonNull(arguments);
@@ -170,7 +178,17 @@ public class Method {
         return this;
     }
 
+    public Method call(String methodName, Class<?> type, Expression... expressions) {
+        this.elements.add(CodeElement.call(methodName, type, expressions));
+        return this;
+    }
+
     public Method callStatic(String className, String methodName, Type type, Expression...expressions) {
+        this.elements.add(CodeElement.callStatic(className, methodName, type, expressions));
+        return this;
+    }
+
+    public Method callStatic(String className, String methodName, Class<?> type, Expression...expressions) {
         this.elements.add(CodeElement.callStatic(className, methodName, type, expressions));
         return this;
     }
