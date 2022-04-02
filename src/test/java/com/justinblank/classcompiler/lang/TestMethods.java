@@ -281,6 +281,12 @@ public class TestMethods {
         return method;
     }
 
+    public static Method argumentOfReferenceType() {
+        var method = new Method(TEST_METHOD, List.of(CompilerUtil.descriptor(String.class)), String.class, new GenericVars("s"));
+        method.returnValue(read("s"));
+        return method;
+    }
+
     public static Method fibonacci() {
         var method = new Method(TEST_METHOD, List.of("I"), Builtin.I, new GenericVars("x"));
         method.cond(eq(read("x"), 0)).withBody(List.of(

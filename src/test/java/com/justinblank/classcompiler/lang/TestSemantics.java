@@ -157,6 +157,18 @@ public class TestSemantics {
         assertEquals(8, output);
     }
 
+    @Test
+    public void testArgumentOfReferenceType() throws Exception {
+        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
+        builder.addMethod(TestMethods.argumentOfReferenceType());
+        builder.addMethod(builder.addEmptyConstructor());
+        var cls = new ClassCompiler(builder);
+        Class<?> compiled = cls.generateClass();
+        var instance = compiled.getConstructors()[0].newInstance();
+        var output = compiled.getMethod(TEST_METHOD, List.of(String.class).toArray(new Class[0])).invoke(instance, "abc");
+        assertEquals("abc", output);
+    }
+
     static void apply(Method method, Object o) throws Exception {
         Object output = call(method);
         Class c = o.getClass();

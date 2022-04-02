@@ -14,7 +14,7 @@ public class ReferenceType implements Type {
 
     ReferenceType(String type) {
         if (StringUtils.isBlank(type)) {
-            throw new IllegalArgumentException("Cannot create a reference Type with a blank type string");
+            throw new IllegalArgumentException("Cannot create a ReferenceType with a blank type string");
         }
         this.typeString = type;
     }

@@ -25,16 +25,37 @@ public class Method {
     private final Stack<Block> currentBlock = new Stack<>();
     private final Stack<Block> currentLoop = new Stack<>();
 
-    public Method(String methodName, List<String> arguments, String returnType, Vars matchingVars) {
-        this(methodName, arguments, returnType, matchingVars, ACC_PUBLIC);
+    /**
+     * Method constructor
+     * @param methodName the method name
+     * @param arguments the arguments, as class descriptors
+     * @param returnType the return type, as a class descriptor
+     * @param vars the variables the method will have
+     */
+    public Method(String methodName, List<String> arguments, String returnType, Vars vars) {
+        this(methodName, arguments, returnType, vars, ACC_PUBLIC);
     }
 
-    public Method(String methodName, List<String> arguments, Class<?> cls, Vars matchingVars) {
-        this(methodName, arguments, ReferenceType.of(cls), matchingVars);
+    /**
+     * Method constructor
+     * @param methodName the method name
+     * @param arguments the arguments, as class descriptors
+     * @param cls the return type
+     * @param vars the variables the method will have
+     */
+    public Method(String methodName, List<String> arguments, Class<?> cls, Vars vars) {
+        this(methodName, arguments, ReferenceType.of(cls), vars);
     }
 
-    public Method(String methodName, List<String> arguments, Type returnType, Vars matchingVars) {
-        this(methodName, arguments, CompilerUtil.descriptor(returnType), matchingVars, ACC_PUBLIC);
+    /**
+     * Method constructor
+     * @param methodName the method name
+     * @param arguments the arguments, as class descriptors
+     * @param returnType the return type
+     * @param vars the variables the method will have
+     */
+    public Method(String methodName, List<String> arguments, Type returnType, Vars vars) {
+        this(methodName, arguments, CompilerUtil.descriptor(returnType), vars, ACC_PUBLIC);
     }
 
     public Method(String methodName, List<String> arguments, String returnType, Vars matchingVars, int modifiers) {
@@ -197,8 +218,8 @@ public class Method {
         this.addBlock();
         if (this.matchingVars != null) {
             for (var v : this.matchingVars.allVars()) {
-                if (v.getRight() < this.arguments.size()) {
-                    typeEnvironment.put(v.getLeft(), typeVariableFor(this.arguments.get(v.getRight())));
+                if (v.getRight() < this.arguments.size() + 1) {
+                    typeEnvironment.put(v.getLeft(), typeVariableFor(this.arguments.get(v.getRight() - 1)));
                 }
             }
         }
@@ -224,7 +245,7 @@ public class Method {
             case "B":
                 return TypeVariable.of(Builtin.OCTET);
             default:
-                throw new IllegalStateException("");
+                return TypeVariable.of(ReferenceType.of(CompilerUtil.internalName(s)));
         }
     }
 
