@@ -105,6 +105,11 @@ public class TestSemantics {
     }
 
     @Test
+    public void testStaticCallUsingClassAsArgument() throws Exception {
+        apply(TestMethods.staticCallUsingClassAsArgument(), 0);
+    }
+
+    @Test
     public void testNestedLoop() throws Exception {
         apply(TestMethods.nestedLoop(), 64);
     }

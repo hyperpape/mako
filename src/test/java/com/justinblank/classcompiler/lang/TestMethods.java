@@ -224,6 +224,13 @@ public class TestMethods {
         return method;
     }
 
+    public static Method staticCallUsingClassAsArgument() {
+        var method = new Method(TEST_METHOD, List.of(), Integer.class, new GenericVars());
+        method.returnValue(callStatic(CompilerUtil.internalName(Integer.class), "valueOf", Integer.class,
+                literal(0)));
+        return method;
+    }
+
     public static Method readField() {
         var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars());
         method.returnValue(get("i", Builtin.I,
