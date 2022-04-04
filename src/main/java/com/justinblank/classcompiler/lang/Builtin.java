@@ -1,5 +1,7 @@
 package com.justinblank.classcompiler.lang;
 
+import java.util.Optional;
+
 import static org.objectweb.asm.Opcodes.*;
 
 // TODO: rename primitive?
@@ -59,6 +61,7 @@ public enum Builtin implements Type {
     public String typeString() {
         switch (this) {
             case L:
+                return "J";
             case D:
             case F:
             case I:
@@ -69,6 +72,73 @@ public enum Builtin implements Type {
                 return "B";
             default:
                 throw new IllegalStateException("Unrecognized Builtin enum member: this error should be impossible");
+        }
+    }
+
+    /**
+     * Return the builtin corresponding to a type, null if it cannot be recognized
+     * @param returnType
+     * @return
+     */
+    public static Optional<Builtin> from(String returnType) {
+        switch (returnType) {
+            case "I":
+                return Optional.of(I);
+            case "F":
+                return Optional.of(F);
+            case "D":
+                return Optional.of(D);
+            case "Z":
+                return Optional.of(BOOL);
+            case "B":
+                return Optional.of(OCTET);
+            case "J":
+                return Optional.of(L);
+            default:
+                return Optional.empty();
+        }
+    }
+
+    public int cast(Builtin other) {
+        switch (this) {
+            case I:
+                switch (other) {
+                    case L:
+                        return I2L;
+                    case F:
+                        return I2F;
+                    case D:
+                        return I2D;
+                }
+            case F:
+                switch (other) {
+                    case I:
+                        return F2I;
+                    case D:
+                        return F2D;
+                    case L:
+                        return F2L;
+                }
+            case D:
+                switch (other) {
+                    case I:
+                        return D2I;
+                    case F:
+                        return D2F;
+                    case L:
+                        return D2L;
+                }
+            case L:
+                switch (other) {
+                    case I:
+                        return L2I;
+                    case F:
+                        return L2F;
+                    case D:
+                        return L2D;
+                }
+            default:
+                return -1;
         }
     }
 }

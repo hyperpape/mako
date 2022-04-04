@@ -25,6 +25,11 @@ public class TestSemantics {
     }
 
     @Test
+    public void testReturnLong() throws Exception {
+        apply(TestMethods.returnLong(), 1L);
+    }
+
+    @Test
     public void testReturnNewArray() throws Exception {
         apply(TestMethods.returnNewByteArray(), new byte[0]);
     }

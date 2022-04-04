@@ -17,6 +17,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testReturnLong() throws Exception {
+        apply(TestMethods.returnLong());
+    }
+
+    @Test
     public void testNoArgConstructor() throws Exception {
         apply(TestMethods.returnNewDate());
     }

@@ -271,6 +271,19 @@ public class Method {
         } else if (element instanceof ReturnExpression) {
             var returnExpression = (ReturnExpression) element;
             resolve(returnExpression.expression);
+            var type = typeInference.analyze(returnExpression.expression, typeEnvironment);
+            if (type.type() instanceof Builtin) {
+                Builtin.from(returnType).ifPresent(returning -> {
+                    var builtin = (Builtin) type.type();
+                    if (!builtin.equals(returning)) {
+                        var cast = builtin.cast(returning);
+                        if (cast > 0) {
+                            currentBlock().addOperation(Operation.mkOperation(builtin.cast(returning)));
+                        }
+                    }
+                });
+
+            }
             currentBlock().addReturn(CompilerUtil.returnForType(returnType));
         } else if (element instanceof VariableRead) {
             var read = (VariableRead) element;

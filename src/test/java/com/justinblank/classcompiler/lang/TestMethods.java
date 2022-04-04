@@ -23,6 +23,12 @@ public class TestMethods {
         return method;
     }
 
+    public static Method returnLong() {
+        var method = new Method(TEST_METHOD, List.of(), Builtin.L, null);
+        method.returnValue(1);
+        return method;
+    }
+
     public static Method returnThis() {
         var method = new Method(TEST_METHOD, List.of(), ReferenceType.of("TestReturnThis"), new GenericVars());
         method.returnValue(thisRef());

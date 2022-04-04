@@ -85,7 +85,7 @@ public class CompilerUtil {
             case "B":
             case "Z":
                 return IRETURN;
-            case "L":
+            case "J":
                 return LRETURN;
             case "F":
                 return FRETURN;
@@ -105,7 +105,7 @@ public class CompilerUtil {
             case F:
                 return "F";
             case L:
-                return "L";
+                return "J";
             case D:
                 return "D";
             case OCTET:
