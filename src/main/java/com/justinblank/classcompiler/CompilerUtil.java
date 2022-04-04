@@ -167,7 +167,18 @@ public class CompilerUtil {
         }
     }
 
+    public static String extractDiscriptorInnards(String s) {
+        if (s.startsWith("L") && s.endsWith(";")) {
+            return s.substring(1, s.length() - 1);
+        }
+        return s;
+    }
+
     public static String internalName(String typeString) {
         return typeString.replaceAll("\\.", "/");
+    }
+
+    public static String internalNameToCanonicalName(String internalName) {
+        return internalName.replaceAll("/", ".");
     }
 }

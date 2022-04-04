@@ -4,6 +4,9 @@ import com.justinblank.classcompiler.CompilerUtil;
 import com.justinblank.classcompiler.GenericVars;
 import com.justinblank.classcompiler.Method;
 
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
 import java.util.Date;
 import java.util.List;
 
@@ -237,6 +240,15 @@ public class TestMethods {
         return method;
     }
 
+    public static Method callInterfaceMethod() {
+        var vars = new GenericVars("time");
+        var method = new Method(TEST_METHOD, List.of(CompilerUtil.descriptor(TemporalAccessor.class)), Builtin.I, vars);
+        method.returnValue(callInterface("get", Builtin.I, read("time"),
+                getStatic("MILLI_OF_SECOND", ReferenceType.of(ChronoField.class),
+                        ReferenceType.of(ChronoField.class))));
+        return method;
+    }
+
     public static Method readField() {
         var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars());
         method.returnValue(get("i", Builtin.I,
@@ -247,8 +259,8 @@ public class TestMethods {
     }
 
     public static Method readStatic() {
-        var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars());
-        method.returnValue(getStatic("TRUE", ReferenceType.of(Integer.class), Builtin.I));
+        var method = new Method(TEST_METHOD, List.of(), ReferenceType.of(Boolean.class), new GenericVars());
+        method.returnValue(getStatic("TRUE", ReferenceType.of(Boolean.class), ReferenceType.of(Boolean.class)));
         return method;
     }
 

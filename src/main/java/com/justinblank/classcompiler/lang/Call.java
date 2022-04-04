@@ -7,15 +7,17 @@ public class Call implements Expression {
     public final Type returnType;
     public final boolean isStatic;
     public final boolean isSpecial;
+    public final boolean isInterface;
     public final String className;
 
-    Call(String className, String methodName, Type returnType, boolean isStatic, boolean isSpecial, Expression... arguments) {
+    Call(String className, String methodName, Type returnType, boolean isStatic, boolean isSpecial, boolean isInterface, Expression... arguments) {
         this.className = className;
         this.methodName = methodName;
         this.arguments = arguments;
         this.returnType = returnType;
         this.isStatic = isStatic;
         this.isSpecial = isSpecial;
+        this.isInterface = isInterface;
     }
 
     /**

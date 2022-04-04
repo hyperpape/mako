@@ -204,6 +204,16 @@ public class Method {
         return this;
     }
 
+    public Method callInterface(String methodName, Type type, Expression... expressions) {
+        this.elements.add(CodeElement.callInterface(methodName, type, expressions));
+        return this;
+    }
+
+    public Method callInterface(String methodName, Class<?> type, Expression... expressions) {
+        this.elements.add(CodeElement.callInterface(methodName, type, expressions));
+        return this;
+    }
+
     public Method callStatic(String className, String methodName, Type type, Expression...expressions) {
         this.elements.add(CodeElement.callStatic(className, methodName, type, expressions));
         return this;
@@ -245,7 +255,8 @@ public class Method {
             case "B":
                 return TypeVariable.of(Builtin.OCTET);
             default:
-                return TypeVariable.of(ReferenceType.of(CompilerUtil.internalName(s)));
+                var internalName = CompilerUtil.internalName(CompilerUtil.extractDiscriptorInnards(s));
+                return TypeVariable.of(ReferenceType.of(internalName));
         }
     }
 
@@ -380,6 +391,9 @@ public class Method {
             var className = call.isStatic ? call.className : CompilerUtil.internalName(getClassName(call.receiver()));
             if (call.isStatic) {
                 currentBlock().callStatic(call.methodName, className, buildDescriptor(call));
+            }
+            else if (call.isInterface) {
+                currentBlock().callInterface(call.methodName, className, buildDescriptor(call));
             }
             else {
                 currentBlock().call(call.methodName, className, buildDescriptor(call));
@@ -578,13 +592,77 @@ public class Method {
         var sb = new StringBuilder();
         sb.append('(');
         int initialIndex = call.isStatic ? 0 : 1;
+        List<Type> concreteTypes = new ArrayList<>();
         for (var i = initialIndex; i < call.arguments.length; i++) {
-            var type = typeOf(call.arguments[i]);
+            concreteTypes.add(typeOf(call.arguments[i]));
+        }
+        var invocationTypes = determineInvocationTypes(call, concreteTypes);
+        for (var type : invocationTypes) {
             sb.append(CompilerUtil.descriptor(type));
         }
+
         sb.append(')');
         sb.append(CompilerUtil.descriptor(call.returnType));
         return sb.toString();
+    }
+
+    private List<Type> determineInvocationTypes(Call call, List<Type> concreteTypes) {
+        List<MethodSignature> methods = getMethodsForType(call);
+        for (var method : methods) {
+            boolean matches = true;
+            for (var i = 0; i < concreteTypes.size(); i++) {
+                var argumentType = method.argumentTypes.get(i);
+                if (!argumentType.equals(concreteTypes.get(i))) {
+                    if (!assignable(argumentType, concreteTypes.get(i))) {
+                        matches = false;
+                    }
+                }
+            }
+            if (matches) {
+                return method.argumentTypes;
+            }
+        }
+        return concreteTypes;
+    }
+
+    private boolean assignable(Type paramType, Type type) {
+        try {
+            Class<?> paramClass = Class.forName(paramType.typeString());
+            Class<?> actualClass = Class.forName(type.typeString());
+            return paramClass.isAssignableFrom(actualClass);
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+
+    private List<MethodSignature> getMethodsForType(Call call) {
+        Type receiverType;
+        if (!call.isStatic) {
+            receiverType = typeInference.analyze(call.receiver(), typeEnvironment);
+        }
+        else {
+            receiverType = ReferenceType.of(call.className);
+        }
+        // YOLO: handle static vs. instance methods
+        List<MethodSignature> methods = new ArrayList<>();
+        var receiverClass = receiverType.type().typeString();
+        try {
+            var cls = Class.forName(CompilerUtil.internalNameToCanonicalName(receiverClass));
+            for (var method : cls.getDeclaredMethods()) {
+                if (method.getName().equals(call.methodName) && method.getParameterTypes().length == call.arguments.length - 1) {
+                    var methodSignature = new MethodSignature();
+                    for (var paramType : method.getParameterTypes()) {
+                        methodSignature.argumentTypes.add(Type.of(paramType));
+                    }
+                    methods.add(methodSignature);
+                }
+            }
+        }
+        catch (Exception e) {
+            // YOLO: ignore for now, future approach is to distinguish user-defined types from builtins
+        }
+        return methods;
     }
 
 

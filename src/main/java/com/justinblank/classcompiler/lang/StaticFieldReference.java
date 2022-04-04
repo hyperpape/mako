@@ -16,7 +16,7 @@ public class StaticFieldReference implements Expression {
         }
         this.fieldName = fieldName;
         Objects.requireNonNull(receiver, "Receiver cannot be null");
-        this.receiver = type;
+        this.receiver = receiver;
         Objects.requireNonNull(type, "Type cannot be null");
         this.type = type;
     }

@@ -5,9 +5,9 @@ import com.justinblank.classcompiler.ClassCompiler;
 import com.justinblank.classcompiler.Method;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
+import java.time.Instant;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -66,6 +66,11 @@ public class TestSemantics {
     public void testCallMethodOnReferenceTypeReturningReferenceType() throws Exception {
         var s = call(TestMethods.stringBuilderAppend());
         assertEquals("1", s);
+    }
+
+    @Test
+    public void testReadStatic() throws Exception {
+        apply(TestMethods.readStatic(), Boolean.TRUE);
     }
 
     @Test
@@ -153,6 +158,18 @@ public class TestSemantics {
         var return0 = new Method("return0", List.of("I", "I"), "I", null);
         return0.returnValue(1);
         apply(1, TestMethods.callTwoArgMethod(), List.of(), return0);
+    }
+
+    @Test
+    public void testCallInterfaceMethod() throws Exception {
+        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
+        builder.addMethod(TestMethods.callInterfaceMethod());
+        builder.addMethod(builder.addEmptyConstructor());
+        var cls = new ClassCompiler(builder);
+        Class<?> compiled = cls.generateClass();
+        var instance = compiled.getConstructors()[0].newInstance();
+        var output = compiled.getMethod(TEST_METHOD, List.of(TemporalAccessor.class).toArray(new Class[0])).invoke(instance, Instant.now());
+        assertTrue(0 < (Integer) output && 1000 > (Integer) output);
     }
 
     @Test
