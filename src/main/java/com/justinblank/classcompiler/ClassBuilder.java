@@ -58,7 +58,7 @@ public class ClassBuilder {
         return method;
     }
 
-    protected Block addStaticBlock() {
+    public Block addStaticBlock() {
         var b = new Block(staticBlocks.size(), new ArrayList<>());
         staticBlocks.add(b);
         return b;
@@ -104,13 +104,13 @@ public class ClassBuilder {
         fields.add(field);
     }
 
-    protected void addConstant(String name, String descriptor, Object value) {
+    public void addConstant(String name, String descriptor, Object value) {
         Objects.requireNonNull(value);
         var field = new Field(ACC_STATIC | ACC_PRIVATE | ACC_FINAL, name, descriptor, null, value);
         fields.add(field);
     }
 
-    protected String getClassName() {
+    public String getClassName() {
         return className;
     }
 }
