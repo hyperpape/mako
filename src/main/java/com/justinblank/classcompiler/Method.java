@@ -235,7 +235,7 @@ public class Method {
         }
         for (var element : elements) {
             typeInference.analyze(element, typeEnvironment);
-            resolve(element);
+            resolveTopLevelElement(element);
         }
         this.elements = new ArrayList<>();
     }
@@ -260,7 +260,15 @@ public class Method {
         }
     }
 
+    void resolveTopLevelElement(CodeElement element) {
+        resolve(element, false);
+    }
+
     void resolve(CodeElement element) {
+        resolve(element, true);
+    }
+
+    void resolve(CodeElement element, boolean recursive) {
         if (element instanceof Literal) {
             var lit = (Literal) element;
             if (lit.value instanceof Integer) {
@@ -281,7 +289,7 @@ public class Method {
             }
         } else if (element instanceof ReturnExpression) {
             var returnExpression = (ReturnExpression) element;
-            resolve(returnExpression.expression);
+            resolve(returnExpression.expression, true);
             var type = typeInference.analyze(returnExpression.expression, typeEnvironment);
             if (type.type() instanceof Builtin) {
                 Builtin.from(returnType).ifPresent(returning -> {
@@ -349,14 +357,7 @@ public class Method {
             }
             var block = addBlock();
 
-            withBlock(addBlock(), () -> {
-                for (var codeElement : loop.body) {
-                    resolve(codeElement);
-                    if (producesValue(codeElement)) {
-                        currentBlock().operate(POP);
-                    }
-                }
-            });
+            resolveBody(loop);
 
             addBlock().jump(conditionsBlock, GOTO);
             var afterLoop = addBlock();
@@ -398,6 +399,9 @@ public class Method {
             else {
                 currentBlock().call(call.methodName, className, buildDescriptor(call));
             }
+            if (!recursive) {
+                currentBlock().operate(POP);
+            }
         }
         else if (element instanceof Constructor) {
             var constructor = (Constructor) element;
@@ -414,11 +418,7 @@ public class Method {
             resolve(cond.condition);
             var block = addBlock();
 
-            withBlock(addBlock(), () -> {
-                for (var codeElement : cond.body) {
-                    resolve(codeElement);
-                }
-            });
+            resolveBody(cond);
             var afterLoop = addBlock();
             block.jump(afterLoop, IFEQ);
             currentBlock.push(afterLoop);
@@ -526,6 +526,17 @@ public class Method {
             currentBlock().operate(ARRAYLENGTH);
 
         }
+    }
+
+    private void resolveBody(ElementContainer container) {
+        withBlock(addBlock(), () -> {
+            for (var codeElement : container.getBody()) {
+                resolve(codeElement);
+                if (producesValue(codeElement)) {
+                    currentBlock().operate(POP);
+                }
+            }
+        });
     }
 
     private ArrayType determineArrayType(Expression arrayRef) {

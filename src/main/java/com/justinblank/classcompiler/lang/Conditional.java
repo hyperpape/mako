@@ -2,7 +2,7 @@ package com.justinblank.classcompiler.lang;
 
 import java.util.List;
 
-public class Conditional implements CodeElement {
+public class Conditional implements ElementContainer {
 
     public final Conditional parent;
     public final Expression condition;
@@ -32,5 +32,14 @@ public class Conditional implements CodeElement {
     public Conditional withBody(List<CodeElement> placeholders) {
         this.body = placeholders;
         return this;
+    }
+
+    public Conditional withBody(CodeElement placeholder) {
+        this.body = List.of(placeholder);
+        return this;
+    }
+
+    public List<CodeElement> getBody() {
+        return body;
     }
 }

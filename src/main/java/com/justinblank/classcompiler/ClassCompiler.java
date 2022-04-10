@@ -136,7 +136,12 @@ public class ClassCompiler {
             visitBlock(mv, Optional.empty(), b);
         }
         mv.visitInsn(RETURN);
-        mv.visitMaxs(6, 6);
+        if (debug) {
+            mv.visitMaxs(6, 6);
+        }
+        else {
+            mv.visitMaxs(-1, -1);
+        }
         mv.visitEnd();
     }
 
@@ -159,7 +164,12 @@ public class ClassCompiler {
             for (var block : method.blocks) {
                 visitBlock(mv, vars, block);
             }
-            mv.visitMaxs(12, 12);
+            if (debug) {
+                mv.visitMaxs(12, 12);
+            }
+            else {
+                mv.visitMaxs(-1, -1);
+            }
             mv.visitEnd();
         }
         catch (Exception e) {
