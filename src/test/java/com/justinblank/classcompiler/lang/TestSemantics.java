@@ -120,6 +120,40 @@ public class TestSemantics {
     }
 
     @Test
+    public void testIntCasts() throws Exception {
+        apply(TestCastMethods.castIntMethod(Builtin.I), 1);
+        apply(TestCastMethods.castIntMethod(Builtin.F), 1.0f);
+        apply(TestCastMethods.castIntMethod(Builtin.D), 1.0d);
+        apply(TestCastMethods.castIntMethod(Builtin.L), 1L);
+    }
+
+    @Test
+    public void testFloatCasts() throws Exception {
+        apply(TestCastMethods.castFloatMethod(Builtin.I), 1);
+        apply(TestCastMethods.castFloatMethod(Builtin.F), 1.3f);
+        // cast floating to double introduces some error
+        var d = call(TestCastMethods.castFloatMethod(Builtin.D));
+        assertEquals(1.3d, (Double) d, .00001d);
+        apply(TestCastMethods.castFloatMethod(Builtin.L), 1L);
+    }
+
+    @Test
+    public void testLongCasts() throws Exception {
+        apply(TestCastMethods.castLongMethod(Builtin.I), Integer.MIN_VALUE);
+        apply(TestCastMethods.castLongMethod(Builtin.F), (float) (1L + Integer.MAX_VALUE));
+        apply(TestCastMethods.castLongMethod(Builtin.D), (double) (Integer.MAX_VALUE + 1L));
+        apply(TestCastMethods.castLongMethod(Builtin.L), 1L + Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void testDoubleCasts() throws Exception {
+        apply(TestCastMethods.castDoubleMethod(Builtin.I), 23);
+        apply(TestCastMethods.castDoubleMethod(Builtin.F), 23.4f);
+        apply(TestCastMethods.castDoubleMethod(Builtin.D), 23.4d);
+        apply(TestCastMethods.castDoubleMethod(Builtin.L), 23L);
+    }
+
+    @Test
     public void testNestedLoop() throws Exception {
         apply(TestMethods.nestedLoop(), 64);
     }

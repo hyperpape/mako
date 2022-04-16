@@ -101,6 +101,8 @@ public class TypeInference {
             return ((StaticFieldReference) element).type;
         } else if (element instanceof ArrayLength) {
             return Builtin.I;
+        } else if (element instanceof Cast) {
+            return ((Cast) element).outputType;
         } else {
             throw new IllegalStateException("Unhandled instance: " + element);
         }

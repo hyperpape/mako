@@ -274,18 +274,22 @@ public class Method {
             if (lit.value instanceof Integer) {
                 var value = (Integer) lit.value;
                 currentBlock().push(value);
-            }
-            else if (lit.value instanceof Double) {
+            } else if (lit.value instanceof Double) {
                 var value = (Double) lit.value;
                 currentBlock().push(value);
-            }
-            else if (lit.value instanceof Float) {
+            } else if (lit.value instanceof Float) {
                 var value = (Float) lit.value;
                 currentBlock().push(value);
-            }
-            else if (lit.value instanceof Long) {
+            } else if (lit.value instanceof Long) {
                 var value = (Long) lit.value;
                 currentBlock().push(value);
+            }
+        } else if (element instanceof Cast) {
+            var cast = (Cast) element;
+            resolve(cast.expression);
+            var opcode = cast.op(typeInference.analyze(cast.expression, typeEnvironment));
+            if (opcode > 0) {
+                currentBlock().operate(opcode);
             }
         } else if (element instanceof ReturnExpression) {
             var returnExpression = (ReturnExpression) element;
@@ -598,7 +602,6 @@ public class Method {
         }
     }
 
-
     private String buildDescriptor(Call call) {
         var sb = new StringBuilder();
         sb.append('(');
@@ -623,8 +626,9 @@ public class Method {
             boolean matches = true;
             for (var i = 0; i < concreteTypes.size(); i++) {
                 var argumentType = method.argumentTypes.get(i);
-                if (!argumentType.equals(concreteTypes.get(i))) {
-                    if (!assignable(argumentType, concreteTypes.get(i))) {
+                var concreteType = concreteTypes.get(i);
+                if (!argumentType.equals(concreteType)) {
+                    if (!assignable(argumentType, concreteType) || hasNumericCast(argumentType, concreteType)) {
                         matches = false;
                     }
                 }
@@ -634,6 +638,10 @@ public class Method {
             }
         }
         return concreteTypes;
+    }
+
+    private boolean hasNumericCast(Type argumentType, Type concreteType) {
+        return argumentType instanceof Builtin && concreteType instanceof Builtin;
     }
 
     private boolean assignable(Type paramType, Type type) {

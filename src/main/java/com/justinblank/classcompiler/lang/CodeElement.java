@@ -42,6 +42,10 @@ public interface CodeElement {
         return new Call(CompilerUtil.internalName(cls), methodName, type, true, false, false, arguments);
     }
 
+    static Expression cast(Type outputType, Expression value) {
+        return new Cast(outputType, value);
+    }
+
     static Constructor construct(Type type, Expression...arguments) {
         return new Constructor(type, arguments);
     }
