@@ -63,17 +63,22 @@ public class TestSyntax {
 
     @Test
     public void testAddition() throws Exception {
-        apply(TestMethods.addition());
+        apply(TestBinaryOperators.addition());
     }
 
     @Test
     public void testFloatAddition() throws Exception {
-        apply(TestMethods.floatAddition());
+        apply(TestBinaryOperators.floatAddition());
     }
 
     @Test
     public void testEquality() throws Exception {
-        apply(TestMethods.equality());
+        apply(TestBinaryOperators.equality());
+    }
+
+    @Test
+    public void testModulus() throws Exception {
+        apply(TestBinaryOperators.intModulus(5, 2));
     }
 
     @Test

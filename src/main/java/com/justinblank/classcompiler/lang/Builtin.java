@@ -6,24 +6,26 @@ import static org.objectweb.asm.Opcodes.*;
 
 // TODO: rename primitive?
 public enum Builtin implements Type {
-    I(IADD, ISUB, IMUL, IDIV),
-    F(FADD, FSUB, FMUL, FDIV),
-    L(LADD, LSUB, LMUL, LDIV),
-    D(DADD, DSUB, DMUL, DDIV),
-    BOOL(-1, -1, -1, -1),
-    OCTET(-1, -1, -1, -1);
+    I(IADD, ISUB, IMUL, IDIV, IREM),
+    F(FADD, FSUB, FMUL, FDIV, FREM),
+    L(LADD, LSUB, LMUL, LDIV, LREM),
+    D(DADD, DSUB, DMUL, DDIV, DREM),
+    BOOL(-1, -1, -1, -1, -1),
+    OCTET(-1, -1, -1, -1, -1);
     // TODO: Forgot char, did ye?
 
     private final int addOperation;
     private final int subOperation;
     private final int multiplicationOperation;
     private final int divisionOperation;
+    private final int modOperation;
 
-    Builtin(int addOperation, int subOperation, int multiplicationOperation, int divisionOperation) {
+    Builtin(int addOperation, int subOperation, int multiplicationOperation, int divisionOperation, int modOperation) {
         this.addOperation = addOperation;
         this.subOperation = subOperation;
         this.multiplicationOperation = multiplicationOperation;
         this.divisionOperation = divisionOperation;
+        this.modOperation = modOperation;
     }
 
     public Type type() {
@@ -54,6 +56,13 @@ public enum Builtin implements Type {
     public int divisionOperation() {
         if (divisionOperation > 0) {
             return divisionOperation;
+        }
+        throw new IllegalArgumentException("Tried to get an add operation on a type not supporting it" + this.toString());
+    }
+
+    public int modOperation() {
+        if (modOperation > 0) {
+            return modOperation;
         }
         throw new IllegalArgumentException("Tried to get an add operation on a type not supporting it" + this.toString());
     }

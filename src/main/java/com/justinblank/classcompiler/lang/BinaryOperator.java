@@ -117,6 +117,21 @@ public enum BinaryOperator {
         return GREATER_THAN.op(literal(left), literal(right));
     }
 
+    public static Operation mod(Number left, Number right) {
+        return MOD.op(literal(left), literal(right));
+    }
+
+    public static Operation mod(Expression left, Number right) {
+        return MOD.op(left, literal(right));
+    }
+
+    public static Operation mod(Number left, Expression right) {
+        return MOD.op(literal(left), right);
+    }
+
+    public static Operation mod(Expression left, Expression right) {
+        return MOD.op(left, right);
+    }
 
     public int asmOP(Type left, Type right) {
         switch (this) {
@@ -145,6 +160,13 @@ public enum BinaryOperator {
                     return builtin.divisionOperation();
                 }
                 return IDIV;
+            case MOD:
+                if (left.type() instanceof Builtin) {
+                    var builtin = (Builtin) left.type();
+                    return builtin.modOperation();
+                }
+                return IDIV;
+
             case EQUALS:
                 return IF_ICMPEQ;
             case NOT_EQUALS:
@@ -164,6 +186,7 @@ public enum BinaryOperator {
             case SUBTRACT:
             case MULTIPLY:
             case DIVIDE:
+            case MOD:
                 return left;
             case EQUALS:
             case NOT_EQUALS:

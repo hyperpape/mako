@@ -86,12 +86,17 @@ public class TestSemantics {
 
     @Test
     public void testAddition() throws Exception {
-        apply(TestMethods.addition(), 3);
+        apply(TestBinaryOperators.addition(), 3);
     }
 
     @Test
     public void testEquality() throws Exception {
-        apply(TestMethods.equality(), 0); // TODO
+        apply(TestBinaryOperators.equality(), 0); // TODO
+    }
+
+    @Test
+    public void testIntModulus() throws Exception {
+        apply(TestBinaryOperators.intModulus(5, 2), 1);
     }
 
     @Test

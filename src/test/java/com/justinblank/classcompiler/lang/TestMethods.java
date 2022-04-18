@@ -110,27 +110,6 @@ public class TestMethods {
         return method;
     }
 
-    public static Method addition() {
-        var vars = new GenericVars();
-        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
-        method.returnValue(plus(1, 2));
-        return method;
-    }
-
-    public static Method floatAddition() {
-        var vars = new GenericVars();
-        var method = new Method(TEST_METHOD, List.of(), Builtin.F, vars);
-        method.returnValue(plus(1.0f, 2.0f));
-        return method;
-    }
-
-    public static Method equality() {
-        var vars = new GenericVars();
-        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
-        method.returnValue(eq(1, 2));
-        return method;
-    }
-
     public static Method trivialLoop() {
         var vars = new GenericVars();
         vars.addVar("a");
