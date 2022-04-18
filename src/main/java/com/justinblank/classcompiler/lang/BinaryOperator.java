@@ -69,6 +69,22 @@ public enum BinaryOperator {
         return MULTIPLY.op(literal(left), literal(right));
     }
 
+    public static Operation div(Number left, Number right) {
+        return DIVIDE.op(literal(left), literal(right));
+    }
+
+    public static Operation div(Expression left, Expression right) {
+        return DIVIDE.op(left, right);
+    }
+
+    public static Operation div(Number left, Expression right) {
+        return DIVIDE.op(literal(left), right);
+    }
+
+    public static Operation div(Expression left, Number right) {
+        return DIVIDE.op(left, literal(right));
+    }
+
     public static Operation eq(Expression left, Expression right) {
         return EQUALS.op(left, right);
     }
