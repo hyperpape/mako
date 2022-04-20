@@ -96,6 +96,10 @@ public class ClassBuilder {
         return methods.values().stream().flatMap(List::stream).collect(Collectors.toSet());
     }
 
+    public boolean hasMethod(String name) {
+        return methods.containsKey(name);
+    }
+
     protected List<Field> getFields() {
         return fields;
     }
