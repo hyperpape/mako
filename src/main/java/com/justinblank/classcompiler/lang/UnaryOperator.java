@@ -1,5 +1,7 @@
 package com.justinblank.classcompiler.lang;
 
+import org.objectweb.asm.Opcodes;
+
 // TODO: this might clash with the standard library
 public enum UnaryOperator {
 
@@ -14,6 +16,10 @@ public enum UnaryOperator {
     }
 
     public int asmOP(Type type) {
+        switch (this) {
+            case NOT:
+                return Opcodes.INEG;
+        }
         throw new UnsupportedOperationException();
     }
 

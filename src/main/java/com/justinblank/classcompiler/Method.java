@@ -352,6 +352,17 @@ public class Method {
                     currentBlock().operate(operation.asmOP(this));
                     return;
             }
+        } else if (element instanceof Unary) {
+            var unary = (Unary) element;
+            resolve(unary.expression);
+            switch (unary.operator) {
+                case NOT:
+                    currentBlock().push(1);
+                    currentBlock().operate(IXOR);
+                    break;
+                default:
+                    currentBlock().operate(unary.operator.asmOP(typeInference.analyze(unary.expression, typeEnvironment)));
+            }
         } else if (element instanceof Loop) {
             var loop = (Loop) element;
             var conditionsBlock = currentBlock.push(addBlock());
