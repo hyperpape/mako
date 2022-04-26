@@ -186,6 +186,11 @@ public class TestSemantics {
     }
 
     @Test
+    public void testNegatedConditional() throws Exception {
+        apply(TestMethods.negatedConditional(), 4);
+    }
+
+    @Test
     public void testTwoSequentialConditionals() throws Exception {
         apply(TestMethods.twoSequentialConditionals(), 3);
     }

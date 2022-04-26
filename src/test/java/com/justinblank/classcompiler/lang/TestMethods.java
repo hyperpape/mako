@@ -15,6 +15,7 @@ import static com.justinblank.classcompiler.lang.BinaryOperator.*;
 import static com.justinblank.classcompiler.lang.CodeElement.*;
 import static com.justinblank.classcompiler.lang.Literal.literal;
 import static com.justinblank.classcompiler.lang.NewArray.newArray;
+import static com.justinblank.classcompiler.lang.UnaryOperator.not;
 
 public class TestMethods {
 
@@ -169,6 +170,16 @@ public class TestMethods {
         var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.set("i", 2);
         method.cond(eq(read("i"), 2)).withBody(List.of(returnValue(3)));
+        method.returnValue(4);
+        return method;
+    }
+
+    public static Method negatedConditional() {
+        var vars = new GenericVars();
+        vars.addVar("i");
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
+        method.set("i", 2);
+        method.cond(not(eq(read("i"), 2))).withBody(List.of(returnValue(3)));
         method.returnValue(4);
         return method;
     }

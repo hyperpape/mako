@@ -153,6 +153,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testNegatedConditional() throws Exception {
+        apply(TestMethods.negatedConditional());
+    }
+
+    @Test
     public void testTwoSequentialConditionals() throws Exception {
         apply(TestMethods.twoSequentialConditionals());
     }

@@ -357,8 +357,7 @@ public class Method {
             resolve(unary.expression);
             switch (unary.operator) {
                 case NOT:
-                    currentBlock().push(1);
-                    currentBlock().operate(IXOR);
+                    addBlock().push(1).operate(IXOR);
                     break;
                 default:
                     currentBlock().operate(unary.operator.asmOP(typeInference.analyze(unary.expression, typeEnvironment)));
