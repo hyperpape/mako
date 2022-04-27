@@ -95,6 +95,16 @@ public class TestSemantics {
     }
 
     @Test
+    public void testReferenceEquality() throws Exception {
+        apply(TestOperators.referenceEquality(), 1);
+    }
+
+    @Test
+    public void testReferenceInEquality() throws Exception {
+        apply(TestOperators.referenceInequality(), 0);
+    }
+
+    @Test
     public void testNotAppliedToTrue() throws Exception {
         apply(TestOperators.testNotAppliedToTrue(), 0); // TODO boolean
     }

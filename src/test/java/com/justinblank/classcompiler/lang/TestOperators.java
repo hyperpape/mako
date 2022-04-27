@@ -2,10 +2,13 @@ package com.justinblank.classcompiler.lang;
 
 import com.justinblank.classcompiler.GenericVars;
 import com.justinblank.classcompiler.Method;
+import org.junit.internal.runners.TestMethod;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.justinblank.classcompiler.lang.BinaryOperator.*;
+import static com.justinblank.classcompiler.lang.CodeElement.getStatic;
 import static com.justinblank.classcompiler.lang.UnaryOperator.not;
 
 public class TestOperators {
@@ -28,6 +31,24 @@ public class TestOperators {
         var vars = new GenericVars();
         var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.I, vars);
         method.returnValue(eq(1, 2));
+        return method;
+    }
+
+    public static Method referenceEquality() {
+        var vars = new GenericVars();
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.I, vars);
+        method.returnValue(eq(
+                getStatic("ZERO", ReferenceType.of(BigDecimal.class), ReferenceType.of(BigDecimal.class)),
+                getStatic("ZERO", ReferenceType.of(BigDecimal.class), ReferenceType.of(BigDecimal.class))));
+        return method;
+    }
+
+    public static Method referenceInequality() {
+        var vars = new GenericVars();
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.I, vars);
+        method.returnValue(neq(
+                getStatic("ZERO", ReferenceType.of(BigDecimal.class), ReferenceType.of(BigDecimal.class)),
+                getStatic("ZERO", ReferenceType.of(BigDecimal.class), ReferenceType.of(BigDecimal.class))));
         return method;
     }
 

@@ -101,6 +101,22 @@ public enum BinaryOperator {
         return EQUALS.op(literal(left), literal(right));
     }
 
+    public static Operation neq(Expression left, Expression right) {
+        return NOT_EQUALS.op(left, right);
+    }
+
+    public static Operation neq(Number left, Expression right) {
+        return NOT_EQUALS.op(literal(left), right);
+    }
+
+    public static Operation neq(Expression left, Number right) {
+        return NOT_EQUALS.op(left, literal(right));
+    }
+
+    public static Operation neq(Number left, Number right) {
+        return NOT_EQUALS.op(literal(left), literal(right));
+    }
+
     public static Operation lt(Expression left, Expression right) {
         return LESS_THAN.op(left, right);
     }
@@ -184,8 +200,14 @@ public enum BinaryOperator {
                 return IDIV;
 
             case EQUALS:
+                if (left.type() instanceof ReferenceType) {
+                    return IF_ACMPEQ;
+                }
                 return IF_ICMPEQ;
             case NOT_EQUALS:
+                if (left.type() instanceof ReferenceType) {
+                    return IF_ACMPNE;
+                }
                 return IF_ICMPNE;
             case LESS_THAN:
                 return IF_ICMPLT;

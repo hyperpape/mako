@@ -77,6 +77,16 @@ public class TestSyntax {
     }
 
     @Test
+    public void testReferenceEquality() throws Exception {
+        apply(TestOperators.referenceEquality());
+    }
+
+    @Test
+    public void testReferenceInquality() throws Exception {
+        apply(TestOperators.referenceInequality());
+    }
+
+    @Test
     public void testNotAppliedToTrue() throws Exception {
         apply(TestOperators.testNotAppliedToTrue());
     }
