@@ -7,6 +7,8 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.justinblank.classcompiler.Operation.Inst.CALL;
+
 public class ClassPrinter {
 
     static final Map<Integer, String> REPRESENTATIONS = new HashMap<Integer, String>();
@@ -92,8 +94,9 @@ public class ClassPrinter {
                 println(op.target);
                 return;
             case CALL:
+            case READ_STATIC:
                 print(op.spec.isSelf ? "Self" : op.spec.className);
-                print("#");
+                print(op.inst == CALL ? "#" : ".");
                 println(op.spec.name);
                 return;
             case READ_FIELD:
