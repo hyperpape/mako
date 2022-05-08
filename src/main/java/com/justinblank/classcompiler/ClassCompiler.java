@@ -48,7 +48,8 @@ public class ClassCompiler {
 
     public Class<?> generateClass() {
         byte[] classBytes = generateClassAsBytes();
-        return MyClassLoader.getInstance().loadClass(classBuilder.getClassName(), classBytes);
+        var name = CompilerUtil.internalNameToCanonicalName(classBuilder.getFQCN());
+        return MyClassLoader.getInstance().loadClass(name, classBytes);
     }
 
     protected String getClassName() {
@@ -146,7 +147,7 @@ public class ClassCompiler {
     }
 
     private void defineClass(ClassBuilder builder) {
-        classVisitor.visit(Opcodes.V1_8, ACC_PUBLIC, builder.getClassName(), null, classBuilder.superClass, classBuilder.interfaces);
+        classVisitor.visit(Opcodes.V1_8, ACC_PUBLIC, CompilerUtil.internalName(builder.getFQCN()), null, classBuilder.superClass, classBuilder.interfaces);
     }
 
     protected final void addFields() {

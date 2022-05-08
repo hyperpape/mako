@@ -237,6 +237,17 @@ public class TestSyntax {
         apply(TestCastMethods.castDoubleMethod(Builtin.L));
     }
 
+    @Test
+    public void testClassInPackage() throws Exception {
+        apply(TestClasses.classInPackage("TestClassInPackageForTestSyntax", "com/justinblank/classcompiler"));
+    }
+
+    static void apply(ClassBuilder classBuilder) throws Exception {
+        var clsBuilder = new ClassCompiler(classBuilder);
+        Class<?> compiled = clsBuilder.generateClass();
+        compiled.getConstructors()[0].newInstance();
+    }
+
     static void apply(Method method) throws Exception {
         apply("TestSyntaxTestClass" + classNumber++, method);
     }
@@ -246,8 +257,8 @@ public class TestSyntax {
         builder.addMethod(method);
         builder.addMethod(builder.addEmptyConstructor());
 
-        var cls = new ClassCompiler(builder);
-        Class<?> compiled = cls.generateClass();
+        var classCompiler = new ClassCompiler(builder);
+        Class<?> compiled = classCompiler.generateClass();
         compiled.getConstructors()[0].newInstance();
     }
 
@@ -261,8 +272,8 @@ public class TestSyntax {
             builder.addMethod(method);
         }
         builder.addMethod(builder.addEmptyConstructor());
-        var cls = new ClassCompiler(builder);
-        Class<?> compiled = cls.generateClass();
+        var classCompiler = new ClassCompiler(builder);
+        Class<?> compiled = classCompiler.generateClass();
         compiled.getConstructors()[0].newInstance();
     }
 }

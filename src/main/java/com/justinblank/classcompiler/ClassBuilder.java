@@ -1,5 +1,6 @@
 package com.justinblank.classcompiler;
 
+import org.apache.commons.lang3.StringUtils;
 import org.objectweb.asm.Opcodes;
 
 import java.util.*;
@@ -16,11 +17,34 @@ public class ClassBuilder {
     final String[] interfaces;
     final List<Block> staticBlocks = new ArrayList<>();
     private final String className;
+    private final String classPackage;
 
     public ClassBuilder(String className, String superClass, String[] interfaces) {
+        this(className, "", superClass, interfaces);
+    }
+
+    public ClassBuilder(String className, Class<?> superClass, String[] interfaces) {
+        this(className, "", superClass, interfaces);
+    }
+
+    public ClassBuilder(String className, String classPackage, String superClass, String[] interfaces) {
+        if (StringUtils.isBlank(className)) {
+            throw new IllegalArgumentException();
+        }
+        if (StringUtils.isBlank(superClass)) {
+            throw new IllegalArgumentException();
+        }
+        Objects.requireNonNull(interfaces);
+        classPackage = StringUtils.defaultString(classPackage);
+
         this.className = className;
+        this.classPackage = classPackage;
         this.superClass = superClass;
         this.interfaces = interfaces;
+    }
+
+    public ClassBuilder(String className, String classPackage, Class<?> superClass, String[] interfaces) {
+        this(className, classPackage, CompilerUtil.internalName(superClass), interfaces);
     }
 
     public void addMethod(Method method) {
@@ -116,5 +140,16 @@ public class ClassBuilder {
 
     public String getClassName() {
         return className;
+    }
+
+    public String getClassPackage() {
+        return classPackage;
+    }
+
+    public String getFQCN() {
+        if (StringUtils.isBlank(classPackage)) {
+            return getClassName();
+        }
+        return getClassPackage() + "." + getClassName();
     }
 }

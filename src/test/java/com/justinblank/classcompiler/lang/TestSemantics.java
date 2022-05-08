@@ -253,11 +253,21 @@ public class TestSemantics {
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
         builder.addMethod(TestMethods.argumentOfReferenceType());
         builder.addMethod(builder.addEmptyConstructor());
-        var cls = new ClassCompiler(builder);
-        Class<?> compiled = cls.generateClass();
+        var classCompiler = new ClassCompiler(builder);
+        Class<?> compiled = classCompiler.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();
         var output = compiled.getMethod(TEST_METHOD, List.of(String.class).toArray(new Class[0])).invoke(instance, "abc");
         assertEquals("abc", output);
+    }
+
+    @Test
+    public void testCreatingClassInPackage() throws Exception {
+        var builder = TestClasses.classInPackage("TestSemanticsPackageClass", "com/justinblank/classcompiler/examples");
+        var classCompiler = new ClassCompiler(builder);
+        Class<?> compiled = classCompiler.generateClass();
+        var instance = compiled.getConstructors()[0].newInstance();
+        assertEquals("com.justinblank.classcompiler.examples.TestSemanticsPackageClass", instance.getClass().getCanonicalName());
+        assertEquals("com.justinblank.classcompiler.examples", instance.getClass().getPackageName());
     }
 
     static void apply(Method method, Object o) throws Exception {
