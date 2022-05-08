@@ -20,4 +20,13 @@ public class TestClasses {
         method2.returnValue(call("createAndReturnInteger", ReferenceType.of(Integer.class), thisRef()));
         return classBuilder;
     }
+
+    public static ClassBuilder classInPackageWithStaticAccess(String className, String classPackage) {
+        ClassBuilder classBuilder = new ClassBuilder(className, classPackage, Object.class, new String[]{});
+        classBuilder.addConstant("DASH", CompilerUtil.STRING_DESCRIPTOR, "-");
+        classBuilder.addEmptyConstructor();
+        var method = classBuilder.mkMethod("returnString", new ArrayList<>(), CompilerUtil.descriptor(String.class));
+        method.returnValue(getStatic("DASH", ReferenceType.of(classBuilder.getFQCN()), ReferenceType.of(String.class)));
+        return classBuilder;
+    }
 }

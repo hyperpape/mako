@@ -280,6 +280,15 @@ public class TestSemantics {
         assertEquals("com.justinblank.classcompiler.examples", instance.getClass().getPackageName());
     }
 
+    @Test
+    public void testClassInPackageWithStaticAccess() throws Exception {
+        var builder = TestClasses.classInPackageWithStaticAccess("TestSemanticsPackageClass3", "com/justinblank/classcompiler/examples");
+        var classCompiler = new ClassCompiler(builder);
+        Class<?> compiled = classCompiler.generateClass();
+        var instance = compiled.getConstructors()[0].newInstance();
+        assertEquals("-", instance.getClass().getDeclaredMethod("returnString").invoke(instance));
+    }
+
     static void apply(Method method, Object o) throws Exception {
         Object output = call(method);
         Class c = o.getClass();
