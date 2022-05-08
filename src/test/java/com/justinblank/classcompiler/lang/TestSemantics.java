@@ -270,6 +270,16 @@ public class TestSemantics {
         assertEquals("com.justinblank.classcompiler.examples", instance.getClass().getPackageName());
     }
 
+    @Test
+    public void testCreatingClassInPackageWithDot() throws Exception {
+        var builder = TestClasses.classInPackage("TestSemanticsPackageClass2", "com.justinblank.classcompiler.examples");
+        var classCompiler = new ClassCompiler(builder);
+        Class<?> compiled = classCompiler.generateClass();
+        var instance = compiled.getConstructors()[0].newInstance();
+        assertEquals("com.justinblank.classcompiler.examples.TestSemanticsPackageClass2", instance.getClass().getCanonicalName());
+        assertEquals("com.justinblank.classcompiler.examples", instance.getClass().getPackageName());
+    }
+
     static void apply(Method method, Object o) throws Exception {
         Object output = call(method);
         Class c = o.getClass();

@@ -242,6 +242,11 @@ public class TestSyntax {
         apply(TestClasses.classInPackage("TestClassInPackageForTestSyntax", "com/justinblank/classcompiler"));
     }
 
+    @Test
+    public void testClassInPackageWithDot() throws Exception {
+        apply(TestClasses.classInPackage("TestClassInPackageForTestSyntax2", "com.justinblank.classcompiler"));
+    }
+
     static void apply(ClassBuilder classBuilder) throws Exception {
         var clsBuilder = new ClassCompiler(classBuilder);
         Class<?> compiled = clsBuilder.generateClass();

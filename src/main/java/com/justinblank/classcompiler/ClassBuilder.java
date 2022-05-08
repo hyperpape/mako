@@ -35,7 +35,7 @@ public class ClassBuilder {
             throw new IllegalArgumentException();
         }
         Objects.requireNonNull(interfaces);
-        classPackage = StringUtils.defaultString(classPackage);
+        classPackage = CompilerUtil.internalName(StringUtils.defaultString(classPackage));
 
         this.className = className;
         this.classPackage = classPackage;
