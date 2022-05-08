@@ -13,6 +13,7 @@ public class Method {
     public final String methodName;
     private TypeInference typeInference;
     private final Map<String, TypeVariable> typeEnvironment = new HashMap<>();
+    private String classPackage;
     private String className;
     final int modifiers;
     final List<String> arguments;
@@ -591,6 +592,9 @@ public class Method {
 
     private String getClassName(Expression argument) {
         if (argument instanceof ThisRef) {
+            if (StringUtils.isNotBlank(classPackage)) {
+                return classPackage + "." + className;
+            }
             return className;
         }
         else {
@@ -713,8 +717,9 @@ public class Method {
         elements.add(element);
     }
 
-    public void setClassName(String className) {
+    public void setClass(String className, String classPackage) {
         this.className = className;
+        this.classPackage = classPackage;
         this.typeInference = new TypeInference(className);
     }
 }

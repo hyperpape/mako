@@ -58,7 +58,7 @@ public class ClassCompiler {
 
     public byte[] writeClassAsBytes() {
         for (var method : methodsToWrite(classBuilder.allMethods())) {
-            method.setClassName(getClassName());
+            method.setClass(getClassName(), classBuilder.getClassPackage());
             method.resolve();
         }
         if (debug) {
