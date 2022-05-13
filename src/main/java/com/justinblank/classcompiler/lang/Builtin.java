@@ -86,11 +86,11 @@ public enum Builtin implements Type {
 
     /**
      * Return the builtin corresponding to a type, null if it cannot be recognized
-     * @param returnType
-     * @return
+     * @param type the type string  
+     * @return the builtin type corresponding to the passed string
      */
-    public static Optional<Builtin> from(String returnType) {
-        switch (returnType) {
+    public static Optional<Builtin> from(String type) {
+        switch (type) {
             case "I":
                 return Optional.of(I);
             case "F":
