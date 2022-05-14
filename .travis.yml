@@ -2,3 +2,4 @@ dist: trusty
 language: java
 jdk: oraclejdk11
 sudo: false
+script: "mvn compile test"
