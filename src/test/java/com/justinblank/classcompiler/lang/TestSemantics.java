@@ -52,8 +52,8 @@ public class TestSemantics {
 
     @Test
     public void testOneArgConstructor() throws Exception {
-        var sb = call(TestMethods.callOneArgumentConstructor());
-        assertEquals("", sb.toString());
+        var i = call(TestMethods.callOneArgumentConstructor());
+        assertEquals(16, i);
     }
 
     @Test

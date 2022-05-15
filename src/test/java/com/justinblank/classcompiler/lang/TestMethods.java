@@ -46,8 +46,8 @@ public class TestMethods {
     }
 
     public static Method callOneArgumentConstructor() {
-        var method = new Method(TEST_METHOD, List.of(), StringBuilder.class, new GenericVars());
-        method.returnValue(construct(ReferenceType.of(StringBuilder.class), literal(16)));
+        var method = new Method(TEST_METHOD, List.of(), Integer.class, new GenericVars());
+        method.returnValue(construct(ReferenceType.of(Integer.class), literal(16)));
         return method;
     }
 

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 
 import static com.justinblank.classcompiler.lang.Literal.literal;
+import static com.justinblank.classcompiler.lang.Void.VOID;
 import static org.objectweb.asm.Opcodes.*;
 
 public class Method {
@@ -106,7 +107,7 @@ public class Method {
     }
 
     public String descriptor() {
-        return "(" + StringUtils.join(arguments, "") + ")" + returnType;
+        return CompilerUtil.descriptor(arguments, returnType);
     }
 
     public Optional<Vars> getMatchingVars() {
@@ -420,12 +421,16 @@ public class Method {
         }
         else if (element instanceof Constructor) {
             var constructor = (Constructor) element;
-            for (var arg : constructor.arguments) {
-                resolve(arg);
-            }
+            List<String> argumentTypes = new ArrayList<>();
             currentBlock().addOperation(Operation.mkConstructor(CompilerUtil.internalName(constructor.returnType)));
             currentBlock().operate(DUP);
-            currentBlock().call("<init>", CompilerUtil.internalName(constructor.returnType), "()V", true);
+
+            for (var arg : constructor.arguments) {
+                resolve(arg);
+                argumentTypes.add(typeInference.analyze(arg, typeEnvironment).typeString());
+            }
+            var constructorDescriptor = CompilerUtil.descriptor(argumentTypes, VOID.typeString());
+            currentBlock().call("<init>", CompilerUtil.internalName(constructor.returnType), constructorDescriptor, true);
         }
         else if (element instanceof Conditional) {
             var cond = (Conditional) element;

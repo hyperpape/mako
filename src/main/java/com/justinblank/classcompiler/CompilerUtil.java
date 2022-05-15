@@ -1,7 +1,10 @@
 package com.justinblank.classcompiler;
 
 import com.justinblank.classcompiler.lang.*;
+import org.apache.commons.lang3.StringUtils;
 import org.objectweb.asm.MethodVisitor;
+
+import java.util.List;
 
 import static org.objectweb.asm.Opcodes.*;
 import static org.objectweb.asm.Opcodes.SIPUSH;
@@ -77,6 +80,10 @@ public class CompilerUtil {
         else {
             throw new IllegalStateException("Got an unrecognized type:" + type);
         }
+    }
+
+    public static String descriptor(List<String> arguments, String returnType) {
+        return "(" + StringUtils.join(arguments, "") + ")" + returnType;
     }
 
     public static int returnForType(String string) {
