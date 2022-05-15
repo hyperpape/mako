@@ -11,7 +11,7 @@
     <url>https://github.com/hyperpape/mako</url>
     <artifactId>mako</artifactId>
     <groupId>com.justinblank</groupId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
