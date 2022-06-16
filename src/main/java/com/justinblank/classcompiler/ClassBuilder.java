@@ -19,12 +19,13 @@ public class ClassBuilder {
     private final String className;
     private final String classPackage;
 
-    public ClassBuilder(String className, String superClass, String[] interfaces) {
-        this(className, "", superClass, interfaces);
-    }
-
-    public ClassBuilder(String className, Class<?> superClass, String[] interfaces) {
-        this(className, "", superClass, interfaces);
+    /**
+     * Construct a ClassBuilder for a class that inherits from Object and implements no interfaces
+     * @param className the classname
+     * @param classPackage the package of the class
+     */
+    public ClassBuilder(String className, String classPackage) {
+        this(className, classPackage, "java/lang/Object", null);
     }
 
     public ClassBuilder(String className, String classPackage, String superClass, String[] interfaces) {

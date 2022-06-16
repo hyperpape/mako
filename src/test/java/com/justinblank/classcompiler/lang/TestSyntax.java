@@ -263,7 +263,7 @@ public class TestSyntax {
     }
 
     static void apply(String className, Method method) throws Exception {
-        var builder = new ClassBuilder(className, "java/lang/Object", new String[]{});
+        var builder = new ClassBuilder(className, "", "java/lang/Object", new String[]{});
         builder.addMethod(method);
         builder.addMethod(builder.addEmptyConstructor());
 
@@ -277,7 +277,7 @@ public class TestSyntax {
     }
 
     static void apply(String className, Method...methods) throws Exception {
-        var builder = new ClassBuilder(className, "java/lang/Object", new String[]{});
+        var builder = new ClassBuilder(className, "", "java/lang/Object", new String[]{});
         for (var method : methods) {
             builder.addMethod(method);
         }

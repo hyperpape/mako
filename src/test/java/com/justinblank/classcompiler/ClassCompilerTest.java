@@ -15,7 +15,7 @@ public class ClassCompilerTest {
     @Test
     public void testLoop() throws Exception {
         String testClassName = testClassName();
-        ClassBuilder builder = new ClassBuilder(testClassName, "java/lang/Object", new String[]{});
+        ClassBuilder builder = new ClassBuilder(testClassName, "", "java/lang/Object", new String[]{});
         builder.addEmptyConstructor();
         var method = builder.mkMethod("iterate", List.of(), "I");
 
@@ -49,7 +49,7 @@ public class ClassCompilerTest {
     @Test
     public void testCall() throws Exception {
         String testClassName = testClassName();
-        ClassBuilder builder = new ClassBuilder(testClassName, "java/lang/Object", new String[]{});
+        ClassBuilder builder = new ClassBuilder(testClassName, "", "java/lang/Object", new String[]{});
         builder.addEmptyConstructor();
         var vars = new GenericVars();
         vars.addVar("string");
@@ -68,7 +68,7 @@ public class ClassCompilerTest {
     @Test
     public void testEliminatesDeadPrivateMethods() throws Exception {
         var testClassName = testClassName();
-        ClassBuilder builder = new ClassBuilder(testClassName, "java/lang/Object", new String[]{});
+        ClassBuilder builder = new ClassBuilder(testClassName, "", "java/lang/Object", new String[]{});
         builder.addEmptyConstructor();
         var vars = new GenericVars();
         vars.addVar("string");
@@ -89,11 +89,18 @@ public class ClassCompilerTest {
     @Test
     public void testCanCompileWithoutInterfaces() throws Exception {
         var testClassName = testClassName();
-        ClassBuilder builder = new ClassBuilder(testClassName, "java/lang/Object", null);
+        ClassBuilder builder = new ClassBuilder(testClassName, "", "java/lang/Object", null);
         builder.addEmptyConstructor();
 
         Class<?> c = new ClassCompiler(builder).generateClass();
         Object o = c.getConstructors()[0].newInstance();
+    }
+
+    @Test
+    public void testConstructorSkeleton() {
+        var testClassName = testClassName();
+        ClassBuilder builder = new ClassBuilder(testClassName, "", "java/lang/Object", null);
+
     }
 
     public static String testClassName() {

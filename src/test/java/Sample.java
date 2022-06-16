@@ -62,7 +62,7 @@ public class Sample {
     }
 
     public static Class<?> compilerMark1Fibonacci() {
-        ClassBuilder cb = new ClassBuilder("fibonacci1", "java/lang/Object", new String[]{});
+        ClassBuilder cb = new ClassBuilder("fibonacci1", "", "java/lang/Object", new String[]{});
         cb.addEmptyConstructor();
         var vars = new GenericVars("x");
         var method = cb.mkMethod("fibonacci", List.of("I"), "I", vars);

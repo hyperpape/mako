@@ -226,7 +226,7 @@ public class TestSemantics {
 
     @Test
     public void testCallInterfaceMethod() throws Exception {
-        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
+        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "", "java/lang/Object", new String[]{});
         builder.addMethod(TestMethods.callInterfaceMethod());
         builder.addMethod(builder.addEmptyConstructor());
         var cls = new ClassCompiler(builder);
@@ -238,7 +238,7 @@ public class TestSemantics {
 
     @Test
     public void testFibonacci() throws Exception {
-        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
+        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "", "java/lang/Object", new String[]{});
         builder.addMethod(TestMethods.fibonacci());
         builder.addMethod(builder.addEmptyConstructor());
         var cls = new ClassCompiler(builder);
@@ -250,7 +250,7 @@ public class TestSemantics {
 
     @Test
     public void testArgumentOfReferenceType() throws Exception {
-        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
+        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "", "java/lang/Object", new String[]{});
         builder.addMethod(TestMethods.argumentOfReferenceType());
         builder.addMethod(builder.addEmptyConstructor());
         var classCompiler = new ClassCompiler(builder);
@@ -302,7 +302,7 @@ public class TestSemantics {
     }
 
     private static Object call(Method method) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
-        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
+        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "", "java/lang/Object", new String[]{});
         builder.addMethod(method);
         builder.addMethod(builder.addEmptyConstructor());
         var cls = new ClassCompiler(builder);
@@ -317,7 +317,7 @@ public class TestSemantics {
     }
 
     private static Object call(Method method, List<Object> arguments, Method[] methods) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
-        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "java/lang/Object", new String[]{});
+        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "", "java/lang/Object", new String[]{});
         builder.addMethod(method);
         for (var otherMethod : methods) {
             builder.addMethod(otherMethod);

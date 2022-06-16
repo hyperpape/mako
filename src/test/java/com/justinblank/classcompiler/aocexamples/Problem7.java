@@ -24,7 +24,7 @@ public class Problem7 {
     @Test
     public void problem7() {
         try {
-            var builder = new ClassBuilder("Problem7", "java/lang/Object", new String[]{CompilerUtil.internalName(Supplier.class)});
+            var builder = new ClassBuilder("Problem7", "", "java/lang/Object", new String[]{CompilerUtil.internalName(Supplier.class)});
             builder.addMethod(builder.addEmptyConstructor());
             builder.addMethod(mkSolveMethod());
             builder.addMethod(mkGetMethod());
