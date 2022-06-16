@@ -12,7 +12,6 @@ import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
 public class ClassCompilerTest {
 
     public static final AtomicInteger CLASS_NAME_COUNTER = new AtomicInteger();
-
     @Test
     public void testLoop() throws Exception {
         String testClassName = testClassName();
@@ -85,6 +84,16 @@ public class ClassCompilerTest {
         Class<?> c = new ClassCompiler(builder).generateClass();
         Object o = c.getConstructors()[0].newInstance();
         assertThrows(NoSuchMethodException.class, () -> o.getClass().getMethod("foo"));
+    }
+
+    @Test
+    public void testCanCompileWithoutInterfaces() throws Exception {
+        var testClassName = testClassName();
+        ClassBuilder builder = new ClassBuilder(testClassName, "java/lang/Object", null);
+        builder.addEmptyConstructor();
+
+        Class<?> c = new ClassCompiler(builder).generateClass();
+        Object o = c.getConstructors()[0].newInstance();
     }
 
     public static String testClassName() {

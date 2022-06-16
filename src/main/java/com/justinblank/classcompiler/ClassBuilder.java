@@ -34,7 +34,6 @@ public class ClassBuilder {
         if (StringUtils.isBlank(superClass)) {
             throw new IllegalArgumentException();
         }
-        Objects.requireNonNull(interfaces);
         classPackage = CompilerUtil.internalName(StringUtils.defaultString(classPackage));
 
         this.className = className;
