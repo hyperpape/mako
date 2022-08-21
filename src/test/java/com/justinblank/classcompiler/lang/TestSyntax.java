@@ -127,6 +127,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testSetField() throws Exception {
+        apply(TestMethods.setField());
+    }
+
+    @Test
     public void testReadStatic() throws Exception {
         apply(TestMethods.readStatic());
     }

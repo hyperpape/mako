@@ -61,11 +61,12 @@ public class TypeInference {
             }
             if (type instanceof TypeVariable) {
                 environment.put(assignment.variable, (TypeVariable) type);
-            }
-            else {
+            } else {
                 environment.put(assignment.variable, TypeVariable.of(type));
             }
             return type;
+        } else if (element instanceof FieldSet) {
+            return null; // YOLO // TODO
         } else if (element instanceof Loop) {
             var loop = (Loop) element;
             if (loop.condition != null) {

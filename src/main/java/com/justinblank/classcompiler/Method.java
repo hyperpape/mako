@@ -176,6 +176,11 @@ public class Method {
         return this;
     }
 
+    public Method fieldSet(FieldReference ref, Expression expression) {
+        this.elements.add(CodeElement.fieldSet(ref, expression));
+        return this;
+    }
+
     public Method arraySet(Expression arrayRef, Expression index, Expression value) {
         this.elements.add(ArraySet.arraySet(arrayRef, index, value));
         return this;
@@ -331,6 +336,16 @@ public class Method {
             currentBlock().readStatic(staticFieldReference.fieldName,
                     CompilerUtil.internalName(staticFieldReference.receiver),
                     CompilerUtil.descriptor(staticFieldReference.type));
+        } else if (element instanceof FieldSet) {
+            var set = (FieldSet) element;
+            var fieldReference = set.fieldReference;
+            var expression = set.expression;
+            resolve(fieldReference.expression);
+            resolve(expression);
+            currentBlock().addOperation(
+                    Operation.mkSetField(fieldReference.fieldName,
+                            CompilerUtil.internalName(typeInference.analyze(fieldReference.expression, typeEnvironment)),
+                            descriptorForExpression(expression)));
         } else if (element instanceof Assignment) {
             var assignment = (Assignment) element;
             resolve(assignment.expression);

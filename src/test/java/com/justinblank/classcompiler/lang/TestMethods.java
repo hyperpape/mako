@@ -253,6 +253,17 @@ public class TestMethods {
         return method;
     }
 
+    public static Method setField() {
+        var method = new Method(TEST_METHOD, List.of(), Void.VOID, new GenericVars());
+        method.fieldSet(
+                get("i", Builtin.I,
+                callStatic(
+                        CompilerUtil.internalName(ClassWithField.class),
+                        "create", ReferenceType.of(ClassWithField.class))), literal(0));
+        method.returnVoid();
+        return method;
+    }
+
     public static Method readStatic() {
         var method = new Method(TEST_METHOD, List.of(), ReferenceType.of(Boolean.class), new GenericVars());
         method.returnValue(getStatic("TRUE", ReferenceType.of(Boolean.class), ReferenceType.of(Boolean.class)));

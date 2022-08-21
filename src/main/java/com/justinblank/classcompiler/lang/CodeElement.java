@@ -74,6 +74,10 @@ public interface CodeElement {
         return new StaticFieldReference(fieldName, classType, fieldType);
     }
 
+    static FieldSet fieldSet(FieldReference fieldReference, Expression expression) {
+        return new FieldSet(fieldReference, expression);
+    }
+
     static Statement set(String name, Expression value) {
         return new Assignment(name, value);
     }
@@ -81,6 +85,7 @@ public interface CodeElement {
     static Statement set(String name, Number value) {
         return new Assignment(name, literal(value));
     }
+
 
     static Escape escape() {
         return new Escape();
