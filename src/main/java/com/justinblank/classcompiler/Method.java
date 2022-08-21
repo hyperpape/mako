@@ -196,6 +196,11 @@ public class Method {
         return this;
     }
 
+    public Method returnVoid() {
+        this.elements.add(CodeElement.returnVoid());
+        return this;
+    }
+
     public Method call(String methodName, Type type, Expression... expressions) {
         this.elements.add(CodeElement.call(methodName, type, expressions));
         return this;
@@ -310,6 +315,8 @@ public class Method {
 
             }
             currentBlock().addReturn(CompilerUtil.returnForType(returnType));
+        } else if (element instanceof ReturnVoid) {
+            currentBlock().addReturn(RETURN);
         } else if (element instanceof VariableRead) {
             var read = (VariableRead) element;
             currentBlock().readVar(getMatchingVars().get().indexByName(read.variable), descriptorForExpression(read));

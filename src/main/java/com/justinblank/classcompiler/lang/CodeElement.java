@@ -98,6 +98,11 @@ public interface CodeElement {
         return new ReturnExpression(literal(number));
     }
 
+    static Statement returnVoid() {
+        return new ReturnVoid();
+    }
+
+
     static Expression thisRef() {
         return new ThisRef();
     }

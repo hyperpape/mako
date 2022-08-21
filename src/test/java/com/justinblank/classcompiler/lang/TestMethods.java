@@ -21,6 +21,11 @@ public class TestMethods {
 
     public static final String TEST_METHOD = "testThingMethod";
 
+    public static Method noOpVoidMethod() {
+        var method = new Method(TEST_METHOD, List.of(), Void.VOID, null);
+        return method.returnVoid();
+    }
+
     public static Method returnLiteral() {
         var method = new Method(TEST_METHOD, List.of(), Builtin.I, null);
         method.returnValue(1);

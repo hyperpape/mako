@@ -86,6 +86,8 @@ public class TypeInference {
         } else if (element instanceof ReturnExpression) {
             var returnExp = (ReturnExpression) element;
             return analyze(returnExp.expression, environment);
+        } else if (element instanceof ReturnVoid) {
+            return Void.VOID;
         } else if (element instanceof Skip || element instanceof Escape) {
             return null;
         } else if (element instanceof NewArray) {
@@ -104,7 +106,7 @@ public class TypeInference {
         } else if (element instanceof Cast) {
             return ((Cast) element).outputType;
         } else {
-            throw new IllegalStateException("Unhandled instance: " + element);
+            throw new IllegalStateException("Unhandled instance of CodeElement during type inference: " + element);
         }
     }
 

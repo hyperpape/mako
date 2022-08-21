@@ -1,6 +1,7 @@
 package com.justinblank.classcompiler;
 
 import com.justinblank.classcompiler.lang.*;
+import com.justinblank.classcompiler.lang.Void;
 import org.apache.commons.lang3.StringUtils;
 import org.objectweb.asm.MethodVisitor;
 
@@ -77,8 +78,11 @@ public class CompilerUtil {
         else if (type instanceof TypeVariable) {
             return descriptor(type.type());
         }
+        else if (type instanceof Void) {
+            return "V";
+        }
         else {
-            throw new IllegalStateException("Got an unrecognized type:" + type);
+            throw new IllegalStateException("Got an unrecognized type while trying to determine descriptor:" + type);
         }
     }
 

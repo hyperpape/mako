@@ -12,6 +12,11 @@ public class TestSyntax {
     private static int classNumber = 0;
 
     @Test
+    public void testVoidNoOpMethod() throws Exception {
+        apply(TestMethods.noOpVoidMethod());
+    }
+
+    @Test
     public void testReturnLiteral() throws Exception {
         apply(TestMethods.returnLiteral());
     }
