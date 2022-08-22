@@ -1,6 +1,5 @@
 # Mako
 
-![Badge](https://travis-ci.com/hyperpape/mako.svg?branch=main)
 ![Badge](https://www.repostatus.org/badges/latest/wip.svg)
 
 Mako is a Java DSL that lets you write high level code, then compile
