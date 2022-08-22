@@ -58,16 +58,28 @@ public interface CodeElement {
         return new ArrayLength(expression);
     }
 
+    /**
+     * Access a local variable by name
+     * @param variable the variable name
+     * @return an Expression representing a variable read
+     */
     static Expression read(String variable) {
         return new VariableRead(variable);
     }
 
-    static FieldReference get(String fieldName, Type type, Expression expression) {
-        return new FieldReference(fieldName, type, expression);
+    /**
+     * Create a fieldReference
+     * @param fieldName the field name
+     * @param fieldType the type of the field being referenced
+     * @param objectReference the target of the field access (e.g. `X` in `X.i`).
+     * @return a fieldReference
+     */
+    static FieldReference get(String fieldName, Type fieldType, Expression objectReference) {
+        return new FieldReference(fieldName, fieldType, objectReference);
     }
 
-    static FieldReference get(String fieldName, Class<?> type, Expression expression) {
-        return new FieldReference(fieldName, ReferenceType.of(type), expression);
+    static FieldReference get(String fieldName, Class<?> fieldType, Expression objectReference) {
+        return new FieldReference(fieldName, ReferenceType.of(fieldType), objectReference);
     }
 
     static StaticFieldReference getStatic(String fieldName, Type classType, Type fieldType) {
