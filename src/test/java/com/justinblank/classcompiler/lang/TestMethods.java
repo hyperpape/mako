@@ -189,6 +189,16 @@ public class TestMethods {
         return method;
     }
 
+    public static Method nestedConditional() {
+        var vars = new GenericVars("i");
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
+        method.set("i", 2);
+        method.cond(gt(read("i"), 0))
+                .withBody(List.of(cond(gt(read("i"), 1)).withBody(returnValue(3))));
+        method.returnValue(4);
+        return method;
+    }
+
     public static Method negatedConditional() {
         var vars = new GenericVars();
         vars.addVar("i");

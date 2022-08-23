@@ -196,6 +196,11 @@ public class TestSemantics {
     }
 
     @Test
+    public void testNestedConditional() throws Exception {
+        apply(TestMethods.nestedConditional(), 3);
+    }
+
+    @Test
     public void testConditionalWithElse() throws Exception {
         apply(TestMethods.conditionWithElse(), 4);
     }

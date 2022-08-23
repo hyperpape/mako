@@ -172,6 +172,10 @@ public class TestSyntax {
         apply(TestMethods.conditional());
     }
 
+    @Test
+    public void testNestedConditional() throws Exception {
+        apply(TestMethods.nestedConditional());
+    }
 
     @Test
     public void testConditionalWithElse() throws Exception {
