@@ -196,6 +196,11 @@ public class TestSemantics {
     }
 
     @Test
+    public void testConditionalWithElse() throws Exception {
+        apply(TestMethods.conditionWithElse(), 4);
+    }
+
+    @Test
     public void testNegatedConditional() throws Exception {
         apply(TestMethods.negatedConditional(), 4);
     }

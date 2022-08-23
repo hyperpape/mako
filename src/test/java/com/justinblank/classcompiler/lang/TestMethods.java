@@ -179,6 +179,16 @@ public class TestMethods {
         return method;
     }
 
+    public static Method conditionWithElse() {
+        var vars = new GenericVars("i");
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
+        method.set("i", 2);
+        method.cond(eq(read("i"), 3))
+                .withBody(List.of(returnValue(3)))
+                .orElse().withBody(List.of(returnValue(4)));
+        return method;
+    }
+
     public static Method negatedConditional() {
         var vars = new GenericVars();
         vars.addVar("i");

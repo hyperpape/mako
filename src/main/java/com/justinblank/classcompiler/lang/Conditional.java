@@ -1,31 +1,28 @@
 package com.justinblank.classcompiler.lang;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Conditional implements ElementContainer {
 
-    public final Conditional parent;
     public final Expression condition;
-    private boolean finished = false;
+    public List<Conditional> alternates;
     public List<CodeElement> body;
 
     public Conditional(Expression condition) {
         this.condition = condition;
-        this.parent = null;
-    }
-
-    Conditional(Expression condition, Conditional root) {
-        this.condition = condition;
-        this.parent = root;
+        this.alternates = new ArrayList<>();
     }
 
     public Conditional elseif(Expression condition) {
-        return new Conditional(condition, this);
+        var cond = new Conditional(condition);
+        this.alternates.add(cond);
+        return cond;
     }
 
     public Conditional orElse() {
-        var cond = new Conditional(null, this.parent != null ? this.parent : this);
-        cond.parent.finished = true;
+        var cond = new Conditional(null);
+        this.alternates.add(cond);
         return cond;
     }
 

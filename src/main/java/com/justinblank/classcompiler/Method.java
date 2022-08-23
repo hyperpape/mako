@@ -19,6 +19,7 @@ public class Method {
     final int modifiers;
     final List<String> arguments;
     final List<Block> blocks;
+
     final String returnType;
     private final Vars matchingVars;
     private final Map<String, Object> attributes = new HashMap<>();
@@ -458,12 +459,42 @@ public class Method {
             var cond = (Conditional) element;
             currentBlock.push(addBlock());
             resolve(cond.condition);
-            var block = addBlock();
+
+            List<Block> visitedBlocks = new ArrayList<>();
+            List<Block> booleanJumpBlocks = new ArrayList<>();
+            booleanJumpBlocks.add(addBlock());
 
             resolveBody(cond);
-            var afterLoop = addBlock();
-            block.jump(afterLoop, IFEQ);
-            currentBlock.push(afterLoop);
+            visitedBlocks.add(this.blocks.get(this.blocks.size() - 1));
+
+            Block elseBlock = null;
+            for (var alternate : cond.alternates) {
+                if (alternate.condition != null) {
+                    currentBlock.push(addBlock());
+                    resolve(alternate.condition);
+                    booleanJumpBlocks.add(addBlock());
+                    resolveBody(alternate);
+                    visitedBlocks.add(this.blocks.get(this.blocks.size() - 1));
+                }
+                else {
+                    elseBlock = addBlock();
+                    currentBlock.push(elseBlock);
+                    resolveBody(alternate);
+                }
+            }
+
+            var afterLoopBlock = addBlock();
+            if (elseBlock == null) {
+                elseBlock = afterLoopBlock;
+            }
+
+            for (var booleanJumpBlock : booleanJumpBlocks) {
+                booleanJumpBlock.jump(elseBlock, IFEQ);
+            }
+            for (var visitedBlock : visitedBlocks) {
+                visitedBlock.jump(afterLoopBlock, GOTO);
+            }
+            currentBlock.push(afterLoopBlock);
         }
         else if (element instanceof NewArray) {
             currentBlock.push(this.addBlock());
