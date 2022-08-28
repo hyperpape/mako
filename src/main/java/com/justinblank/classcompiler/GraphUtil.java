@@ -10,7 +10,8 @@ public class GraphUtil {
             for (var o : b.operations) {
                 if (o.inst == Operation.Inst.JUMP) {
                     sb.append("\n");
-                    sb.append(b.number).append(" -> ").append(o.target.number).append(";");
+                    sb.append(b.number).append(" -> ").append(o.target.number);
+                    sb.append("[ label = ").append(ClassPrinter.getRepresentation(o)).append(" ]").append(";");
                 }
             }
             if (b.number < method.blocks.size() - 1) {

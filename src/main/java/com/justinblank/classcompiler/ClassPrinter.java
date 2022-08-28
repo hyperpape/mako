@@ -33,6 +33,8 @@ public class ClassPrinter {
         REPRESENTATIONS.put(Opcodes.IF_ICMPLE, "IF_ICMPLE");
         REPRESENTATIONS.put(Opcodes.IF_ACMPEQ, "IF_ACMPEQ");
         REPRESENTATIONS.put(Opcodes.IF_ACMPNE, "IF_ACMPNE");
+        REPRESENTATIONS.put(Opcodes.IFNONNULL, "IFNONNULL");
+        REPRESENTATIONS.put(Opcodes.IFNULL, "IFNULL");
         REPRESENTATIONS.put(Opcodes.GOTO, "GOTO");
     }
 
@@ -71,7 +73,7 @@ public class ClassPrinter {
         print(' ');
         switch (op.inst) {
             case PASSTHROUGH:
-                var rep = REPRESENTATIONS.get(op.count);
+                String rep = getRepresentation(op);
                 if (rep != null) {
                     println(rep);
                 }
@@ -122,6 +124,10 @@ public class ClassPrinter {
             default:
                 println("");
         }
+    }
+
+    public static String getRepresentation(Operation op) {
+        return REPRESENTATIONS.get(op.count);
     }
 
     void printBlock(Block block) {
