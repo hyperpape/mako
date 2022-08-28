@@ -174,4 +174,8 @@ public class Block {
     public List<Operation> getOperations() {
         return Collections.unmodifiableList(operations);
     }
+
+    public boolean isEmpty() {
+        return operations.isEmpty();
+    }
 }
