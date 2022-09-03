@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
+import static com.justinblank.classcompiler.Operation.Inst.JUMP;
 import static com.justinblank.classcompiler.lang.Literal.literal;
 import static com.justinblank.classcompiler.lang.Void.VOID;
 import static org.objectweb.asm.Opcodes.*;
@@ -18,7 +19,7 @@ public class Method {
     private String className;
     final int modifiers;
     final List<String> arguments;
-    final List<Block> blocks;
+    List<Block> blocks;
 
     final String returnType;
     private final Vars matchingVars;
@@ -250,7 +251,27 @@ public class Method {
             typeInference.analyze(element, typeEnvironment);
             resolveTopLevelElement(element);
         }
+        pruneEmptyBranches();
         this.elements = new ArrayList<>();
+    }
+
+    private void pruneEmptyBranches() {
+        var newBlocks = new ArrayList<Block>();
+        for (var b : blocks) {
+            if (!b.isEmpty()) {
+                newBlocks.add(b);
+                for (var op : b.operations) {
+                    if (op.inst == JUMP) {
+                        var target = op.target;
+                        while (target.isEmpty() && blocks.size() > target.number + 1) {
+                            target = blocks.get(target.number + 1);
+                        }
+                        op.target = target;
+                    }
+                }
+            }
+        }
+        this.blocks = newBlocks;
     }
 
     private TypeVariable typeVariableFor(String s) {
@@ -407,7 +428,7 @@ public class Method {
             currentBlock.push(afterLoop);
             for (var x : this.blocks) {
                 for (var op : x.operations) {
-                    if (op.inst == Operation.Inst.JUMP && op.target == Block.POSTLOOP) {
+                    if (op.inst == JUMP && op.target == Block.POSTLOOP) {
                         op.target = afterLoop;
                     }
                 }
