@@ -183,6 +183,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testConditionalNonEqWithElse() throws Exception {
+        apply(TestMethods.conditionalNonEqWithElse());
+    }
+
+    @Test
     public void testNegatedConditional() throws Exception {
         apply(TestMethods.negatedConditional());
     }

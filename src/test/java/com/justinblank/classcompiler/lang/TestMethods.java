@@ -189,6 +189,16 @@ public class TestMethods {
         return method;
     }
 
+    public static Method conditionalNonEqWithElse() {
+        var vars = new GenericVars("i");
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
+        method.set("i", 2);
+        method.cond(neq(read("i"), 3))
+                .withBody(List.of(returnValue(3)))
+                .orElse().withBody(List.of(returnValue(4)));
+        return method;
+    }
+
     public static Method nestedConditional() {
         var vars = new GenericVars("i");
         var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
