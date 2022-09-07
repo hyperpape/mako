@@ -4,10 +4,7 @@ import com.justinblank.classloader.MyClassLoader;
 import org.objectweb.asm.*;
 import org.objectweb.asm.util.CheckClassAdapter;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -25,11 +22,13 @@ public class ClassCompiler {
     private final boolean debug;
     private int lineNumber = 1;
 
+    private final PrintStream printStream;
+
     public ClassCompiler(ClassBuilder classBuilder) {
-        this(classBuilder, false);
+        this(classBuilder, false, System.out);
     }
 
-    public ClassCompiler(ClassBuilder classBuilder, boolean debug) {
+    public ClassCompiler(ClassBuilder classBuilder, boolean debug, PrintStream output) {
         this.classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         this.debug = debug;
         if (debug) {
@@ -40,6 +39,7 @@ public class ClassCompiler {
         }
         this.classBuilder = classBuilder;
         this.className = classBuilder.getClassName();
+        this.printStream = output;
     }
 
     public byte[] generateClassAsBytes() {
@@ -60,12 +60,15 @@ public class ClassCompiler {
         for (var method : methodsToWrite(classBuilder.allMethods())) {
             method.setClass(getClassName(), classBuilder.getClassPackage());
             method.resolve();
+            if (debug) {
+                printStream.println("Method " + method.methodName + ": " + GraphUtil.methodVis(method));
+            }
         }
         if (debug) {
             var stringWriter = new StringWriter();
             var printer = new ClassPrinter(new PrintWriter(stringWriter));
             printer.printClass(classBuilder);
-            System.out.println(stringWriter);
+            printStream.println(stringWriter);
         }
 
         defineClass(classBuilder);
