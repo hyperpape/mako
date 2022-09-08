@@ -16,7 +16,7 @@ public class GraphUtil {
             for (var o : b.operations) {
                 if (o.inst == JUMP) {
                     sb.append("\n");
-                    sb.append(b.number).append(" -> ").append(actualTarget(method, o.target.number).number  );
+                    sb.append(b.number).append(" -> ").append(o.target.number);
                     sb.append("[ label = ").append(ClassPrinter.getRepresentation(o)).append(" ]").append(";");
                 }
             }
@@ -26,7 +26,7 @@ public class GraphUtil {
                     continue;
                 }
                 sb.append("\n");
-                sb.append(b.number).append(" -> ").append(actualTarget(method, b.number + 1).number);
+                sb.append(b.number).append(" -> ").append(b.number);
             }
         }
 

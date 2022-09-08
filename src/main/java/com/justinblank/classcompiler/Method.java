@@ -256,20 +256,31 @@ public class Method {
     }
 
     private void pruneEmptyBranches() {
-        var newBlocks = new ArrayList<Block>();
+        Set<Integer> blocksToTake = new HashSet<>();
         for (var b : blocks) {
             if (!b.isEmpty()) {
-                newBlocks.add(b);
+                blocksToTake.add(b.number);
                 for (var op : b.operations) {
                     if (op.inst == JUMP) {
                         var target = op.target;
-                        while (target.isEmpty() && blocks.size() > target.number + 1) {
-                            target = blocks.get(target.number + 1);
-                        }
-                        op.target = target;
+                        op.target = GraphUtil.actualTarget(this, target.number);
+                        blocksToTake.add(op.target.number);
                     }
                 }
             }
+        }
+
+        var newBlocks = new ArrayList<Block>();
+        var listBlocksToTake = new ArrayList<>(blocksToTake);
+        Collections.sort(listBlocksToTake);
+
+        for (var n : listBlocksToTake) {
+            newBlocks.add(blocks.get(n));
+        }
+
+        var i = 0;
+        for (var block : newBlocks) {
+            block.number = i++;
         }
         this.blocks = newBlocks;
     }

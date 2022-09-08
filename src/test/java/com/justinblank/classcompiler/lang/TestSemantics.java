@@ -3,13 +3,16 @@ package com.justinblank.classcompiler.lang;
 import com.justinblank.classcompiler.ClassBuilder;
 import com.justinblank.classcompiler.ClassCompiler;
 import com.justinblank.classcompiler.Method;
+import com.justinblank.util.NoOpPrintStream;
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.time.Instant;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static com.justinblank.classcompiler.lang.TestMethods.TEST_METHOD;
 import static org.junit.Assert.assertEquals;
@@ -21,27 +24,27 @@ public class TestSemantics {
 
     @Test
     public void testReturnLiteral() throws Exception {
-        apply(TestMethods.returnLiteral(), 1);
+        apply(TestMethods::returnLiteral, 1);
     }
 
     @Test
     public void testReturnLong() throws Exception {
-        apply(TestMethods.returnLong(), 1L);
+        apply(TestMethods::returnLong, 1L);
     }
 
     @Test
     public void testReturnNewArray() throws Exception {
-        apply(TestMethods.returnNewByteArray(), new byte[0]);
+        apply(TestMethods::returnNewByteArray, new byte[0]);
     }
 
     @Test
     public void testReturnNewArrayOfReferenceType() throws Exception {
-        apply(TestMethods.returnNewArrayOfReferenceType(), new String[1]);
+        apply(TestMethods::returnNewArrayOfReferenceType, new String[1]);
     }
 
     @Test
     public void testReturnNewArrayOfArrays() throws Exception {
-        apply(TestMethods.returnNewArrayOfArrays(), new byte[1][]);
+        apply(TestMethods::returnNewArrayOfArrays, new byte[1][]);
     }
 
     @Test
@@ -70,7 +73,7 @@ public class TestSemantics {
 
     @Test
     public void testReadStatic() throws Exception {
-        apply(TestMethods.readStatic(), Boolean.TRUE);
+        apply(TestMethods::readStatic, Boolean.TRUE);
     }
 
     @Test
@@ -81,162 +84,162 @@ public class TestSemantics {
 
     @Test
     public void testSetAndReadVars() throws Exception {
-        apply(TestMethods.setAndGetVariable(), 1);
+        apply(TestMethods::setAndGetVariable, 1);
     }
 
     @Test
     public void testAddition() throws Exception {
-        apply(TestOperators.addition(), 3);
+        apply(TestOperators::addition, 3);
     }
 
     @Test
     public void testEquality() throws Exception {
-        apply(TestOperators.equality(), 0); // TODO boolean
+        apply(TestOperators::equality, 0); // TODO boolean
     }
 
     @Test
     public void testReferenceEquality() throws Exception {
-        apply(TestOperators.referenceEquality(), 1);
+        apply(TestOperators::referenceEquality, 1);
     }
 
     @Test
     public void testReferenceInEquality() throws Exception {
-        apply(TestOperators.referenceInequality(), 0);
+        apply(TestOperators::referenceInequality, 0);
     }
 
     @Test
     public void testNotAppliedToTrue() throws Exception {
-        apply(TestOperators.testNotAppliedToTrue(), 0); // TODO boolean
+        apply(TestOperators::testNotAppliedToTrue, 0); // TODO boolean
     }
 
     @Test
     public void testNotAppliedToFalse() throws Exception {
-        apply(TestOperators.testNotAppliedToFalse(), 1); // TODO, boolean
+        apply(TestOperators::testNotAppliedToFalse, 1); // TODO, boolean
     }
 
     @Test
     public void testIntModulus() throws Exception {
-        apply(TestOperators.intModulus(5, 2), 1);
+        apply(() -> TestOperators.intModulus(5, 2), 1);
     }
 
     @Test
     public void testTrivialLoop() throws Exception {
-        apply(TestMethods.trivialLoop(), 5);
+        apply(TestMethods::trivialLoop, 5);
     }
 
     @Test
     public void testLoopWithSkip() throws Exception {
-        apply(TestMethods.loopWithSkip(), 5);
+        apply(TestMethods::loopWithSkip, 5);
     }
 
     @Test
     public void testLoopWithEscape() throws Exception {
-        apply(TestMethods.loopWithEscape(), 2);
+        apply(TestMethods::loopWithEscape, 2);
     }
 
     @Test
     public void testStaticCall() throws Exception {
-        apply(TestMethods.staticCall(), 0);
+        apply(TestMethods::staticCall, 0);
     }
 
     @Test
     public void testStaticCallUsingClassAsArgument() throws Exception {
-        apply(TestMethods.staticCallUsingClassAsArgument(), 0);
+        apply(TestMethods::staticCallUsingClassAsArgument, 0);
     }
 
     @Test
     public void testIntCasts() throws Exception {
-        apply(TestCastMethods.castIntMethod(Builtin.I), 1);
-        apply(TestCastMethods.castIntMethod(Builtin.F), 1.0f);
-        apply(TestCastMethods.castIntMethod(Builtin.D), 1.0d);
-        apply(TestCastMethods.castIntMethod(Builtin.L), 1L);
+        apply(() -> TestCastMethods.castIntMethod(Builtin.I), 1);
+        apply(() -> TestCastMethods.castIntMethod(Builtin.F), 1.0f);
+        apply(() -> TestCastMethods.castIntMethod(Builtin.D), 1.0d);
+        apply(() -> TestCastMethods.castIntMethod(Builtin.L), 1L);
     }
 
     @Test
     public void testFloatCasts() throws Exception {
-        apply(TestCastMethods.castFloatMethod(Builtin.I), 1);
-        apply(TestCastMethods.castFloatMethod(Builtin.F), 1.3f);
+        apply(() -> TestCastMethods.castFloatMethod(Builtin.I), 1);
+        apply(() -> TestCastMethods.castFloatMethod(Builtin.F), 1.3f);
         // cast floating to double introduces some error
         var d = call(TestCastMethods.castFloatMethod(Builtin.D));
         assertEquals(1.3d, (Double) d, .00001d);
-        apply(TestCastMethods.castFloatMethod(Builtin.L), 1L);
+        apply(() -> TestCastMethods.castFloatMethod(Builtin.L), 1L);
     }
 
     @Test
     public void testLongCasts() throws Exception {
-        apply(TestCastMethods.castLongMethod(Builtin.I), Integer.MIN_VALUE);
-        apply(TestCastMethods.castLongMethod(Builtin.F), (float) (1L + Integer.MAX_VALUE));
-        apply(TestCastMethods.castLongMethod(Builtin.D), (double) (Integer.MAX_VALUE + 1L));
-        apply(TestCastMethods.castLongMethod(Builtin.L), 1L + Integer.MAX_VALUE);
+        apply(() -> TestCastMethods.castLongMethod(Builtin.I), Integer.MIN_VALUE);
+        apply(() -> TestCastMethods.castLongMethod(Builtin.F), (float) (1L + Integer.MAX_VALUE));
+        apply(() -> TestCastMethods.castLongMethod(Builtin.D), (double) (Integer.MAX_VALUE + 1L));
+        apply(() -> TestCastMethods.castLongMethod(Builtin.L), 1L + Integer.MAX_VALUE);
     }
 
     @Test
     public void testDoubleCasts() throws Exception {
-        apply(TestCastMethods.castDoubleMethod(Builtin.I), 23);
-        apply(TestCastMethods.castDoubleMethod(Builtin.F), 23.4f);
-        apply(TestCastMethods.castDoubleMethod(Builtin.D), 23.4d);
-        apply(TestCastMethods.castDoubleMethod(Builtin.L), 23L);
+        apply(() -> TestCastMethods.castDoubleMethod(Builtin.I), 23);
+        apply(() -> TestCastMethods.castDoubleMethod(Builtin.F), 23.4f);
+        apply(() -> TestCastMethods.castDoubleMethod(Builtin.D), 23.4d);
+        apply(() -> TestCastMethods.castDoubleMethod(Builtin.L), 23L);
     }
 
     @Test
     public void testNestedLoop() throws Exception {
-        apply(TestMethods.nestedLoop(), 64);
+        apply(() -> TestMethods.nestedLoop(), 64);
     }
 
     @Test
     public void testCallNoArgMethod() throws Exception {
         var return0 = new Method("return0", List.of(), "I", null);
         return0.returnValue(1);
-        apply(1, TestMethods.callNoArgMethod(), List.of(), return0);
+        apply(1, () -> TestMethods.callNoArgMethod(), List.of(), return0);
     }
 
     @Test
     public void testConditional() throws Exception {
-        apply(TestMethods.conditional(), 3);
+        apply(() -> TestMethods.conditional(), 3);
     }
 
     @Test
     public void testNestedConditional() throws Exception {
-        apply(TestMethods.nestedConditional(), 3);
+        apply(() -> TestMethods.nestedConditional(), 3);
     }
 
     @Test
     public void testConditionalWithElse() throws Exception {
-        apply(TestMethods.conditionWithElse(), 4);
+        apply(() -> TestMethods.conditionWithElse(), 4);
     }
 
     @Test
     public void testConditionalNonEqWithElse() throws Exception {
-        apply(TestMethods.conditionalNonEqWithElse(), 3);
+        apply(() -> TestMethods.conditionalNonEqWithElse(), 3);
     }
 
     @Test
     public void testNegatedConditional() throws Exception {
-        apply(TestMethods.negatedConditional(), 4);
+        apply(() -> TestMethods.negatedConditional(), 4);
     }
 
     @Test
     public void testTwoSequentialConditionals() throws Exception {
-        apply(TestMethods.twoSequentialConditionals(), 3);
+        apply(() -> TestMethods.twoSequentialConditionals(), 3);
     }
 
     @Test
     public void testThreeSequentialConditionals() throws Exception {
-        apply(TestMethods.threeSequentialConditionals(), 3);
+        apply(() -> TestMethods.threeSequentialConditionals(), 3);
     }
 
     @Test
     public void testCallOneArgMethod() throws Exception {
         var return0 = new Method("return0", List.of("I"), "I", null);
         return0.returnValue(1);
-        apply(1, TestMethods.callOneArgMethod(), List.of(), return0);
+        apply(1, () -> TestMethods.callOneArgMethod(), List.of(), return0);
     }
 
     @Test
     public void testTwoArgCall() throws Exception {
         var return0 = new Method("return0", List.of("I", "I"), "I", null);
         return0.returnValue(1);
-        apply(1, TestMethods.callTwoArgMethod(), List.of(), return0);
+        apply(1, () -> TestMethods.callTwoArgMethod(), List.of(), return0);
     }
 
     @Test
@@ -304,41 +307,57 @@ public class TestSemantics {
         assertEquals("-", instance.getClass().getDeclaredMethod("returnString").invoke(instance));
     }
 
-    static void apply(Method method, Object o) throws Exception {
-        Object output = call(method);
-        Class c = o.getClass();
+    static void apply(Supplier<Method> method, Object expected) throws Exception {
+        Object output = call(method.get(), false);
+        Class c = expected.getClass();
         // TODO: improve comparison
         if (c.getName().startsWith("[")) {
             assertEquals(c, output.getClass());
         }
         else {
-            assertEquals(o, output);
+            assertEquals(expected, output);
+        }
+
+        output = call(method.get(), true);
+        // TODO: improve comparison
+        if (c.getName().startsWith("[")) {
+            assertEquals(c, output.getClass());
+        }
+        else {
+            assertEquals(expected, output);
         }
     }
 
-    private static Object call(Method method) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
+    private static Object call(Method method)  throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
+        return call(method, false);
+    }
+
+    private static Object call(Method method, boolean debug) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "", "java/lang/Object", new String[]{});
         builder.addMethod(method);
         builder.addMethod(builder.addEmptyConstructor());
-        var cls = new ClassCompiler(builder);
+
+        var cls = new ClassCompiler(builder, debug, new NoOpPrintStream());
         Class<?> compiled = cls.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();
         return compiled.getMethod(TEST_METHOD).invoke(instance);
     }
 
-    static void apply(Object o, Method method, List<Object> arguments, Method...methods) throws Exception {
-        Object output = call(method, arguments, methods);
+    static void apply(Object o, Supplier<Method> method, List<Object> arguments, Method...methods) throws Exception {
+        Object output = call(method.get(), arguments, methods, false);
+        assertEquals(o, output);
+        output = call(method.get(), arguments, methods, true);
         assertEquals(o, output);
     }
 
-    private static Object call(Method method, List<Object> arguments, Method[] methods) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
+    private static Object call(Method method, List<Object> arguments, Method[] methods, boolean debug) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
         var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "", "java/lang/Object", new String[]{});
         builder.addMethod(method);
         for (var otherMethod : methods) {
             builder.addMethod(otherMethod);
         }
         builder.addMethod(builder.addEmptyConstructor());
-        var cls = new ClassCompiler(builder);
+        var cls = new ClassCompiler(builder, debug, new NoOpPrintStream());
         Class<?> compiled = cls.generateClass();
         var instance = compiled.getConstructors()[0].newInstance();
         List<Class<?>> clsArgs = new ArrayList<>();
