@@ -6,10 +6,12 @@
 ## Overview 
 
 Mako is a Java library that lets you write high level code then compile it to
-Java bytecode and load it, all at runtime. Classes implemented this way are
-fully interoperable with standard Java code. That is, they can call regular
-objects and methods and implement interfaces or inherit from classes defined 
-in regular code. 
+Java bytecode. Classes implemented this way are fully interoperable with standard 
+Java code. That is, they can call regular objects and methods and implement
+interfaces or inherit from classes defined in regular code. 
+
+Mako supports generating and loading classes at runtime, or precompiling .class 
+files that can be packaged with an application. 
 
 To illustrate, here is how to specify the recursive fibonacci method:
 
@@ -37,7 +39,7 @@ This project is pre version 0.1 and has no users as of yet.
 Mako has many concepts in common with Java--its constructs compile 
 straightforwardly to Java bytecode--but differs in a few ways. In general, it 
 tends to implement less functionality than Java itself (i.e. no autoboxing, 
-and restricted forms of looping). 
+and restricted forms of looping).
 
 ### Basic Expressions and Statements 
 
@@ -45,7 +47,7 @@ Variables have function scope. They are defined by adding them to a `Vars`
 object. 
 
 ```java
-var methodVars = new GenericVars("x", "y", "z");
+Vars methodVars = new GenericVars("x", "y", "z");
 ```
 
 Variables are always non-final, and may be read/set. Setting a variable is 
@@ -85,7 +87,8 @@ Implicit numeric conversions for primitives are supported, but all other
 conversions must be explicit. 
 
 ```java
-var method = new Method(TEST_METHOD, List.of(), Builtin.L, null);
+// define a method returning a long
+Method method = new Method(TEST_METHOD, List.of(), Builtin.L, null);
 method.returnValue(1);
 ```
 
@@ -98,17 +101,43 @@ callStatic(CompilerUtil.internalName(Integer.class), "valueOf",
         ReferenceType.of(Integer.class), literal(0));
 ```
 
-### Control Flow
+### Conditionals
 
-TODO
+Conditionals are created using `cond`, then `withBody`. `else if` is done with the `elseif` method on a conditional. 
+Else blocks can be added with `orElse`. 
+
+```java
+method.cond(eq(read("i"), 3))
+.withBody(List.of(returnValue(3)))
+.orElse().withBody(List.of(returnValue(4)));
+```
+
+### Loops
+
+// TODO
 
 ### Defining Methods
 
-TODO
+```java
+
+Vars vars = new GenericVars("a", "b", "c", "d");
+// Arguments are name, arguments, return type, the variables
+Method method = new Method(TEST_METHOD, List.of(Builtin.I), Builtin.I, vars);
+method.set("d", 2);
+method.returnValue(read("d"));
+```
 
 ### Defining Classes
 
-TODO
+To define a class, create a `ClassBuilder`, add methods to it, then pass it to a `ClassCompiler`. 
+
+```java
+        // arguments are className, package, superclass, interfaces
+        ClassBuilder cb = new ClassBuilder("TestClass", "", "java/lang/Object", new String[]{});
+        cb.addEmptyConstructor();
+        Method method = cb.mkMethod("foo", List.of("I"), "I", new GenericVars());
+        Class<?> cls = new ClassCompiler(cb).generateClass();
+```
 
 ## Building 
 The compiler requires Java 11. Builds with maven. The generated

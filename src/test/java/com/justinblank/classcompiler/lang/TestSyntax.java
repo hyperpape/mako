@@ -67,6 +67,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testSetAndReadMultipleVars() throws Exception {
+        apply(TestMethods.setAndGetMultipleVariables());
+    }
+
+    @Test
     public void testAddition() throws Exception {
         apply(TestOperators.addition());
     }
@@ -180,6 +185,11 @@ public class TestSyntax {
     @Test
     public void testConditionalWithElse() throws Exception {
         apply(TestMethods.conditionWithElse());
+    }
+
+    @Test
+    public void testConditionalWithElseIf() throws Exception {
+        apply(TestMethods.conditionWithElseIf());
     }
 
     @Test

@@ -116,6 +116,16 @@ public class TestMethods {
         return method;
     }
 
+    public static Method setAndGetMultipleVariables() {
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars("a", "b", "c", "d"));
+        method.set("a", 1);
+        method.set("b", read("a"));
+        method.set("c", read("b"));
+        method.set("d", 2);
+        method.returnValue(read("d"));
+        return method;
+    }
+
     public static Method trivialLoop() {
         var vars = new GenericVars();
         vars.addVar("a");
@@ -176,6 +186,17 @@ public class TestMethods {
         method.set("i", 2);
         method.cond(eq(read("i"), 2)).withBody(List.of(returnValue(3)));
         method.returnValue(4);
+        return method;
+    }
+
+    public static Method conditionWithElseIf() {
+        var vars = new GenericVars("i");
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
+        method.set("i", 2);
+        method.cond(eq(read("i"), 3))
+                .withBody(List.of(returnValue(3)))
+                .elseif(eq(read("i"), 5)).withBody(List.of(returnValue(4)));
+        method.returnValue(9);
         return method;
     }
 

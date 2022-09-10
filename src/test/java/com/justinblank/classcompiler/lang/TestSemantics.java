@@ -6,7 +6,6 @@ import com.justinblank.classcompiler.Method;
 import com.justinblank.util.NoOpPrintStream;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.time.Instant;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
@@ -85,6 +84,11 @@ public class TestSemantics {
     @Test
     public void testSetAndReadVars() throws Exception {
         apply(TestMethods::setAndGetVariable, 1);
+    }
+
+    @Test
+    public void testSetAndReadMultipleVars() throws Exception {
+        apply(TestMethods::setAndGetMultipleVariables, 2);
     }
 
     @Test
@@ -183,63 +187,68 @@ public class TestSemantics {
 
     @Test
     public void testNestedLoop() throws Exception {
-        apply(() -> TestMethods.nestedLoop(), 64);
+        apply(TestMethods::nestedLoop, 64);
     }
 
     @Test
     public void testCallNoArgMethod() throws Exception {
         var return0 = new Method("return0", List.of(), "I", null);
         return0.returnValue(1);
-        apply(1, () -> TestMethods.callNoArgMethod(), List.of(), return0);
+        apply(1, TestMethods::callNoArgMethod, List.of(), return0);
     }
 
     @Test
     public void testConditional() throws Exception {
-        apply(() -> TestMethods.conditional(), 3);
+        apply(TestMethods::conditional, 3);
     }
 
     @Test
     public void testNestedConditional() throws Exception {
-        apply(() -> TestMethods.nestedConditional(), 3);
+        apply(TestMethods::nestedConditional, 3);
     }
 
     @Test
     public void testConditionalWithElse() throws Exception {
-        apply(() -> TestMethods.conditionWithElse(), 4);
+        apply(TestMethods::conditionWithElse, 4);
+    }
+
+    @Test
+    public void testConditionalWithElseIf() throws Exception {
+        apply(TestMethods::conditionWithElseIf, 9);
     }
 
     @Test
     public void testConditionalNonEqWithElse() throws Exception {
-        apply(() -> TestMethods.conditionalNonEqWithElse(), 3);
+        apply(TestMethods::conditionalNonEqWithElse, 3);
     }
 
     @Test
     public void testNegatedConditional() throws Exception {
-        apply(() -> TestMethods.negatedConditional(), 4);
+        apply(TestMethods::negatedConditional, 4);
     }
 
     @Test
     public void testTwoSequentialConditionals() throws Exception {
-        apply(() -> TestMethods.twoSequentialConditionals(), 3);
+        apply(TestMethods::twoSequentialConditionals, 3);
     }
 
     @Test
     public void testThreeSequentialConditionals() throws Exception {
-        apply(() -> TestMethods.threeSequentialConditionals(), 3);
+        apply(TestMethods::threeSequentialConditionals, 3);
     }
 
     @Test
     public void testCallOneArgMethod() throws Exception {
         var return0 = new Method("return0", List.of("I"), "I", null);
         return0.returnValue(1);
-        apply(1, () -> TestMethods.callOneArgMethod(), List.of(), return0);
+        apply(1, TestMethods::callOneArgMethod, List.of(), return0);
     }
 
     @Test
     public void testTwoArgCall() throws Exception {
         var return0 = new Method("return0", List.of("I", "I"), "I", null);
         return0.returnValue(1);
-        apply(1, () -> TestMethods.callTwoArgMethod(), List.of(), return0);
+        apply(1, TestMethods::callTwoArgMethod, List.of(), return0);
     }
 
     @Test
