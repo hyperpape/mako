@@ -3,6 +3,7 @@ package com.justinblank.classcompiler.lang;
 import java.util.List;
 
 public class Loop implements ElementContainer {
+
     public final Expression condition;
     public final List<CodeElement> body;
 
@@ -12,8 +13,7 @@ public class Loop implements ElementContainer {
     }
 
     public Loop(Expression condition, CodeElement body) {
-        this.condition = condition;
-        this.body = List.of(body);
+        this(condition, List.of(body));
     }
 
     @Override

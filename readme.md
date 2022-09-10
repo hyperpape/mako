@@ -114,7 +114,30 @@ method.cond(eq(read("i"), 3))
 
 ### Loops
 
-// TODO
+Mako has only while loops. 
+
+```java
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars("a"));
+        method.set("a", 1);
+        method.loop(lt(read("a"), 5),
+                List.of(set("a", plus(read("a"), 1))));
+        method.returnValue(read("a"));
+```
+
+Loops support `break` and `continue`, spelled `escape` and `skip`
+
+```java
+method.set("a", 1);
+        method.loop(lt(read("a"), 5),
+                List.of(set("a", plus(read("a"), 1)),
+                        escape()));
+```
+
+```java
+method.loop(lt( read("a"), 5),
+    List.of(set("a", plus(read("a"), 1)),
+        skip()));
+```
 
 ### Defining Methods
 
