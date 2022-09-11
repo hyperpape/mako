@@ -16,18 +16,19 @@ files that can be packaged with an application.
 To illustrate, here is how to specify the recursive fibonacci method:
 
 ```
-    public static Method fibonacci() {
-        // arguments are method name, arguments types, return type, local variables
-        var method = new Method(TEST_METHOD, List.of("I"), "I", new GenericVars("x"));
+        var classBuilder = new ClassBuilder("fibonacci2", "");
+        classBuilder.addEmptyConstructor();
+        var method = classBuilder.mkMethod("fibonacci", List.of("I"), "I", new GenericVars("x"));
         method.cond(eq(read("x"), 0)).withBody(List.of(
                 returnValue(1)));
         method.cond(eq(read("x"), 1)).withBody(List.of(
                 returnValue(1)));
         method.returnValue(plus(
-                call(TEST_METHOD, Builtin.I, thisRef(), sub(read("x"), 1)),
-                call(TEST_METHOD, Builtin.I, thisRef(), sub(read("x"), 2))));
-        return method;
-    }
+                CodeElement.call("fibonacci", Builtin.I, thisRef(), sub(read("x"), 1)),
+                CodeElement.call("fibonacci", Builtin.I, thisRef(), sub(read("x"), 2))));
+        Class<?> cls = new ClassCompiler(classBuilder).generateClass();
+        o = cls.getDeclaredConstructors()[0].newInstance();
+        System.out.println(o.getClass().getDeclaredMethod("fibonacci", int.class).invoke(o, 5)); // prints 8
 ```
 
 ### Status

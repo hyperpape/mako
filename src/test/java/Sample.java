@@ -1,11 +1,17 @@
 import com.justinblank.classcompiler.ClassBuilder;
 import com.justinblank.classcompiler.ClassCompiler;
 import com.justinblank.classcompiler.GenericVars;
+import com.justinblank.classcompiler.Method;
+import com.justinblank.classcompiler.lang.Builtin;
+import com.justinblank.classcompiler.lang.CodeElement;
 import com.justinblank.classloader.MyClassLoader;
 import org.objectweb.asm.*;
 
 import java.util.List;
 
+import static com.justinblank.classcompiler.Operation.call;
+import static com.justinblank.classcompiler.lang.BinaryOperator.*;
+import static com.justinblank.classcompiler.lang.CodeElement.*;
 import static org.objectweb.asm.Opcodes.*;
 
 public class Sample {
@@ -81,6 +87,20 @@ public class Sample {
         return new ClassCompiler(cb).generateClass();
     }
 
+    public static Class<?> compilerMark2Fibonacci() {
+        var classBuilder = new ClassBuilder("fibonacci2", "");
+        classBuilder.addEmptyConstructor();
+        var method = classBuilder.mkMethod("fibonacci", List.of("I"), "I", new GenericVars("x"));
+        method.cond(eq(read("x"), 0)).withBody(List.of(
+                returnValue(1)));
+        method.cond(eq(read("x"), 1)).withBody(List.of(
+                returnValue(1)));
+        method.returnValue(plus(
+                CodeElement.call("fibonacci", Builtin.I, thisRef(), sub(read("x"), 1)),
+                CodeElement.call("fibonacci", Builtin.I, thisRef(), sub(read("x"), 2))));
+        return new ClassCompiler(classBuilder).generateClass();
+    }
+
     public static void main(String[] args) {
         try {
             Class<?> cls = MyClassLoader.getInstance().loadClass("fibonacci", asmFibonacci());
@@ -88,6 +108,10 @@ public class Sample {
             System.out.println(o.getClass().getDeclaredMethod("fibonacci", int.class).invoke(o, 5));
 
             cls = compilerMark1Fibonacci();
+            o = cls.getDeclaredConstructors()[0].newInstance();
+            System.out.println(o.getClass().getDeclaredMethod("fibonacci", int.class).invoke(o, 5));
+
+            cls = compilerMark2Fibonacci();
             o = cls.getDeclaredConstructors()[0].newInstance();
             System.out.println(o.getClass().getDeclaredMethod("fibonacci", int.class).invoke(o, 5));
         }
