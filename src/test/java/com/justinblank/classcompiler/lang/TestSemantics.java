@@ -98,7 +98,7 @@ public class TestSemantics {
 
     @Test
     public void testEquality() throws Exception {
-        apply(TestOperators::equality, 0); // TODO boolean
+        apply(TestOperators::equality, false);
     }
 
     @Test

@@ -29,7 +29,7 @@ public class TestOperators {
 
     public static Method equality() {
         var vars = new GenericVars();
-        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.I, vars);
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
         method.returnValue(eq(1, 2));
         return method;
     }
