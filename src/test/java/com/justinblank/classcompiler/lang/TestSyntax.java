@@ -145,7 +145,12 @@ public class TestSyntax {
 
     @Test
     public void testArrayLength() throws Exception {
-        apply(TestMethods.arrayLength());
+        apply(TestMethods.arrayLength(Builtin.I));
+        apply(TestMethods.arrayLength(Builtin.F));
+        apply(TestMethods.arrayLength(Builtin.L));
+        apply(TestMethods.arrayLength(Builtin.D));
+        apply(TestMethods.arrayLength(Builtin.BOOL));
+        apply(TestMethods.arrayLength(Builtin.OCTET));
     }
 
     @Test

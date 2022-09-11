@@ -98,7 +98,6 @@ public interface CodeElement {
         return new Assignment(name, literal(value));
     }
 
-
     static Escape escape() {
         return new Escape();
     }
