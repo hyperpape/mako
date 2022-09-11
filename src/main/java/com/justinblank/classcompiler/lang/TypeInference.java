@@ -130,7 +130,7 @@ public class TypeInference {
                 t1TypeVar.type = t2.type();
             }
         }
-        else if (t2 instanceof TypeVariable) {
+        else if (t2 instanceof TypeVariable && !t2.resolved()) {
             var t2TypeVar = (TypeVariable) t2;
             if (t2TypeVar.type == null) {
                 t2TypeVar.type = t1.type();

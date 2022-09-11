@@ -32,4 +32,12 @@ public class TypeVariable implements Type {
         return this.type.typeString();
     }
 
+    @Override
+    public boolean resolved() {
+        if (type == null) {
+            return false;
+        }
+        return type.resolved();
+    }
+
 }

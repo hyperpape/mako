@@ -17,4 +17,8 @@ public interface Type {
     Type type();
 
     String typeString();
+
+    default boolean resolved() {
+        return true;
+    }
 }
