@@ -36,7 +36,7 @@ public class TestOperators {
 
     public static Method referenceEquality() {
         var vars = new GenericVars();
-        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.I, vars);
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
         method.returnValue(eq(
                 getStatic("ZERO", ReferenceType.of(BigDecimal.class), ReferenceType.of(BigDecimal.class)),
                 getStatic("ZERO", ReferenceType.of(BigDecimal.class), ReferenceType.of(BigDecimal.class))));
@@ -45,7 +45,7 @@ public class TestOperators {
 
     public static Method referenceInequality() {
         var vars = new GenericVars();
-        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.I, vars);
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
         method.returnValue(neq(
                 getStatic("ZERO", ReferenceType.of(BigDecimal.class), ReferenceType.of(BigDecimal.class)),
                 getStatic("ZERO", ReferenceType.of(BigDecimal.class), ReferenceType.of(BigDecimal.class))));
@@ -61,14 +61,14 @@ public class TestOperators {
 
     public static Method testNotAppliedToTrue() {
         var vars = new GenericVars();
-        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.I, vars);
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
         method.returnValue(not(eq(2, 2)));
         return method;
     }
 
     public static Method testNotAppliedToFalse() {
         var vars = new GenericVars();
-        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.I, vars);
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
         method.returnValue(not(eq(2, 3)));
         return method;
     }
