@@ -85,20 +85,28 @@ public enum BinaryOperator {
         return DIVIDE.op(left, literal(right));
     }
 
+    public static Operation and(Expression left, Expression right) {
+        return AND.op(left, right);
+    }
+
+    public static Operation or(Expression left, Expression right) {
+        return OR.op(left, right);
+    }
+
     public static Operation eq(Expression left, Expression right) {
         return EQUALS.op(left, right);
     }
 
     public static Operation eq(Number left, Expression right) {
-        return EQUALS.op(literal(left), right);
+        return eq(literal(left), right);
     }
 
     public static Operation eq(Expression left, Number right) {
-        return EQUALS.op(left, literal(right));
+        return eq(left, literal(right));
     }
 
     public static Operation eq(Number left, Number right) {
-        return EQUALS.op(literal(left), literal(right));
+        return eq(literal(left), literal(right));
     }
 
     public static Operation neq(Expression left, Expression right) {
@@ -213,6 +221,10 @@ public enum BinaryOperator {
                 return IF_ICMPLT;
             case GREATER_THAN:
                 return IF_ICMPGT;
+            case AND:
+                return IAND;
+            case OR:
+                return IOR;
             default:
                 throw new UnsupportedOperationException("");
         }

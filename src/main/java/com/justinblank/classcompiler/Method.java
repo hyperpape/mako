@@ -403,6 +403,20 @@ public class Method {
                     });
 
                     return;
+                case OR:
+                    withBlock(addBlock(), () -> {
+                        resolve(operation.left);
+                        resolve(operation.right);
+                        addBlock().operate(IOR);
+                    });
+                    return;
+                case AND:
+                    withBlock(addBlock(), () -> {
+                        resolve(operation.left);
+                        resolve(operation.right);
+                        addBlock().operate(IAND);
+                    });
+                    return;
                 default:
                     resolve(operation.left);
                     resolve(operation.right);

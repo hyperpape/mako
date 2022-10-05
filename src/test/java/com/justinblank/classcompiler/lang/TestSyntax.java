@@ -109,6 +109,26 @@ public class TestSyntax {
     }
 
     @Test
+    public void testAndReturningTrue() throws Exception {
+        apply(TestOperators.andReturningTrue());
+    }
+
+    @Test
+    public void testAndReturningFalse() throws Exception {
+        apply(TestOperators.andReturningFalse());
+    }
+
+    @Test
+    public void testOrReturningTrue() throws Exception {
+        apply(TestOperators.orReturningTrue());
+    }
+
+    @Test
+    public void testOrReturningFalse() throws Exception {
+        apply(TestOperators.orReturningFalse());
+    }
+
+    @Test
     public void testModulus() throws Exception {
         apply(TestOperators.intModulus(5, 2));
     }

@@ -2,7 +2,6 @@ package com.justinblank.classcompiler.lang;
 
 import com.justinblank.classcompiler.GenericVars;
 import com.justinblank.classcompiler.Method;
-import org.junit.internal.runners.TestMethod;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -70,6 +69,34 @@ public class TestOperators {
         var vars = new GenericVars();
         var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
         method.returnValue(not(eq(2, 3)));
+        return method;
+    }
+
+    public static Method andReturningFalse() {
+        var vars = new GenericVars();
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
+        method.returnValue(and(eq(2, 2), eq(2, 3)));
+        return method;
+    }
+
+    public static Method andReturningTrue() {
+        var vars = new GenericVars();
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
+        method.returnValue(and(eq(2, 2), eq(3, 3)));
+        return method;
+    }
+
+    public static Method orReturningTrue() {
+        var vars = new GenericVars();
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
+        method.returnValue(or(eq(1, 2), eq(2, 2)));
+        return method;
+    }
+
+    public static Method orReturningFalse() {
+        var vars = new GenericVars();
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
+        method.returnValue(or(eq(1, 2), eq(2, 3)));
         return method;
     }
 }

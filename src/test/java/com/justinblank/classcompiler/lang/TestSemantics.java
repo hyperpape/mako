@@ -122,6 +122,26 @@ public class TestSemantics {
     }
 
     @Test
+    public void testAndReturningTrue() throws Exception {
+        apply(TestOperators::andReturningTrue, true);
+    }
+
+    @Test
+    public void testAndReturningFalse() throws Exception {
+        apply(TestOperators::andReturningFalse, false);
+    }
+
+    @Test
+    public void testOrReturningTrue() throws Exception {
+        apply(TestOperators::orReturningTrue, true);
+    }
+
+    @Test
+    public void testOrReturningFalse() throws Exception {
+        apply(TestOperators::orReturningFalse, false);
+    }
+
+    @Test
     public void testIntModulus() throws Exception {
         apply(() -> TestOperators.intModulus(5, 2), 1);
     }
