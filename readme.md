@@ -1,4 +1,5 @@
 
+
 # Mako
 
 ![Badge](https://www.repostatus.org/badges/latest/wip.svg)
@@ -10,8 +11,8 @@ Java bytecode. Classes implemented this way are fully interoperable with standar
 Java code. That is, they can call regular objects and methods and implement
 interfaces or inherit from classes defined in regular code. 
 
-Mako supports generating and loading classes at runtime, or precompiling .class 
-files that can be packaged with an application. 
+Mako supports generating and loading classes at runtime, or precompiling `.class` 
+files that can be packaged with an application.
 
 To illustrate, here is how to specify the recursive fibonacci method:
 
@@ -37,15 +38,19 @@ This project is pre version 0.1 and has no users as of yet.
 
 ## Language
 
-Mako has many concepts in common with Java--its constructs compile 
+Semantically, Mako has many concepts in common with Java--its constructs compile 
 straightforwardly to Java bytecode--but differs in a few ways. In general, it 
 tends to implement less functionality than Java itself (i.e. no autoboxing, 
 and restricted forms of looping).
 
+Syntactically, Mako is uses prefix notation (operators like `eq` or `plus` come
+before their arguments), like a lisp, but freely mixes method calls and static 
+methods, according to what I find most natural to write.
+
 ### Basic Expressions and Statements 
 
 Variables have function scope. They are defined by adding them to a `Vars` 
-object. 
+object.
 
 ```java
 Vars methodVars = new GenericVars("x", "y", "z");
@@ -115,7 +120,7 @@ method.cond(eq(read("i"), 3))
 
 ### Loops
 
-Mako has only while loops. 
+Mako has only while loops.
 
 ```java
         var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars("a"));
