@@ -404,18 +404,56 @@ public class Method {
 
                     return;
                 case OR:
-                    withBlock(addBlock(), () -> {
+                    // TODO: this generates significantly more verbose bytecode than javac
+                    var firstConditionBlock = addBlock();
+
+                    withBlock(firstConditionBlock, () -> {
                         resolve(operation.left);
-                        resolve(operation.right);
-                        addBlock().operate(IOR);
                     });
+                    firstConditionBlock = addBlock();
+
+                    var secondConditionBlock = addBlock();
+                    withBlock(secondConditionBlock, () -> {
+                        resolve(operation.right);
+                    });
+                    secondConditionBlock = addBlock();
+
+                    var successBlock = addBlock();
+                    successBlock.push(1);
+                    var failureBlock = addBlock();
+                    failureBlock.push(0);
+
+                    var postBlock = addBlock();
+                    successBlock.jump(postBlock, GOTO);
+
+                    firstConditionBlock.jump(successBlock, IFNE);
+                    secondConditionBlock.jump(failureBlock, IFEQ);
+
                     return;
                 case AND:
-                    withBlock(addBlock(), () -> {
+                    firstConditionBlock = addBlock();
+
+                    withBlock(firstConditionBlock, () -> {
                         resolve(operation.left);
-                        resolve(operation.right);
-                        addBlock().operate(IAND);
                     });
+                    firstConditionBlock = addBlock();
+
+                    secondConditionBlock = addBlock();
+                    withBlock(secondConditionBlock, () -> {
+                        resolve(operation.right);
+                    });
+                    secondConditionBlock = addBlock();
+
+                    successBlock = addBlock();
+                    successBlock.push(1);
+                    failureBlock = addBlock();
+                    failureBlock.push(0);
+
+                    postBlock = addBlock();
+                    successBlock.jump(postBlock, GOTO);
+
+                    firstConditionBlock.jump(failureBlock, IFEQ);
+                    secondConditionBlock.jump(failureBlock, IFEQ);
                     return;
                 default:
                     resolve(operation.left);

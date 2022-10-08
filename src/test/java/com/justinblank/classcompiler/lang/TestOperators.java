@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static com.justinblank.classcompiler.lang.BinaryOperator.*;
+import static com.justinblank.classcompiler.lang.CodeElement.callStatic;
 import static com.justinblank.classcompiler.lang.CodeElement.getStatic;
 import static com.justinblank.classcompiler.lang.UnaryOperator.not;
 
@@ -98,5 +99,25 @@ public class TestOperators {
         var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
         method.returnValue(or(eq(1, 2), eq(2, 3)));
         return method;
+    }
+
+    public static Method andWithSecondTermThrowingException() {
+        var vars = new GenericVars();
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
+        method.returnValue(and(eq(1, 2),
+                callStatic(TestOperators.class, "exceptionThrowingBoolean", Builtin.BOOL)));
+        return method;
+    }
+
+    public static Method orWithSecondTermThrowingException() {
+        var vars = new GenericVars();
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
+        method.returnValue(or(eq(1, 1),
+                callStatic(TestOperators.class, "exceptionThrowingBoolean", Builtin.BOOL)));
+        return method;
+    }
+
+    public static boolean exceptionThrowingBoolean() {
+        throw new RuntimeException("yeet!");
     }
 }

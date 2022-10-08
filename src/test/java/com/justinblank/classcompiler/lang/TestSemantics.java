@@ -142,6 +142,16 @@ public class TestSemantics {
     }
 
     @Test
+    public void testAndWithSecondTermThrowingException() throws Exception {
+        apply(TestOperators::andWithSecondTermThrowingException, false);
+    }
+
+    @Test
+    public void testOrWithSecondTermThrowingException() throws Exception {
+        apply(TestOperators::orWithSecondTermThrowingException, true);
+    }
+
+    @Test
     public void testIntModulus() throws Exception {
         apply(() -> TestOperators.intModulus(5, 2), 1);
     }
