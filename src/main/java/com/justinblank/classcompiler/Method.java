@@ -1,6 +1,7 @@
 package com.justinblank.classcompiler;
 
 import com.justinblank.classcompiler.lang.*;
+import com.justinblank.classcompiler.lang.Void;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -522,7 +523,7 @@ public class Method {
             else {
                 currentBlock().call(call.methodName, className, buildDescriptor(call));
             }
-            if (!recursive) {
+            if (!recursive && producesValue(call)) {
                 currentBlock().operate(POP);
             }
         }
@@ -706,13 +707,11 @@ public class Method {
     }
 
     private boolean producesValue(CodeElement codeElement) {
-        // TODO: void call?
         if (codeElement instanceof Expression) {
             if (codeElement instanceof Call) {
                 var call = (Call) codeElement;
-                if (call.returnType != null) {
-                    return true;
-                }
+                var returnType = call.returnType;
+                return returnType != null && !returnType.type().equals(Void.VOID);
             }
             else {
                 return true;

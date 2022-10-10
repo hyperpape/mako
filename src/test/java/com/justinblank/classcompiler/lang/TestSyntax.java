@@ -19,6 +19,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testCallingVoidMethod() throws Exception {
+        apply(TestMethods.callingVoidMethod());
+    }
+
+    @Test
     public void testReturnLiteral() throws Exception {
         apply(TestMethods.returnLiteral());
     }

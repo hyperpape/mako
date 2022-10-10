@@ -27,6 +27,11 @@ public class TestSemantics {
     }
 
     @Test
+    public void testCallingVoidMethod() throws Exception {
+        apply(TestMethods::callingVoidMethod, 1);
+    }
+
+    @Test
     public void testReturnLong() throws Exception {
         apply(TestMethods::returnLong, 1L);
     }

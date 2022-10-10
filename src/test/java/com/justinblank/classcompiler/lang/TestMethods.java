@@ -4,9 +4,9 @@ import com.justinblank.classcompiler.CompilerUtil;
 import com.justinblank.classcompiler.GenericVars;
 import com.justinblank.classcompiler.Method;
 
+import java.io.PrintStream;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalField;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +24,14 @@ public class TestMethods {
     public static Method noOpVoidMethod() {
         var method = new Method(TEST_METHOD, List.of(), Void.VOID, null);
         return method.returnVoid();
+    }
+
+    public static Method callingVoidMethod() {
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, null);
+        method.call("println", Void.VOID, getStatic("out", ReferenceType.of(System.class),
+                ReferenceType.of(PrintStream.class)), literal(1));
+        method.returnValue(1);
+        return method;
     }
 
     public static Method returnLiteral() {
