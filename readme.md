@@ -189,7 +189,8 @@ Mako is built on top of [ASM](https://asm.ow2.io/), and provides a subset of
 ASM's capabilities. In particular, Mako only provides an API for generating
 classes from scratch, it does not provide an API for transforming them. What 
 Mako attempts to add is a concise, higher level API for generating algorithmic
-code at runtime.
+code at runtime. For an example where this can be useful, see 
+https://github.com/hyperpape/temporalformats/.
 
 Compared to ByteBuddy, Mako is more verbose for simple use-cases, but 
 handles some use-cases where the ByteBuddy based solution would be to use ASM.
