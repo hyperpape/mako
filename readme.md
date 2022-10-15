@@ -34,7 +34,12 @@ To illustrate, here is how to specify the recursive fibonacci method:
 
 ### Status
 
-This project is pre version 0.1 and has no users as of yet.
+This project is pre version 0.1 and has no users as of yet. Some important 
+constructs are missing. My current approach is to reimplement 
+[needle](https://github.com/hyperpape/needle/) using mako, which is uncovering 
+missing language constructs. 
+
+Experiments using mako, feedback/suggestions, and bug reports are welcome.
 
 ## Language
 
@@ -43,9 +48,11 @@ straightforwardly to Java bytecode--but differs in a few ways. In general, it
 tends to implement less functionality than Java itself (i.e. no autoboxing, 
 and restricted forms of looping).
 
-Syntactically, Mako is uses prefix notation (operators like `eq` or `plus` come
-before their arguments), like a lisp, but freely mixes method calls and static 
-methods, according to what I find most natural to write.
+Syntactically, Mako uses prefix notation (operators like `eq` or `plus` come
+before their arguments), like a lisp, but freely mixes method calls and static
+methods, according to what I find most natural to write. Many language
+constructs can be created using static methods, or fluent method calls off of
+the appropriate object (either a `Method` or `CodeElement` or the proper type).
 
 ### Basic Expressions and Statements 
 
@@ -54,10 +61,13 @@ object.
 
 ```java
 Vars methodVars = new GenericVars("x", "y", "z");
+// alternately
+methodVars.add("a");
+methodVars.add("b");
 ```
 
 Variables are always non-final, and may be read/set. Setting a variable is 
-a statement (does not produce a value). 
+a statement (does not produce a value).
 
 ```java
 method.set("x", literal(1));
@@ -71,11 +81,11 @@ then set the variable.
 method.set("x", plus((read("x"), literal(1))));
 ```
 
-Expressions are written with the operator first:
+Arithmetic and equality expressions are written with the operator first:
 
 ```java
 plus(read("x"), literal(1));
-sub(read("x"), 1); // calling literal is usually unnecessary
+sub(read("x"), 1); // calling literal is usually unnecessary in arithmetic contexts
 mul(32, 2.5);
 div(32, 2.5);
 mod(8, 2);
@@ -86,11 +96,11 @@ There are standard comparisons that produce booleans:
 ```java
 gt(read("x"), 1);
 lt(read("x"), 1);
-eq(read("x", 1);
+eq(read("x"), 1);
 ```
 
 Implicit numeric conversions for primitives are supported, but all other 
-conversions must be explicit. 
+conversions must be explicit (no auto-boxing).
 
 ```java
 // define a method returning a long
@@ -115,12 +125,13 @@ Else blocks can be added with `orElse`.
 ```java
 method.cond(eq(read("i"), 3))
 .withBody(List.of(returnValue(3)))
-.orElse().withBody(List.of(returnValue(4)));
+.elseIf(eq(read("i"), 4)).withBody(list.of(returnValue(4)));
+.orElse().withBody(List.of(returnValue(5)));
 ```
 
 ### Loops
 
-Mako has only while loops.
+Mako has only while loops for now.
 
 ```java
         var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars("a"));
@@ -130,7 +141,7 @@ Mako has only while loops.
         method.returnValue(read("a"));
 ```
 
-Loops support `break` and `continue`, spelled `escape` and `skip`
+Loops support `break` and `continue`, spelled `escape` and `skip`.
 
 ```java
 method.set("a", 1);
@@ -150,7 +161,7 @@ method.loop(lt( read("a"), 5),
 ```java
 
 Vars vars = new GenericVars("a", "b", "c", "d");
-// Arguments are name, arguments, return type, the variables
+// Arguments to the method constructor are name, arguments, return type, the variables
 Method method = new Method(TEST_METHOD, List.of(Builtin.I), Builtin.I, vars);
 method.set("d", 2);
 method.returnValue(read("d"));
