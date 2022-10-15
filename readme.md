@@ -182,3 +182,14 @@ To define a class, create a `ClassBuilder`, add methods to it, then pass it to a
 ## Building 
 The compiler requires Java 11. Builds with maven. The generated
 classes should work with Java 8.
+
+## Mako, ByteBuddy and ASM
+
+Mako is built on top of [ASM](https://asm.ow2.io/), and provides a subset of 
+ASM's capabilities. In particular, Mako only provides an API for generating
+classes from scratch, it does not provide an API for transforming them. What 
+Mako attempts to add is a concise, higher level API for generating algorithmic
+code at runtime.
+
+Compared to ByteBuddy, Mako is more verbose for simple use-cases, but 
+handles some use-cases where the ByteBuddy based solution would be to use ASM.
