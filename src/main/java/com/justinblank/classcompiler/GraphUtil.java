@@ -1,7 +1,7 @@
 package com.justinblank.classcompiler;
 
 import static com.justinblank.classcompiler.Operation.Inst.JUMP;
-import static net.bytebuddy.jar.asm.Opcodes.GOTO;
+import static org.objectweb.asm.Opcodes.GOTO;
 
 public class GraphUtil {
 

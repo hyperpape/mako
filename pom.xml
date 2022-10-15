@@ -85,11 +85,6 @@
             <version>3.12.0</version>
         </dependency>
         <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
-            <version>1.12.14</version>
-        </dependency>
-        <dependency>
             <groupId>org.quicktheories</groupId>
             <artifactId>quicktheories</artifactId>
             <version>0.26</version>
