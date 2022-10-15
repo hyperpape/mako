@@ -77,6 +77,8 @@ public class TypeInference {
             }
             // This is ok;
             return null;
+        } else if (element instanceof Switch) {
+            return null;
         } else if (element instanceof Conditional) {
             var cond = (Conditional) element;
             analyze(cond.condition, environment);

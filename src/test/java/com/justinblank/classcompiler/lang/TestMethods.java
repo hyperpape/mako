@@ -187,6 +187,19 @@ public class TestMethods {
         return method;
     }
 
+    public static Method denseIntegerSwitchMethod() {
+        var vars = new GenericVars();
+        vars.addVar("a");
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
+        method.set("a", 0);
+        method.addSwitch(read("a")).
+                setCase(0, List.of(returnValue(2))).
+                        setCase(1, List.of(returnValue(3))).
+                setDefault(returnValue(5));
+
+        return method;
+    }
+
     public static Method conditional() {
         var vars = new GenericVars();
         vars.addVar("i");

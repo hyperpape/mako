@@ -163,6 +163,12 @@ public class Method {
         return conditional;
     }
 
+    public Switch addSwitch(Expression expression) {
+        var switchElement = new Switch(expression);
+        this.elements.add(switchElement);
+        return switchElement;
+    }
+
     public Method loop(Expression condition, List<CodeElement> body) {
         var loop = new Loop(condition, body);
         this.elements.add(loop);
@@ -540,6 +546,44 @@ public class Method {
             var constructorDescriptor = CompilerUtil.descriptor(argumentTypes, VOID.typeString());
             currentBlock().call("<init>", CompilerUtil.internalName(constructor.returnType), constructorDescriptor, true);
         }
+        else if (element instanceof Switch) {
+            var s = (Switch) element;
+            if (!s.isComplete()) {
+                throw new IllegalStateException("Trying to compile an incomplete switch statement");
+            }
+            resolve(s.getExpression());
+            if (s.getIntegerSwitch()) {
+                var integerKeys = s.intCases();
+                if (Switch.isDense(integerKeys)) {
+                    var switchBlock = addBlock();
+                    List<Block> switchBlocks = new ArrayList<>();
+                    for (var key : integerKeys) {
+                        var caseBlock = addBlock();
+                        withBlock(caseBlock, () -> {
+                            for (var subElement : s.getElements(key)) {
+                                resolve(subElement);
+                            }
+                        });
+                        switchBlocks.add(caseBlock);
+                    }
+                    var defaultBlock = addBlock();
+                    withBlock(defaultBlock, () -> {
+                        for (var codeElement : s.getDefaultCase()) {
+                            resolve(codeElement);
+                        }
+                    });
+                    int start = integerKeys.get(0);
+                    int stop = integerKeys.get(integerKeys.size() - 1);
+                    switchBlock.addOperation(Operation.mkTableSwitch(switchBlocks, defaultBlock, start, stop));
+                }
+                else {
+                    throw new UnsupportedOperationException("TODO: Non-dense switches are not yet handled");
+                }
+            }
+            else {
+                throw new UnsupportedOperationException("TODO: String switches are not yet handled");
+            }
+        }
         else if (element instanceof Conditional) {
             var cond = (Conditional) element;
             currentBlock.push(addBlock());
@@ -682,7 +726,6 @@ public class Method {
             var arrayLength = (ArrayLength) element;
             resolve(arrayLength.expression);
             currentBlock().operate(ARRAYLENGTH);
-
         }
     }
 

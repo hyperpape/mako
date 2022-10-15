@@ -184,6 +184,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testDenseIntegerSwitchMethod() throws Exception {
+        apply(TestMethods.denseIntegerSwitchMethod());
+    }
+
+    @Test
     public void testNoArgCall() throws Exception {
         var return0 = new Method("return0", List.of(), "I", null);
         return0.returnValue(1);
