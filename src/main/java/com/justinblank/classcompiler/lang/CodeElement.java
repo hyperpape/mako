@@ -14,32 +14,32 @@ public interface CodeElement {
         return new Conditional(expression);
     }
 
-    static Expression call(String methodName, Type type, Expression... arguments) {
-        return new Call(null, methodName, type, false, false, false, arguments);
+    static Expression call(String methodName, Type returnType, Expression... arguments) {
+        return new Call(null, methodName, returnType, false, false, false, arguments);
     }
 
-    static Expression call(String methodName, Class<?> type, Expression... arguments) {
-        return new Call(null, methodName, ReferenceType.of(type), false, false, false, arguments);
+    static Expression call(String methodName, Class<?> returnType, Expression... arguments) {
+        return new Call(null, methodName, ReferenceType.of(returnType), false, false, false, arguments);
     }
 
-    static Expression callInterface(String methodName, Type type, Expression... arguments) {
-        return new Call(null, methodName, type, false, false, true, arguments);
+    static Expression callInterface(String methodName, Type returnType, Expression... arguments) {
+        return new Call(null, methodName, returnType, false, false, true, arguments);
     }
 
-    static Expression callInterface(String methodName, Class<?> type, Expression... arguments) {
-        return new Call(null, methodName, ReferenceType.of(type), false, false, true, arguments);
+    static Expression callInterface(String methodName, Class<?> returnType, Expression... arguments) {
+        return new Call(null, methodName, ReferenceType.of(returnType), false, false, true, arguments);
     }
 
-    static Expression callStatic(String className, String methodName, Type type, Expression... arguments) {
-        return new Call(className, methodName, type, true, false, false, arguments);
+    static Expression callStatic(String className, String methodName, Type returnType, Expression... arguments) {
+        return new Call(className, methodName, returnType, true, false, false, arguments);
     }
 
-    static Expression callStatic(String className, String methodName, Class<?> type, Expression... arguments) {
-        return new Call(className, methodName, ReferenceType.of(type), true, false, false, arguments);
+    static Expression callStatic(String className, String methodName, Class<?> returnType, Expression... arguments) {
+        return new Call(className, methodName, ReferenceType.of(returnType), true, false, false, arguments);
     }
 
-    static Expression callStatic(Class<?> cls, String methodName, Type type, Expression... arguments) {
-        return new Call(CompilerUtil.internalName(cls), methodName, type, true, false, false, arguments);
+    static Expression callStatic(Class<?> cls, String methodName, Type returnType, Expression... arguments) {
+        return new Call(CompilerUtil.internalName(cls), methodName, returnType, true, false, false, arguments);
     }
 
     static Expression cast(Type outputType, Expression value) {
