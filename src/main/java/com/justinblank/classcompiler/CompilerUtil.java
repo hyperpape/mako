@@ -95,6 +95,7 @@ public class CompilerUtil {
             case "I":
             case "B":
             case "Z":
+            case "C":
                 return IRETURN;
             case "J":
                 return LRETURN;
@@ -123,6 +124,8 @@ public class CompilerUtil {
                 return "B";
             case BOOL:
                 return "Z";
+            case C:
+                return "C";
             default:
                 throw new IllegalStateException("Unhandled primitive");
         }

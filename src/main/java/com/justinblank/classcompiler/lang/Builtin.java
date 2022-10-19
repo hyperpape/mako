@@ -10,9 +10,10 @@ public enum Builtin implements Type {
     F(FADD, FSUB, FMUL, FDIV, FREM),
     L(LADD, LSUB, LMUL, LDIV, LREM),
     D(DADD, DSUB, DMUL, DDIV, DREM),
+    // TODO: check semantics of Bool/Octet, can we add?
     BOOL(-1, -1, -1, -1, -1),
-    OCTET(-1, -1, -1, -1, -1);
-    // TODO: Forgot char, did ye?
+    OCTET(-1, -1, -1, -1, -1),
+    C(IADD, ISUB, IMUL, IDIV, IREM);
 
     private final int addOperation;
     private final int subOperation;

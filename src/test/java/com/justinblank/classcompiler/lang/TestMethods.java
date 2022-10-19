@@ -40,6 +40,12 @@ public class TestMethods {
         return method;
     }
 
+    public static Method returnChar() {
+        var method = new Method(TEST_METHOD, List.of(), Builtin.C, null);
+        method.returnValue((int) 'a');
+        return method;
+    }
+
     public static Method returnLong() {
         var method = new Method(TEST_METHOD, List.of(), Builtin.L, null);
         method.returnValue(1);
@@ -120,6 +126,15 @@ public class TestMethods {
         vars.addVar("a");
         var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
         method.set("a", 1);
+        method.returnValue(read("a"));
+        return method;
+    }
+
+    public static Method setAndGetCharVariable() {
+        var vars = new GenericVars();
+        vars.addVar("a");
+        var method = new Method(TEST_METHOD, List.of(), Builtin.C, vars);
+        method.set("a", (int) 'a');
         method.returnValue(read("a"));
         return method;
     }
@@ -400,6 +415,20 @@ public class TestMethods {
         method.returnValue(plus(
                 call(TEST_METHOD, Builtin.I, thisRef(), sub(read("x"), 1)),
                 call(TEST_METHOD, Builtin.I, thisRef(), sub(read("x"), 2))));
+        return method;
+    }
+
+
+    public static Method testCallMethodReturningChar() {
+        var method = new Method(TEST_METHOD, List.of(CompilerUtil.descriptor(String.class)), Builtin.C, new GenericVars("s"));
+        method.returnValue(call("charAt", Builtin.C, read("s"), literal(1)));
+        return method;
+    }
+
+    public static Method testCallMethodReturningCharAfterStoringInLocalVariable() {
+        var method = new Method(TEST_METHOD, List.of(CompilerUtil.descriptor(String.class)), Builtin.C, new GenericVars("s", "c"));
+        method.set("c", call("charAt", Builtin.C, read("s"), literal(1)));
+        method.returnValue(read("c"));
         return method;
     }
 }

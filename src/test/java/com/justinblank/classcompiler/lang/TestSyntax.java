@@ -34,6 +34,21 @@ public class TestSyntax {
     }
 
     @Test
+    public void testReturnChar() throws Exception {
+        apply(TestMethods.returnChar());
+    }
+
+    @Test
+    public void testReturnCharFromMethodCall() throws Exception {
+        apply(TestMethods.testCallMethodReturningChar());
+    }
+
+    @Test
+    public void testReturningCharAfterStoringInLocalVariable() throws Exception {
+        apply(TestMethods.testCallMethodReturningCharAfterStoringInLocalVariable());
+    }
+
+    @Test
     public void testNoArgConstructor() throws Exception {
         apply(TestMethods.returnNewDate());
     }
@@ -71,6 +86,11 @@ public class TestSyntax {
     @Test
     public void testSetAndReadVars() throws Exception {
         apply(TestMethods.setAndGetVariable());
+    }
+
+    @Test
+    public void testSetAndReadCharVars() throws Exception {
+        apply(TestMethods.setAndGetCharVariable());
     }
 
     @Test
