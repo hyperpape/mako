@@ -215,6 +215,20 @@ public class TestMethods {
         return method;
     }
 
+    public static Method denseIntegerSwitchMethodWithAssignments() {
+        var vars = new GenericVars();
+        vars.addVar("a");
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
+        method.set("a", 0);
+        method.addSwitch(read("a")).
+                setCase(0, set("a", 5)).
+                setCase(1, set("a", 6)).
+                setDefault(returnValue(4));
+
+        method.returnValue(read("a"));
+        return method;
+    }
+
     public static Method conditional() {
         var vars = new GenericVars();
         vars.addVar("i");

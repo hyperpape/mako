@@ -226,6 +226,16 @@ public class TestSemantics {
     }
 
     @Test
+    public void testDenseIntegerSwitchMethod() throws Exception {
+        apply(TestMethods::denseIntegerSwitchMethod, 2);
+    }
+
+    @Test
+    public void testDenseIntegerSwitchMethodWithAssignments() throws Exception {
+        apply(TestMethods::denseIntegerSwitchMethodWithAssignments, 5);
+    }
+
+    @Test
     public void testCallNoArgMethod() throws Exception {
         var return0 = new Method("return0", List.of(), "I", null);
         return0.returnValue(1);

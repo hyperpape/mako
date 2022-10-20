@@ -2,6 +2,7 @@ package com.justinblank.classcompiler.lang;
 
 import java.util.*;
 
+// TODO: only supports switches without fallthrough--need to support that with explicit opt-in
 public class Switch extends Statement {
 
     Expression expression;

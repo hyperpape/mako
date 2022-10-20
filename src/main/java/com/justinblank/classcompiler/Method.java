@@ -575,6 +575,10 @@ public class Method {
                     int start = integerKeys.get(0);
                     int stop = integerKeys.get(integerKeys.size() - 1);
                     switchBlock.addOperation(Operation.mkTableSwitch(switchBlocks, defaultBlock, start, stop));
+                    var postSwitchBlock = addBlock();
+                    for (var b : switchBlocks) {
+                        b.jump(postSwitchBlock, GOTO);
+                    }
                 }
                 else {
                     throw new UnsupportedOperationException("TODO: Non-dense switches are not yet handled");
