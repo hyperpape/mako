@@ -364,7 +364,12 @@ public class Method {
             currentBlock().addReturn(RETURN);
         } else if (element instanceof VariableRead) {
             var read = (VariableRead) element;
-            currentBlock().readVar(getMatchingVars().get().indexByName(read.variable), descriptorForExpression(read));
+            try {
+                currentBlock().readVar(getMatchingVars().get().indexByName(read.variable), descriptorForExpression(read));
+            }
+            catch (Exception e) {
+                throw new IllegalStateException("Unable to read variable='" + read.variable + "'", e);
+            }
         } else if (element instanceof FieldReference) {
             var fieldReference = (FieldReference) element;
             resolve(fieldReference.expression);

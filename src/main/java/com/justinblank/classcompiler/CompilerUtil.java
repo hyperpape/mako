@@ -150,7 +150,7 @@ public class CompilerUtil {
             if (resolved != null) {
                 return descriptor(resolved);
             }
-            throw new UnsupportedOperationException("TODO");
+            throw new TypeInference.TypeCheckException("Unresolved typeVar does not have descriptor");
         }
     }
 

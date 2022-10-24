@@ -1,5 +1,7 @@
 package com.justinblank.classcompiler.lang;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 public class TypeInference {
@@ -8,6 +10,12 @@ public class TypeInference {
 
     public TypeInference(String thisType) {
         this.thisType = ReferenceType.of(thisType);
+    }
+
+    public void analyze(Collection<CodeElement> elements, Map<String, TypeVariable> environment) {
+        for (var e : elements) {
+            analyze(e, environment);
+        }
     }
 
     public Type analyze(CodeElement element, Map<String, TypeVariable> environment) {
@@ -72,19 +80,20 @@ public class TypeInference {
             if (loop.condition != null) {
                 analyze(loop.condition, environment);
             }
-            for (var loopElt : loop.body) {
-                analyze(loopElt, environment);
-            }
+            analyze(loop.body, environment);
             // This is ok;
             return null;
         } else if (element instanceof Switch) {
+            var s = (Switch) element;
+            for (var c : new HashSet<>(s.cases.values())) {
+                analyze(c, environment);
+            }
+            analyze(s.defaultCase, environment);
             return null;
         } else if (element instanceof Conditional) {
             var cond = (Conditional) element;
             analyze(cond.condition, environment);
-            for (var e : cond.body) {
-                analyze(e, environment);
-            }
+            analyze(cond.body, environment);
             return null;
         } else if (element instanceof ReturnExpression) {
             var returnExp = (ReturnExpression) element;
@@ -139,13 +148,22 @@ public class TypeInference {
             }
         }
         else {
-            var unified = t1.type().equals(t2.type());
-            if (!unified) {
-                throw new TypeCheckException();
+            var t1Type = t1.type();
+            var t2Type = t2.type();
+            if (!t1Type.equals(t2Type)) {
+                throw new TypeCheckException("Cannot unify " + t1Type.typeString() + "with " + t2Type.typeString());
             }
         }
     }
 
     public static class TypeCheckException extends RuntimeException {
+
+        public TypeCheckException() {
+            super();
+        }
+
+        public TypeCheckException(String s) {
+            super(s);
+        }
     }
 }
