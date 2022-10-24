@@ -74,41 +74,40 @@ public class TypeInference {
             }
             return type;
         } else if (element instanceof FieldSet) {
-            return null; // YOLO // TODO
+            return Void.VOID;
         } else if (element instanceof Loop) {
             var loop = (Loop) element;
             if (loop.condition != null) {
                 analyze(loop.condition, environment);
             }
             analyze(loop.body, environment);
-            // This is ok;
-            return null;
+            return Void.VOID;
         } else if (element instanceof Switch) {
             var s = (Switch) element;
             for (var c : new HashSet<>(s.cases.values())) {
                 analyze(c, environment);
             }
             analyze(s.defaultCase, environment);
-            return null;
+            return Void.VOID;
         } else if (element instanceof Conditional) {
             var cond = (Conditional) element;
             analyze(cond.condition, environment);
             analyze(cond.body, environment);
-            return null;
+            return Void.VOID;
         } else if (element instanceof ReturnExpression) {
             var returnExp = (ReturnExpression) element;
             return analyze(returnExp.expression, environment);
         } else if (element instanceof ReturnVoid) {
             return Void.VOID;
         } else if (element instanceof Skip || element instanceof Escape) {
-            return null;
+            return Void.VOID;
         } else if (element instanceof NewArray) {
             return ArrayType.of(((NewArray) element).type);
         } else if (element instanceof ArrayRead) {
             var arrayType = analyze(((ArrayRead) element).arrayRef, environment);
             return ((ArrayType) arrayType.type()).elementType;
         } else if (element instanceof ArraySet) {
-            return null; // TODO is this right?
+            return Void.VOID;
         } else if (element instanceof FieldReference) {
             return ((FieldReference) element).type;
         } else if (element instanceof StaticFieldReference) {
