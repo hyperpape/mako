@@ -22,7 +22,7 @@ public class Method {
     final List<String> arguments;
     List<Block> blocks;
 
-    final String returnType;
+    public final String returnType;
     private final Vars matchingVars;
     private final Map<String, Object> attributes = new HashMap<>();
     private List<CodeElement> elements = new ArrayList<>();
@@ -913,6 +913,6 @@ public class Method {
     public void setClass(String className, String classPackage) {
         this.className = className;
         this.classPackage = classPackage;
-        this.typeInference = new TypeInference(className);
+        this.typeInference = new TypeInference(className, this);
     }
 }

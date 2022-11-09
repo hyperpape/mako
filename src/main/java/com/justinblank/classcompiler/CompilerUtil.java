@@ -195,4 +195,11 @@ public class CompilerUtil {
     public static String internalNameToCanonicalName(String internalName) {
         return internalName.replaceAll("/", ".");
     }
+
+    public static String descriptorToCanonicalName(String descriptor) {
+        if (descriptor.charAt(0) == 'L') {
+            return internalNameToCanonicalName(descriptor.substring(1));
+        }
+        return descriptor;
+    }
 }

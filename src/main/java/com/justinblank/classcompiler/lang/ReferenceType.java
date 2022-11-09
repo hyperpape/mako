@@ -50,4 +50,22 @@ public class ReferenceType implements Type {
     public String typeString() {
         return typeString;
     }
+
+    public boolean isIncompatibleType(Type otherType) {
+        if (otherType instanceof ReferenceType) {
+            return !otherType.typeString().equals(typeString);
+        }
+        if (otherType instanceof TypeVariable) {
+            if (otherType.resolved()) {
+                return isIncompatibleType(otherType.type());
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+
+    }
 }

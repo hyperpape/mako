@@ -39,5 +39,4 @@ public class TypeVariable implements Type {
         }
         return type.resolved();
     }
-
 }

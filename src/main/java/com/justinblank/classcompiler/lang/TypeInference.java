@@ -1,5 +1,8 @@
 package com.justinblank.classcompiler.lang;
 
+import com.justinblank.classcompiler.CompilerUtil;
+import com.justinblank.classcompiler.Method;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -8,8 +11,11 @@ public class TypeInference {
 
     private final ReferenceType thisType;
 
-    public TypeInference(String thisType) {
+    private final Method method;
+
+    public TypeInference(String thisType, Method method) {
         this.thisType = ReferenceType.of(thisType);
+        this.method = method;
     }
 
     public void analyze(Collection<CodeElement> elements, Map<String, TypeVariable> environment) {
@@ -96,7 +102,10 @@ public class TypeInference {
             return Void.VOID;
         } else if (element instanceof ReturnExpression) {
             var returnExp = (ReturnExpression) element;
-            return analyze(returnExp.expression, environment);
+            var returnValue =  analyze(returnExp.expression, environment);
+            Type returnType = Type.fromDescriptor(method.returnType);
+            unify(returnValue, returnType);
+            return returnValue;
         } else if (element instanceof ReturnVoid) {
             return Void.VOID;
         } else if (element instanceof Skip || element instanceof Escape) {
@@ -139,6 +148,10 @@ public class TypeInference {
             if (t1TypeVar.type == null) {
                 t1TypeVar.type = t2.type();
             }
+            else {
+                // YOLO infinite loop?
+                unify(t1TypeVar.type, t2);
+            }
         }
         else if (t2 instanceof TypeVariable && !t2.resolved()) {
             var t2TypeVar = (TypeVariable) t2;
@@ -149,10 +162,42 @@ public class TypeInference {
         else {
             var t1Type = t1.type();
             var t2Type = t2.type();
-            if (!t1Type.equals(t2Type)) {
-                throw new TypeCheckException("Cannot unify " + t1Type.typeString() + "with " + t2Type.typeString());
+            if (typesAreIncompatible(t1Type, t2Type)) {
+                throw new TypeCheckException("Cannot unify " + t1Type.typeString() + " with " + t2Type.typeString());
             }
         }
+    }
+
+    /**
+     * Determine if two concrete types are definitely incompatible
+     * @param t1Type
+     * @param t2Type
+     * @return true if the two types are definitely incompatible
+     */
+    private static boolean typesAreIncompatible(Type t1Type, Type t2Type) {
+        if (t1Type instanceof TypeVariable) {
+            if (t2Type instanceof TypeVariable) {
+                if (t1Type.resolved() && t2Type.resolved()) {
+                    return typesAreIncompatible(t1Type.type(), t2Type.type());
+                }
+                return false;
+            }
+            else {
+                if (t1Type.resolved()) {
+                    return typesAreIncompatible(t1Type.type(), t2Type);
+                }
+            }
+            return false;
+        }
+        else if (t2Type instanceof TypeVariable) {
+            if (!t2Type.resolved()) {
+                return false;
+            }
+        }
+        if (t1Type.getClass() != t2Type.getClass()) {
+            return true;
+        }
+        return false;
     }
 
     public static class TypeCheckException extends RuntimeException {
