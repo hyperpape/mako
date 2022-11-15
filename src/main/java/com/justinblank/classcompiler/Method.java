@@ -246,20 +246,25 @@ public class Method {
     }
 
     void resolve() {
-        this.addBlock();
-        if (this.matchingVars != null) {
-            for (var v : this.matchingVars.allVars()) {
-                if (v.getRight() < this.arguments.size() + 1) {
-                    typeEnvironment.put(v.getLeft(), typeVariableFor(this.arguments.get(v.getRight() - 1)));
+        try {
+            this.addBlock();
+            if (this.matchingVars != null) {
+                for (var v : this.matchingVars.allVars()) {
+                    if (v.getRight() < this.arguments.size() + 1) {
+                        typeEnvironment.put(v.getLeft(), typeVariableFor(this.arguments.get(v.getRight() - 1)));
+                    }
                 }
             }
+            for (var element : elements) {
+                typeInference.analyze(element, typeEnvironment);
+                resolveTopLevelElement(element);
+            }
+            pruneEmptyBranches();
+            this.elements = new ArrayList<>();
         }
-        for (var element : elements) {
-            typeInference.analyze(element, typeEnvironment);
-            resolveTopLevelElement(element);
+        catch (Exception e) {
+            throw new ClassCompilationException("Error resolving method " + methodName, e);
         }
-        pruneEmptyBranches();
-        this.elements = new ArrayList<>();
     }
 
     private void pruneEmptyBranches() {

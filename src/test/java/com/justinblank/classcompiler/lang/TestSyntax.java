@@ -7,7 +7,7 @@ import java.util.List;
 
 import static com.justinblank.classcompiler.lang.CodeElement.call;
 import static com.justinblank.classcompiler.lang.CodeElement.read;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class TestSyntax {
 
@@ -349,13 +349,14 @@ public class TestSyntax {
         apply(TestClasses.classInPackageWithStaticAccess("TestClassInPackageForTestSyntax3", "com/justinblank/classcompiler"));
     }
 
-    @Test(expected = TypeInference.TypeCheckException.class)
     public void testTypeInferenceFailure() throws Exception {
         var method = new Method(TestMethods.TEST_METHOD, List.of(), ReferenceType.of(String.class), new GenericVars("a"));
         method.set("a", 1);
         method.set("a", call("toString", String.class, CodeElement.construct(StringBuilder.class)));
         method.returnValue(read("a"));
-        apply(method);
+        assertThrows(ClassCompilationException.class, () -> {
+            apply(method);
+        });
     }
 
     static void apply(ClassBuilder classBuilder) throws Exception {

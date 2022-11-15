@@ -1,5 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
+import com.justinblank.classcompiler.ClassCompilationException;
 import com.justinblank.classcompiler.CompilerUtil;
 import com.justinblank.classcompiler.Method;
 
@@ -200,11 +201,7 @@ public class TypeInference {
         return false;
     }
 
-    public static class TypeCheckException extends RuntimeException {
-
-        public TypeCheckException() {
-            super();
-        }
+    public static class TypeCheckException extends ClassCompilationException {
 
         public TypeCheckException(String s) {
             super(s);

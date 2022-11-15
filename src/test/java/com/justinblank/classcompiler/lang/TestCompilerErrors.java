@@ -1,5 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
+import com.justinblank.classcompiler.ClassCompilationException;
 import org.junit.Test;
 
 import static com.justinblank.classcompiler.lang.TestSyntax.apply;
@@ -9,7 +10,7 @@ public class TestCompilerErrors {
 
     @Test
     public void testIncorrectReturnType() {
-        assertThrows(TypeInference.TypeCheckException.class, () -> {
+        assertThrows(ClassCompilationException.class, () -> {
             apply(CompilerErrorTestMethods.typeMismatchReturnValue());
         });
     }
