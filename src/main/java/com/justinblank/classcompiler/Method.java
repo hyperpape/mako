@@ -403,11 +403,34 @@ public class Method {
         } else if (element instanceof Binary) {
             var operation = (Binary) element;
             switch (operation.operator) {
-                case EQUALS:
                 case LESS_THAN:
+                case LESS_THAN_OR_EQUALS:
                 case GREATER_THAN:
-                case NOT_EQUALS:
+                case GREATER_THAN_OR_EQUALS:
                     var block = addBlock();
+                    withBlock(block, () -> {
+                        resolve(operation.left);
+                        resolve(operation.right);
+                        var eqBlock = addBlock().push(1);
+                        var finalBlock = addBlock();
+
+                        if (typeInference.analyze(operation.left, typeEnvironment).type() == Builtin.I) {
+                            block.jump(eqBlock, operation.asmOP(this))
+                                    .push(0)
+                                    .jump(finalBlock, GOTO);
+                        }
+                        else {
+                            operation.comparisonOperation(this).ifPresent(block::operate);
+                            block.jump(eqBlock, operation.asmOP(this))
+                                    .push(0)
+                                    .jump(finalBlock, GOTO);
+                        }
+
+                    });
+                    return;
+                case EQUALS:
+                case NOT_EQUALS:
+                    block = addBlock();
                     withBlock(block, () -> {
                         resolve(operation.left);
                         resolve(operation.right);
@@ -418,7 +441,6 @@ public class Method {
                                 .push(0)
                                 .jump(finalBlock, GOTO);
                     });
-
                     return;
                 case OR:
                     // TODO: this generates significantly more verbose bytecode than javac

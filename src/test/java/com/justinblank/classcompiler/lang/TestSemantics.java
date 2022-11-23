@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.justinblank.classcompiler.lang.BinaryOperator.*;
 import static com.justinblank.classcompiler.lang.TestMethods.TEST_METHOD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -114,6 +115,83 @@ public class TestSemantics {
     @Test
     public void testReferenceInEquality() throws Exception {
         apply(TestOperators::referenceInequality, false);
+    }
+
+    // TODO: determine treatment of comparisons between int and double
+    @Test
+    public void testComparisonsOnIntegers() throws Exception {
+        apply(() -> TestOperators.binaryOperator(0, 1, (l, r) -> gte(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(1, 1, (l, r) -> gte(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(2, 1, (l, r) -> gte(l,r), Builtin.BOOL), true);
+
+        apply(() -> TestOperators.binaryOperator(0, 1, (l, r) -> gt(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(1, 1, (l, r) -> gt(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(2, 1, (l, r) -> gt(l,r), Builtin.BOOL), true);
+
+        apply(() -> TestOperators.binaryOperator(0, 1, (l, r) -> lte(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(1, 1, (l, r) -> lte(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(2, 1, (l, r) -> lte(l,r), Builtin.BOOL), false);
+
+        apply(() -> TestOperators.binaryOperator(0, 1, (l, r) -> lt(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(1, 1, (l, r) -> lt(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(2, 1, (l, r) -> lt(l,r), Builtin.BOOL), false);
+    }
+
+    @Test
+    public void testComparisonsOnLongs() throws Exception {
+        apply(() -> TestOperators.binaryOperator(0L, 1L, (l, r) -> gte(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(1L, 1L, (l, r) -> gte(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(2L, 1L, (l, r) -> gte(l,r), Builtin.BOOL), true);
+
+        apply(() -> TestOperators.binaryOperator(0L, 1L, (l, r) -> gt(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(1L, 1L, (l, r) -> gt(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(2L, 1L, (l, r) -> gt(l,r), Builtin.BOOL), true);
+
+        apply(() -> TestOperators.binaryOperator(0L, 1L, (l, r) -> lte(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(1L, 1L, (l, r) -> lte(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(2L, 1L, (l, r) -> lte(l,r), Builtin.BOOL), false);
+
+        apply(() -> TestOperators.binaryOperator(0, 1, (l, r) -> lt(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(1, 1, (l, r) -> lt(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(2, 1, (l, r) -> lt(l,r), Builtin.BOOL), false);
+    }
+
+    @Test
+    public void testComparisonsFloats() throws Exception {
+        apply(() -> TestOperators.binaryOperator(0.0F, 1.0F, (l, r) -> gte(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(1.0F, 1.0F, (l, r) -> gte(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(2.0F, 1.0F, (l, r) -> gte(l,r), Builtin.BOOL), true);
+
+        apply(() -> TestOperators.binaryOperator(0.0F, 1.0F, (l, r) -> gt(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(1.0F, 1.0F, (l, r) -> gt(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(2.0F, 1.0F, (l, r) -> gt(l,r), Builtin.BOOL), true);
+
+        apply(() -> TestOperators.binaryOperator(0.0F, 1.0F, (l, r) -> lte(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(1.0F, 1.0F, (l, r) -> lte(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(2.0F, 1.0F, (l, r) -> lte(l,r), Builtin.BOOL), false);
+
+        apply(() -> TestOperators.binaryOperator(0.0F, 1.0F, (l, r) -> lt(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(1.0F, 1.0F, (l, r) -> lt(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(2.0F, 1.0F, (l, r) -> lt(l,r), Builtin.BOOL), false);
+    }
+
+    @Test
+    public void testComparisonsDoubles() throws Exception {
+        apply(() -> TestOperators.binaryOperator(0.0, 1.0, (l, r) -> gte(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(1.0, 1.0, (l, r) -> gte(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(2.0, 1.0, (l, r) -> gte(l,r), Builtin.BOOL), true);
+
+        apply(() -> TestOperators.binaryOperator(0.0, 1.0, (l, r) -> gt(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(1.0, 1.0, (l, r) -> gt(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(2.0, 1.0, (l, r) -> gt(l,r), Builtin.BOOL), true);
+
+        apply(() -> TestOperators.binaryOperator(0.0, 1.0, (l, r) -> lte(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(1.0, 1.0, (l, r) -> lte(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(2.0, 1.0, (l, r) -> lte(l,r), Builtin.BOOL), false);
+
+        apply(() -> TestOperators.binaryOperator(0.0, 1.0, (l, r) -> lt(l,r), Builtin.BOOL), true);
+        apply(() -> TestOperators.binaryOperator(1.0, 1.0, (l, r) -> lt(l,r), Builtin.BOOL), false);
+        apply(() -> TestOperators.binaryOperator(2.0, 1.0, (l, r) -> lt(l,r), Builtin.BOOL), false);
     }
 
     @Test
@@ -362,7 +440,7 @@ public class TestSemantics {
     }
 
     static void apply(Supplier<Method> method, Object expected) throws Exception {
-        Object output = call(method.get(), false);
+        Object output = call(method.get(), true);
         Class c = expected.getClass();
         // TODO: improve comparison
         if (c.getName().startsWith("[")) {

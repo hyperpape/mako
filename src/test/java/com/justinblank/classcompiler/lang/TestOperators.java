@@ -5,6 +5,7 @@ import com.justinblank.classcompiler.Method;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import static com.justinblank.classcompiler.lang.BinaryOperator.*;
 import static com.justinblank.classcompiler.lang.CodeElement.callStatic;
@@ -114,6 +115,13 @@ public class TestOperators {
         var method = new Method(TestMethods.TEST_METHOD, List.of(), Builtin.BOOL, vars);
         method.returnValue(or(eq(1, 1),
                 callStatic(TestOperators.class, "exceptionThrowingBoolean", Builtin.BOOL)));
+        return method;
+    }
+
+    public static Method binaryOperator(Number left, Number right, BiFunction<Number, Number, Expression> operator, Type returnType) {
+        var vars = new GenericVars();
+        var method = new Method(TestMethods.TEST_METHOD, List.of(), returnType, vars);
+        method.returnValue(operator.apply(left, right));
         return method;
     }
 

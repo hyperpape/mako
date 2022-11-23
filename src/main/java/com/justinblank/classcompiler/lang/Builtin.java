@@ -1,19 +1,21 @@
 package com.justinblank.classcompiler.lang;
 
+import com.justinblank.classcompiler.ClassCompilationException;
+
 import java.util.Optional;
 
 import static org.objectweb.asm.Opcodes.*;
 
 // TODO: rename primitive?
 public enum Builtin implements Type {
-    I(IADD, ISUB, IMUL, IDIV, IREM),
-    F(FADD, FSUB, FMUL, FDIV, FREM),
-    L(LADD, LSUB, LMUL, LDIV, LREM),
-    D(DADD, DSUB, DMUL, DDIV, DREM),
-    // TODO: check semantics of Bool/Octet, can we add?
-    BOOL(-1, -1, -1, -1, -1),
-    OCTET(-1, -1, -1, -1, -1),
-    C(IADD, ISUB, IMUL, IDIV, IREM);
+    I(IADD, ISUB, IMUL, IDIV, IREM, -1, -1, IF_ICMPLT, IF_ICMPLE, IF_ICMPGT, IF_ICMPGE),
+    F(FADD, FSUB, FMUL, FDIV, FREM, FCMPL, FCMPG, IFGE, IFGT, IFLE, IFLT),
+    L(LADD, LSUB, LMUL, LDIV, LREM, LCMP, LCMP, IFGE, IFGT, IFLE, IFLT),
+    D(DADD, DSUB, DMUL, DDIV, DREM, DCMPL, DCMPG, IFGE, IFGT, IFLE, IFLT),
+    // TODO: check semantics of Bool/Octet, can we add, etc?
+    BOOL(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    OCTET(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    C(IADD, ISUB, IMUL, IDIV, IREM, -1, -1, IF_ICMPLT, IF_ICMPLE, IF_ICMPGT, IF_ICMPGE);
 
     private final int addOperation;
     private final int subOperation;
@@ -21,12 +23,25 @@ public enum Builtin implements Type {
     private final int divisionOperation;
     private final int modOperation;
 
-    Builtin(int addOperation, int subOperation, int multiplicationOperation, int divisionOperation, int modOperation) {
+    private final int comparisonGreater;
+    private final int comparisonLesser;
+    private final int lessThanOperation;
+    private final int lessThanOrEqualsOperation;
+    private final int greaterThanOperation;
+    private final int greaterThanOrEqualsOperation;
+
+    Builtin(int addOperation, int subOperation, int multiplicationOperation, int divisionOperation, int modOperation, int comparisonGreater, int comparisonLesser, int lessThanOperation, int lessThanOrEqualsOperation, int greaterThanOperation, int greaterThanOrEqualsOperation) {
         this.addOperation = addOperation;
         this.subOperation = subOperation;
         this.multiplicationOperation = multiplicationOperation;
         this.divisionOperation = divisionOperation;
         this.modOperation = modOperation;
+        this.comparisonGreater = comparisonGreater;
+        this.comparisonLesser = comparisonLesser;
+        this.lessThanOperation = lessThanOperation;
+        this.lessThanOrEqualsOperation = lessThanOrEqualsOperation;
+        this.greaterThanOperation = greaterThanOperation;
+        this.greaterThanOrEqualsOperation = greaterThanOrEqualsOperation;
     }
 
     public Type type() {
@@ -37,35 +52,72 @@ public enum Builtin implements Type {
         if (addOperation > 0) {
             return addOperation;
         }
-        throw new IllegalArgumentException("Tried to get an add operation on a type not supporting it" + this.toString());
+        throw new IllegalArgumentException("Tried to get an add operation on a type not supporting it" + this);
     }
 
     public int subtractionOperation() {
         if (subOperation > 0) {
             return subOperation;
         }
-        throw new IllegalArgumentException("Tried to get an add operation on a type not supporting it" + this.toString());
+        throw new IllegalArgumentException("Tried to get a subtraction operation on a type not supporting it" + this);
     }
 
     public int multiplicationOperation() {
         if (multiplicationOperation > 0) {
             return multiplicationOperation;
         }
-        throw new IllegalArgumentException("Tried to get an add operation on a type not supporting it" + this.toString());
+        throw new IllegalArgumentException("Tried to get a multiplication operation on a type not supporting it" + this);
     }
 
     public int divisionOperation() {
         if (divisionOperation > 0) {
             return divisionOperation;
         }
-        throw new IllegalArgumentException("Tried to get an add operation on a type not supporting it" + this.toString());
+        throw new IllegalArgumentException("Tried to get a division on a type not supporting it" + this);
     }
 
     public int modOperation() {
         if (modOperation > 0) {
             return modOperation;
         }
-        throw new IllegalArgumentException("Tried to get an add operation on a type not supporting it" + this.toString());
+        throw new IllegalArgumentException("Tried to get a mod operation on a type not supporting it" + this);
+    }
+
+    public int comparisonGreater() {
+        return comparisonGreater;
+    }
+
+    public int comparisonLesser() {
+        return comparisonLesser;
+    }
+
+    public int lessThanOperation() {
+        if (lessThanOperation> 0) {
+            return lessThanOperation;
+        }
+        throw new ClassCompilationException("Tried to get a lessThan operation on a type not supporting it" + this);
+    }
+
+    public int greaterThanOperation() {
+        if (greaterThanOperation> 0) {
+            return greaterThanOperation;
+        }
+        throw new ClassCompilationException("Tried to get a greaterThan operation on a type not supporting it" + this);
+    }
+
+    public int lessThanOrEqualsOperation() {
+        if (lessThanOrEqualsOperation > 0) {
+            return lessThanOrEqualsOperation;
+        }
+        throw new ClassCompilationException("Tried to get a lessThanOrEquals operation on a type not supporting it" + this);
+
+    }
+
+    public int greaterThanOrEqualsOperation() {
+        if (greaterThanOrEqualsOperation> 0) {
+            return greaterThanOrEqualsOperation;
+        }
+        throw new IllegalArgumentException("Tried to get an add operation on a type not supporting it" + this);
     }
 
     public String typeString() {

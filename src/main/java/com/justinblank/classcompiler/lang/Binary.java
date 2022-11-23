@@ -2,6 +2,8 @@ package com.justinblank.classcompiler.lang;
 
 import com.justinblank.classcompiler.Method;
 
+import java.util.Optional;
+
 public class Binary extends Operation {
 
     public final BinaryOperator operator;
@@ -20,5 +22,9 @@ public class Binary extends Operation {
 
     public int asmOP(Method method) {
         return operator.asmOP(method.typeOf(left), method.typeOf(right));
+    }
+
+    public Optional<Integer> comparisonOperation(Method method) {
+        return operator.comparisonOperation(method.typeOf(left), method.typeOf(right));
     }
 }
