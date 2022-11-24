@@ -259,7 +259,7 @@ public class Method {
                 typeInference.analyze(element, typeEnvironment);
                 resolveTopLevelElement(element);
             }
-            pruneEmptyBranches();
+            pruneEmptyBlocks();
             this.elements = new ArrayList<>();
         }
         catch (Exception e) {
@@ -267,7 +267,9 @@ public class Method {
         }
     }
 
-    private void pruneEmptyBranches() {
+    private void pruneEmptyBlocks() {
+        // TODO: it would also be desirable to merge blocks that don't matter, would generate a more readable
+        // representation
         Set<Integer> blocksToTake = new HashSet<>();
         for (var b : blocks) {
             if (!b.isEmpty()) {
