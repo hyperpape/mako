@@ -29,6 +29,8 @@ public class ClassCompiler {
     }
 
     public ClassCompiler(ClassBuilder classBuilder, boolean debug, PrintStream output) {
+        Objects.requireNonNull(classBuilder, "class builder cannot be null");
+        Objects.requireNonNull(output, "output cannot be null");
         this.classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         this.debug = debug;
         if (debug) {
@@ -57,28 +59,38 @@ public class ClassCompiler {
     }
 
     public byte[] writeClassAsBytes() {
-        for (var method : methodsToWrite(classBuilder.allMethods())) {
-            method.setClass(getClassName(), classBuilder.getClassPackage());
-            method.resolve();
-            if (debug) {
-                printStream.println("Method " + method.methodName + ": " + GraphUtil.methodVis(method));
+        byte[] classBytes;
+        try {
+            for (var method : methodsToWrite(classBuilder.allMethods())) {
+                method.setClass(getClassName(), classBuilder.getClassPackage());
+                method.resolve();
+                if (debug) {
+                    printStream.println("Method " + method.methodName + ": " + GraphUtil.methodVis(method));
+                }
             }
-        }
-        if (debug) {
-            var stringWriter = new StringWriter();
-            var printer = new ClassPrinter(new PrintWriter(stringWriter));
-            printer.printClass(classBuilder);
-            printStream.println(stringWriter);
-        }
+            if (debug) {
+                var stringWriter = new StringWriter();
+                var printer = new ClassPrinter(new PrintWriter(stringWriter));
+                printer.printClass(classBuilder);
+                printStream.println(stringWriter);
+            }
 
-        defineClass(classBuilder);
-        addFields();
+            defineClass(classBuilder);
+            addFields();
 
-        writeStaticBlocks();
-        for (var method : methodsToWrite(classBuilder.allMethods())) {
-            writeMethod(method);
+            writeStaticBlocks();
+            for (var method : methodsToWrite(classBuilder.allMethods())) {
+                writeMethod(method);
+            }
+            classBytes = classWriter.toByteArray();
         }
-        byte[] classBytes = classWriter.toByteArray();
+        catch (ClassCompilationException e) {
+            throw e;
+        }
+        catch (Exception e) {
+            throw new ClassCompilationException("Failed to compile class=" + className, e);
+        }
+        // TODO: this probably should just be part of the caller's handling?
         if (debug) {
             try (FileOutputStream fos = new FileOutputStream("target/" + className + ".class")) {
                 fos.write(classBytes);
