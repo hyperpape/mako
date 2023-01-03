@@ -92,12 +92,14 @@ public class Switch extends Statement {
     }
 
 
-    public void setDefault(CodeElement element) {
+    public Switch setDefault(CodeElement element) {
         this.defaultCase = List.of(element);
+        return this;
     }
 
-    public void setDefault(List<CodeElement> elements) {
+    public Switch setDefault(List<CodeElement> elements) {
         this.defaultCase = elements;
+        return this;
     }
 
     public CodeElement getExpression() {
