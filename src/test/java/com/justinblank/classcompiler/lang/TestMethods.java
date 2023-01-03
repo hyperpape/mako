@@ -236,7 +236,7 @@ public class TestMethods {
         method.set("a", 0);
         method.cond(gte(read("a"), 5))
                 .withBody(set("a", -1))
-                .orElse().withBody(new Switch(read("a"))
+                .orElse(new Switch(read("a"))
                         .setCase(0, List.of(
                                 set("a", 1), returnValue(read("a"))))
                         .setCase(1, List.of(set("a", NEVER_RETURNED), returnValue(read("a"))))
@@ -272,7 +272,7 @@ public class TestMethods {
         method.set("i", 2);
         method.cond(eq(read("i"), 3))
                 .withBody(List.of(returnValue(3)))
-                .orElse().withBody(List.of(returnValue(4)));
+                .orElse(returnValue(4));
         return method;
     }
 
@@ -282,7 +282,7 @@ public class TestMethods {
         method.set("i", 2);
         method.cond(neq(read("i"), 3))
                 .withBody(List.of(returnValue(3)))
-                .orElse().withBody(List.of(returnValue(4)));
+                .orElse(returnValue(4));
         return method;
     }
 

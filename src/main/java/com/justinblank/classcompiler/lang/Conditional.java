@@ -20,10 +20,14 @@ public class Conditional implements ElementContainer {
         return cond;
     }
 
-    public Conditional orElse() {
-        var cond = new Conditional(null);
+    public Conditional orElse(CodeElement body) {
+        return orElse(List.of(body));
+    }
+
+    public Conditional orElse(List<CodeElement> body) {
+        var cond = new Conditional(null).withBody(body);
         this.alternates.add(cond);
-        return cond;
+        return this;
     }
 
     public Conditional withBody(List<CodeElement> placeholders) {

@@ -167,6 +167,7 @@ public class Method {
     }
 
     public Conditional cond(Expression condition) {
+        Objects.requireNonNull(condition, "Condition cannot be non-null");
         var conditional = new Conditional(condition);
         this.addElement(conditional);
         return conditional;
