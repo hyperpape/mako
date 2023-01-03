@@ -7,6 +7,7 @@ import com.justinblank.classcompiler.Method;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 
 public class TypeInference {
 
@@ -26,6 +27,7 @@ public class TypeInference {
     }
 
     public Type analyze(CodeElement element, Map<String, TypeVariable> environment) {
+        Objects.requireNonNull(element, "Cannot perform type inference on a null element");
         if (element instanceof Call) {
             var call = (Call) element;
             return call.returnType;

@@ -157,91 +157,100 @@ public class Method {
         return Collections.unmodifiableList(blocks);
     }
 
+    public void setBlocks(List<Block> blocks) {
+        this.blocks = new ArrayList<>(blocks);
+    }
+
+    public void addElement(CodeElement codeElement) {
+        Objects.requireNonNull(codeElement, "Cannot add null element to Method");
+        this.elements.add(codeElement);
+    }
+
     public Conditional cond(Expression condition) {
         var conditional = new Conditional(condition);
-        this.elements.add(conditional);
+        this.addElement(conditional);
         return conditional;
     }
 
     public Switch addSwitch(Expression expression) {
         var switchElement = new Switch(expression);
-        this.elements.add(switchElement);
+        this.addElement(switchElement);
         return switchElement;
     }
 
     public Method loop(Expression condition, List<CodeElement> body) {
         var loop = new Loop(condition, body);
-        this.elements.add(loop);
+        this.addElement(loop);
         return this;
     }
 
     public Method set(String variable, Expression expression) {
-        this.elements.add(CodeElement.set(variable, expression));
+        this.addElement(CodeElement.set(variable, expression));
         return this;
     }
 
     public Method set(String variable, Number expression) {
-        this.elements.add(CodeElement.set(variable, literal(expression)));
+        this.addElement(CodeElement.set(variable, literal(expression)));
         return this;
     }
 
     public Method fieldSet(FieldReference ref, Expression expression) {
-        this.elements.add(CodeElement.fieldSet(ref, expression));
+        this.addElement(CodeElement.fieldSet(ref, expression));
         return this;
     }
 
     public Method arraySet(Expression arrayRef, Expression index, Expression value) {
-        this.elements.add(ArraySet.arraySet(arrayRef, index, value));
+        this.addElement(ArraySet.arraySet(arrayRef, index, value));
         return this;
     }
 
     public Method arrayRead(Expression arrayRef, Expression index) {
-        this.elements.add(ArrayRead.arrayRead(arrayRef, index));
+        this.addElement(ArrayRead.arrayRead(arrayRef, index));
         return this;
     }
 
     public Method returnValue(Expression expression) {
-        this.elements.add(CodeElement.returnValue(expression));
+        this.addElement(CodeElement.returnValue(expression));
         return this;
     }
 
     public Method returnValue(Number number) {
-        this.elements.add(CodeElement.returnValue(number));
+        this.addElement(CodeElement.returnValue(number));
         return this;
     }
 
     public Method returnVoid() {
-        this.elements.add(CodeElement.returnVoid());
+        this.addElement(CodeElement.returnVoid());
         return this;
     }
 
     public Method call(String methodName, Type type, Expression... expressions) {
-        this.elements.add(CodeElement.call(methodName, type, expressions));
+        this.addElement(CodeElement.call(methodName, type, expressions));
         return this;
     }
 
     public Method call(String methodName, Class<?> type, Expression... expressions) {
-        this.elements.add(CodeElement.call(methodName, type, expressions));
+        this.addElement(CodeElement.call(methodName, type, expressions));
         return this;
     }
 
     public Method callInterface(String methodName, Type type, Expression... expressions) {
-        this.elements.add(CodeElement.callInterface(methodName, type, expressions));
+        this.addElement(CodeElement.callInterface(methodName, type, expressions));
         return this;
     }
 
     public Method callInterface(String methodName, Class<?> type, Expression... expressions) {
-        this.elements.add(CodeElement.callInterface(methodName, type, expressions));
+        this.addElement(CodeElement.callInterface(methodName, type, expressions));
         return this;
     }
 
     public Method callStatic(String className, String methodName, Type type, Expression...expressions) {
-        this.elements.add(CodeElement.callStatic(className, methodName, type, expressions));
+        this.addElement(CodeElement.callStatic(className, methodName, type, expressions));
         return this;
     }
 
     public Method callStatic(String className, String methodName, Class<?> type, Expression...expressions) {
-        this.elements.add(CodeElement.callStatic(className, methodName, type, expressions));
+        this.addElement(CodeElement.callStatic(className, methodName, type, expressions));
         return this;
     }
 
@@ -933,10 +942,6 @@ public class Method {
     private String descriptorForExpression(Expression expression) {
         var type = typeInference.analyze(expression, typeEnvironment);
         return CompilerUtil.descriptorForType(type);
-    }
-
-    public void add(CodeElement element) {
-        elements.add(element);
     }
 
     public void setClass(String className, String classPackage) {
