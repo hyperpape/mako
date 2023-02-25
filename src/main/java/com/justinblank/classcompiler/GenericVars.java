@@ -10,6 +10,7 @@ import java.util.Map;
 public class GenericVars implements Vars {
 
     private final Map<String, Integer> vars = new HashMap<>();
+    private final Map<Integer, String> reverseVars = new HashMap<>();
 
     public GenericVars() {
     }
@@ -29,8 +30,19 @@ public class GenericVars implements Vars {
         return index;
     }
 
+    @Override
+    public String nameByIndex(int i) {
+        String name = reverseVars.get(i);
+        if (name == null) {
+            throw new IllegalStateException("Tried to get name for out of bound index Index=" + name);
+        }
+        return name;
+    }
+
     public void addVar(String name) {
-        vars.put(name, vars.size() + 1);
+        int index = vars.size() + 1;
+        vars.put(name, index);
+        reverseVars.put(index, name);
     }
 
     @Override

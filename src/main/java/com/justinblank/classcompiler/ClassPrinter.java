@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.justinblank.classcompiler.Operation.Inst.CALL;
 
@@ -71,7 +72,7 @@ public class ClassPrinter {
         indented = false;
     }
 
-    protected void printOperation(Operation op) {
+    protected void printOperation(Operation op, Optional<Vars> vars) {
         print(op.inst);
         print(' ');
         switch (op.inst) {
@@ -117,8 +118,10 @@ public class ClassPrinter {
                 if (op.spec != null) {
                     if (op.spec.isSelf) {
                         println("this");
-                    } else {
+                    } else if (op.spec.name != null) {
                         println(op.spec.name);
+                    } else {
+                        println(vars.map(v -> v.nameByIndex(op.count)).orElse(""));
                     }
                 } else {
                     println(op.count);
@@ -133,11 +136,11 @@ public class ClassPrinter {
         return REPRESENTATIONS.get(op.count);
     }
 
-    void printBlock(Block block) {
+    void printBlock(Block block, Optional<Vars> vars) {
         println("BLOCK" + block.number + ":");
         indentation++;
         for (Operation op : block.operations) {
-            printOperation(op);
+            printOperation(op, vars);
         }
         indentation--;
     }
@@ -146,7 +149,7 @@ public class ClassPrinter {
         println("METHOD " + method.methodName.toUpperCase() + ":");
         for (Block block : method.getBlocks()) {
             indentation++;
-            printBlock(block);
+            printBlock(block, method.getMatchingVars());
             indentation--;
         }
     }

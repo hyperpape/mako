@@ -21,4 +21,6 @@ public interface Vars {
      * @return list of all name-index pairs for variabels used in this method
      */
     List<Pair<String, Integer>> allVars();
+
+    String nameByIndex(int count);
 }
