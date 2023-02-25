@@ -85,10 +85,13 @@ public class ClassCompiler {
             classBytes = classWriter.toByteArray();
         }
         catch (ClassCompilationException e) {
+            e.setClassName(getClassName());
             throw e;
         }
         catch (Exception e) {
-            throw new ClassCompilationException("Failed to compile class=" + className, e);
+            var thrown = new ClassCompilationException(e);
+            thrown.setClassName(getClassName());
+            throw thrown;
         }
         // TODO: this probably should just be part of the caller's handling?
         if (debug) {
@@ -188,9 +191,14 @@ public class ClassCompiler {
             }
             mv.visitEnd();
         }
-        catch (Exception e) {
-            System.out.println("Error in Method=" + method.methodName);
+        catch (ClassCompilationException e) {
+            e.setMethodName(method.methodName);
             throw e;
+        }
+        catch (Exception e) {
+            var ex = new ClassCompilationException(e);
+            ex.setMethodName(method.methodName);
+            throw ex;
         }
     }
 
