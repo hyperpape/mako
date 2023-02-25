@@ -1,5 +1,7 @@
 package com.justinblank.classcompiler;
 
+import java.util.List;
+
 import static com.justinblank.classcompiler.Operation.Inst.JUMP;
 import static org.objectweb.asm.Opcodes.GOTO;
 
@@ -9,8 +11,9 @@ public class GraphUtil {
         StringBuilder sb = new StringBuilder();
 
         sb.append("digraph G {");
-        for (var b : method.blocks) {
-            if (b.isEmpty() && b.number < method.blocks.size() - 1) {
+        List<Block> blocks = method.getBlocks();
+        for (var b : blocks) {
+            if (b.isEmpty() && b.number < blocks.size() - 1) {
                 continue;
             }
             for (var o : b.operations) {
@@ -20,7 +23,7 @@ public class GraphUtil {
                     sb.append("[ label = ").append(ClassPrinter.getRepresentation(o)).append(" ]").append(";");
                 }
             }
-            if (b.number < method.blocks.size() - 1) {
+            if (b.number < blocks.size() - 1) {
                 var op = b.operations.get(b.operations.size() - 1);
                 if (op.inst == JUMP && op.count == GOTO) {
                     continue;
@@ -35,10 +38,11 @@ public class GraphUtil {
     }
 
     public static Block actualTarget(Method method, int number) {
-        var target = method.blocks.get(number);
-        while (target.number < method.blocks.size() - 1) {
+        List<Block> blocks = method.getBlocks();
+        var target = blocks.get(number);
+        while (target.number < blocks.size() - 1) {
             if (target.isEmpty()) {
-                target = method.blocks.get(target.number + 1);
+                target = blocks.get(target.number + 1);
             }
             else {
                 return target;

@@ -122,7 +122,7 @@ public class ClassCompiler {
         while (!methodsToAdd.isEmpty()) {
             var method = methodsToAdd.pop();
             methods.add(method);
-            for (var block : method.blocks) {
+            for (var block : method.getBlocks()) {
                 for (var op : block.operations) {
                     if (op.inst == Operation.Inst.CALL) {
                         var spec = op.spec;
@@ -180,7 +180,7 @@ public class ClassCompiler {
             var vars = method.getMatchingVars();
 
             mv.visitCode();
-            for (var block : method.blocks) {
+            for (var block : method.getBlocks()) {
                 visitBlock(mv, vars, block);
             }
             if (debug) {

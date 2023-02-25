@@ -9,7 +9,7 @@ public class Operation {
     public final Inst inst;
     public final int count;
     // TODO: ugh, just ugh...refactor
-    public final Number number;
+    protected final Number number;
     public Block target;
     final List<Block> blockTargets;
     final RefSpec spec;

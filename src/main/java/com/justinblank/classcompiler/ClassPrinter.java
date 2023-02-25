@@ -144,7 +144,7 @@ public class ClassPrinter {
 
     void printMethod(Method method) {
         println("METHOD " + method.methodName.toUpperCase() + ":");
-        for (Block block : method.blocks) {
+        for (Block block : method.getBlocks()) {
             indentation++;
             printBlock(block);
             indentation--;

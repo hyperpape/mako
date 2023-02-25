@@ -20,7 +20,7 @@ public class Method {
     private String className;
     final int modifiers;
     final List<String> arguments;
-    List<Block> blocks;
+    private List<Block> blocks;
 
     public final String returnType;
     private final Vars matchingVars;
