@@ -20,7 +20,7 @@ import static com.justinblank.classcompiler.lang.UnaryOperator.not;
 public class TestMethods {
 
     public static final String TEST_METHOD = "testThingMethod";
-    public static final int NEVER_RETURNED = 0xFFFFFFFF;
+    public static final int NEVER_RETURNED = 0xF0000000; // -268435456
 
     public static Method noOpVoidMethod() {
         var method = new Method(TEST_METHOD, List.of(), Void.VOID, null);
@@ -226,6 +226,21 @@ public class TestMethods {
                 setCase(1, set("a", 6)).
                 setDefault(returnValue(4));
 
+        method.returnValue(read("a"));
+        return method;
+    }
+
+    public static Method conditionalWithSwitchAndOrElse() {
+        var vars = new GenericVars("a");
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
+        method.set("a", 0);
+        method.cond(gte(read("a"), 5))
+                .withBody(new Switch(read("a"))
+                        .setCase(0, List.of(
+                                set("a", 1), returnValue(read("a"))))
+                        .setCase(1, List.of(set("a", NEVER_RETURNED), returnValue(read("a"))))
+                        .setDefault(returnValue(NEVER_RETURNED)))
+                .orElse(set("a", -1));
         method.returnValue(read("a"));
         return method;
     }

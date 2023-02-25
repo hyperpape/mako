@@ -7,6 +7,7 @@ import java.util.List;
 
 import static com.justinblank.classcompiler.lang.CodeElement.call;
 import static com.justinblank.classcompiler.lang.CodeElement.read;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 public class TestSyntax {
@@ -214,9 +215,16 @@ public class TestSyntax {
     }
 
     @Test
+    public void testConditionalWithSwitchAndOrElse() throws Exception {
+        apply(TestMethods.conditionalWithSwitchAndOrElse());
+    }
+
+    @Test
     public void testConditionalWithSwitchInOrElse() throws Exception {
         apply(TestMethods.conditionalWithSwitchInOrElse());
     }
+
+
 
     @Test
     public void testNoArgCall() throws Exception {
