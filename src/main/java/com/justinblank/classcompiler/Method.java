@@ -428,7 +428,9 @@ public class Method {
                         var eqBlock = addBlock().push(1);
                         var finalBlock = addBlock();
 
-                        if (typeInference.analyze(operation.left, typeEnvironment).type() == Builtin.I) {
+                        var analyzed = typeInference.analyze(operation.left, typeEnvironment).type();
+                        // TODO: need specific test case for characters
+                        if (analyzed == Builtin.I || analyzed == Builtin.C) {
                             block.jump(eqBlock, operation.asmOP(this))
                                     .push(0)
                                     .jump(finalBlock, GOTO);

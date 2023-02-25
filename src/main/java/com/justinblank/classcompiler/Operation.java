@@ -177,6 +177,9 @@ public class Operation {
     }
 
     public static Operation mkOperation(int i) {
+        if (i < 0) {
+            throw new IllegalArgumentException("Cannot create an operation with opcode < 0");
+        }
         return new Operation(Inst.PASSTHROUGH, i, null, null, null);
     }
 
