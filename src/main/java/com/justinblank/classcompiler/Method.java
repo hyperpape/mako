@@ -273,7 +273,7 @@ public class Method {
             this.elements = new ArrayList<>();
         }
         catch (Exception e) {
-            var thrown = new ClassCompilationException("Error resolving method");
+            var thrown = new ClassCompilationException("Error resolving method", e);
             thrown.setMethodName(methodName);
             throw thrown;
         }
