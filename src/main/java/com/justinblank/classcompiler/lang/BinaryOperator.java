@@ -257,25 +257,25 @@ public enum BinaryOperator {
             // these are really ugly, and just a result of hacking until I got the results that did the java compiler
             // does
             case LESS_THAN:
-                if (left.type() instanceof Builtin && left.type() != Builtin.I) {
+                if (left.type() instanceof Builtin && !isIntegerLike(left)) {
                     var builtin = (Builtin) left.type();
                     return builtin.greaterThanOrEqualsOperation();
                 }
                 return IF_ICMPLT;
             case LESS_THAN_OR_EQUALS:
-                if (left.type() instanceof Builtin && left.type() != Builtin.I) {
+                if (left.type() instanceof Builtin && !isIntegerLike(left)) {
                     var builtin = (Builtin) left.type();
                     return builtin.greaterThanOperation();
                 }
                 return IF_ICMPLE;
             case GREATER_THAN:
-                if (left.type() instanceof Builtin && left.type() != Builtin.I) {
+                if (left.type() instanceof Builtin && !isIntegerLike(left)) {
                     var builtin = (Builtin) left.type();
                     return builtin.lessThanOrEqualsOperation();
                 }
                 return IF_ICMPGT;
             case GREATER_THAN_OR_EQUALS:
-                if (left.type() instanceof Builtin && left.type() != Builtin.I) {
+                if (left.type() instanceof Builtin && !isIntegerLike(left)) {
                     var builtin = (Builtin) left.type();
                     return builtin.lessThanOperation();
                 }
@@ -287,6 +287,11 @@ public enum BinaryOperator {
             default:
                 throw new UnsupportedOperationException("");
         }
+    }
+
+    // TODO: existing test cases don't adequately cover the cases where this is a char, but I am weary
+    private static boolean isIntegerLike(Type left) {
+        return left.type() == Builtin.I || left.type() == Builtin.C;
     }
 
 

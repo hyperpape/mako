@@ -324,6 +324,13 @@ public class TestSemantics {
     }
 
     @Test
+    public void testDFALoopThingy() throws Exception {
+        apply(-1, TestMethods::loopDFAThingy, List.of("abc"));
+        apply(0, TestMethods::loopDFAThingy, List.of("0"));
+        apply(1, TestMethods::loopDFAThingy, List.of("1"));
+    }
+
+    @Test
     public void testCallNoArgMethod() throws Exception {
         var return0 = new Method("return0", List.of(), "I", null);
         return0.returnValue(1);
@@ -456,7 +463,7 @@ public class TestSemantics {
      * @throws Exception
      */
     static void apply(Supplier<Method> method, Object expected) throws Exception {
-        Object output = call(method.get(), true);
+        Object output = call(method.get(), false);
         Class c = expected.getClass();
         // TODO: improve comparison
         if (c.getName().startsWith("[")) {

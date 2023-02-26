@@ -224,7 +224,10 @@ public class TestSyntax {
         apply(TestMethods.conditionalWithSwitchInOrElse());
     }
 
-
+    @Test
+    public void testDFAThingy() throws Exception {
+        apply(TestMethods.loopDFAThingy());
+    }
 
     @Test
     public void testNoArgCall() throws Exception {

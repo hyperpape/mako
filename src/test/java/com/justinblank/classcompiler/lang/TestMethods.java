@@ -203,6 +203,26 @@ public class TestMethods {
         return method;
     }
 
+    public static Method loopDFAThingy() {
+        var vars = new GenericVars("string", "index", "char", "state");
+        var method = new Method(TEST_METHOD, List.of(CompilerUtil.descriptor(String.class)), Builtin.I, vars);
+        method.set("index", 0).set("state", 0);
+        method.loop(neq(call("length", Builtin.I, read("string")),
+                        read("index")),
+                List.of(set("char", call("charAt", Builtin.C, read("string"),
+                        read("index"))),
+                        cond(gte(read("char"), 57)).withBody(
+                                returnValue(-1))
+                        .orElse(
+                                switchStatement(read("char"))
+                                        .setCase((int) '0', returnValue(0))
+                                        .setCase((int) '1', returnValue(1))
+                                        .setDefault(returnValue(-2))
+                        )));
+        method.returnValue(1);
+        return method;
+    }
+
     public static Method denseIntegerSwitchMethod() {
         var vars = new GenericVars();
         vars.addVar("a");
@@ -408,7 +428,6 @@ public class TestMethods {
         method.returnValue(CodeElement.arrayLength(read("a")));
         return method;
     }
-
 
     public static Method callNoArgMethod() {
         var vars = new GenericVars();
