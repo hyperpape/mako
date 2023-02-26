@@ -14,6 +14,10 @@ public interface CodeElement {
         return new Conditional(expression);
     }
 
+    static Switch switchStatement(Expression expression) {
+        return new Switch(expression);
+    }
+
     static Expression call(String methodName, Type returnType, Expression... arguments) {
         return new Call(null, methodName, returnType, false, false, false, arguments);
     }
