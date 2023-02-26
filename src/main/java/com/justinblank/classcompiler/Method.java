@@ -269,7 +269,7 @@ public class Method {
                 typeInference.analyze(element, typeEnvironment);
                 resolveTopLevelElement(element);
             }
-            pruneEmptyBlocks();
+            pruneBlocks();
             this.elements = new ArrayList<>();
         }
         catch (Exception e) {
@@ -279,13 +279,24 @@ public class Method {
         }
     }
 
-    private void pruneEmptyBlocks() {
-        // TODO: it would also be desirable to merge blocks that don't matter, would generate a more readable
-        // representation
+    private void pruneBlocks() {
+        // TODO: still a lot of ways to improve the pruning here
+        // TODO: not sure how to test that this is working--can test that it doesn't break code, but
+        // testing that we're actually pruning is going to be obnoxious/brittle
         Set<Integer> blocksToTake = new HashSet<>();
         for (var b : blocks) {
             if (!b.isEmpty()) {
-                blocksToTake.add(b.number);
+                if (blocksToTake.isEmpty() || mustTake(b)) {
+                    blocksToTake.add(b.number);
+                }
+                else {
+                    var lastBlock = b.number;
+                    while (!blocksToTake.contains(lastBlock)) {
+                        lastBlock--;
+                    }
+                    var priorBlock = blocks.get(lastBlock);
+                    priorBlock.operations.addAll(b.operations);
+                }
                 for (var op : b.operations) {
                     if (op.inst == JUMP) {
                         var target = op.target;
@@ -295,11 +306,10 @@ public class Method {
                 }
             }
         }
-
-        var newBlocks = new ArrayList<Block>();
         var listBlocksToTake = new ArrayList<>(blocksToTake);
         Collections.sort(listBlocksToTake);
 
+        var newBlocks = new ArrayList<Block>();
         for (var n : listBlocksToTake) {
             newBlocks.add(blocks.get(n));
         }
@@ -309,6 +319,25 @@ public class Method {
             block.number = i++;
         }
         this.blocks = newBlocks;
+    }
+
+    private boolean mustTake(Block b) {
+        if (b.number == 0) {
+            return true;
+        }
+        else {
+            for (var otherBlock : blocks) {
+                for (var op : otherBlock.operations) {
+                    if (op.isJump() && op.target == b) {
+                        return true;
+                    }
+                    else if (op.isSwitch() && op.blockTargets.contains(b) || op.target == b) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private TypeVariable typeVariableFor(String s) {

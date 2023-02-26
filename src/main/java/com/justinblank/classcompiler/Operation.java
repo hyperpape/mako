@@ -205,6 +205,14 @@ public class Operation {
         return this.attributes.get(key);
     }
 
+    public boolean isJump() {
+        return inst == Inst.JUMP;
+    }
+
+    public boolean isSwitch() {
+        return inst == Inst.LOOKUPSWITCH || inst == Inst.TABLESWITCH;
+    }
+
     public enum Inst {
         VALUE,
         READ_CHAR,
