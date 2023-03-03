@@ -449,6 +449,12 @@ public class TestSemantics {
         assertEquals("-", instance.getClass().getDeclaredMethod("returnString").invoke(instance));
     }
 
+    /**
+     * Test a zero-argument method by compiling it, and calling it and comparing the actual results with the expected
+     * @param method a supplier for the method, must return distinct instances of the method on subsequent calls
+     * @param expected the expected value of calling the method
+     * @throws Exception
+     */
     static void apply(Supplier<Method> method, Object expected) throws Exception {
         Object output = call(method.get(), true);
         Class c = expected.getClass();
@@ -485,11 +491,20 @@ public class TestSemantics {
         return compiled.getMethod(TEST_METHOD).invoke(instance);
     }
 
-    static void apply(Object o, Supplier<Method> method, List<Object> arguments, Method...methods) throws Exception {
+    /**
+     * Test a method by compiling it, calling it with the passed arguments and comparing the actual results with the
+     * expected
+     * @param expected the expected output
+     * @param method a supplier for the method, must return distinct instances of the method on subsequent calls
+     * @param arguments the arguments to pass to the method
+     * @param methods a list of methods that are to be added to the compiled class
+     * @throws Exception
+     */
+    static void apply(Object expected, Supplier<Method> method, List<Object> arguments, Method...methods) throws Exception {
         Object output = call(method.get(), arguments, methods, false);
-        assertEquals(o, output);
+        assertEquals(expected, output);
         output = call(method.get(), arguments, methods, true);
-        assertEquals(o, output);
+        assertEquals(expected, output);
     }
 
     private static Object call(Method method, List<Object> arguments, Method[] methods, boolean debug) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
