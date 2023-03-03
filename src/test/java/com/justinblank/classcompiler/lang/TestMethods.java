@@ -203,6 +203,16 @@ public class TestMethods {
         return method;
     }
 
+    public static Method loopWithAndInCondition() {
+        var vars = new GenericVars("i");
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
+        method.set("i", 0).
+                loop(and(gte(read("i"), 0), lt(read("i"), 5)),
+                        List.of(set("i", plus(read("i"), 1))));
+        method.returnValue(read("i"));
+        return method;
+    }
+
     public static Method loopDFAThingy() {
         var vars = new GenericVars("string", "index", "char", "state");
         var method = new Method(TEST_METHOD, List.of(CompilerUtil.descriptor(String.class)), Builtin.I, vars);

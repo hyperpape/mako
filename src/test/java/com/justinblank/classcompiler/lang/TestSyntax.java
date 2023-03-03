@@ -225,6 +225,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testLoopWithAndInCondition() throws Exception {
+        apply(TestMethods.loopWithAndInCondition());
+    }
+
+    @Test
     public void testDFAThingy() throws Exception {
         apply(TestMethods.loopDFAThingy());
     }
