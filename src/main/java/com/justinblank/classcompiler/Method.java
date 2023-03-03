@@ -28,6 +28,8 @@ public class Method {
     private List<CodeElement> elements = new ArrayList<>();
 
     private final Stack<Block> currentBlock = new Stack<>();
+
+    // The blocks in this stack are the blocks where conditions of the loop are stored
     private final Stack<Block> currentLoop = new Stack<>();
 
     /**
@@ -562,14 +564,15 @@ public class Method {
             if (loop.condition != null) {
                 resolve(loop.condition);
             }
-            var block = addBlock();
+            var postConditionsBlock = addBlock();
 
+            // This adds a block for the body of the loop
             resolveBody(loop);
-
             addBlock().jump(conditionsBlock, GOTO);
+
             var afterLoop = addBlock();
             if (loop.condition != null) {
-                block.jump(afterLoop, IFEQ);
+                postConditionsBlock.jump(afterLoop, IFEQ);
             }
             currentLoop.pop();
             currentBlock.push(afterLoop);
