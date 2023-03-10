@@ -128,6 +128,9 @@ public class TypeInference {
             return Builtin.I;
         } else if (element instanceof Cast) {
             return ((Cast) element).outputType;
+        } else if (element instanceof NoOpStatement) {
+            // Not obvious if this is right...
+            return Void.VOID;
         } else {
             throw new IllegalStateException("Unhandled instance of CodeElement during type inference: " + element);
         }

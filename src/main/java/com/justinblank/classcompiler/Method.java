@@ -810,6 +810,8 @@ public class Method {
             var arrayLength = (ArrayLength) element;
             resolve(arrayLength.expression);
             currentBlock().operate(ARRAYLENGTH);
+        } else if (element instanceof NoOpStatement) {
+            // do nothing
         }
     }
 

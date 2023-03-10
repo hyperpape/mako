@@ -55,6 +55,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testNoOpStatement() throws Exception {
+        apply(TestMethods.noOpStatement());
+    }
+
+    @Test
     public void testOneArgConstructor() throws Exception {
         apply(TestMethods.callOneArgumentConstructor());
     }

@@ -59,6 +59,12 @@ public class TestSemantics {
     }
 
     @Test
+    public void testNoOpStatement() throws Exception {
+        call(TestMethods.noOpStatement(), false);
+        call(TestMethods.noOpStatement(), true);
+    }
+
+    @Test
     public void testOneArgConstructor() throws Exception {
         var i = call(TestMethods.callOneArgumentConstructor());
         assertEquals(16, i);

@@ -65,6 +65,13 @@ public class TestMethods {
         return method;
     }
 
+    public static Method noOpStatement() {
+        var method = new Method(TEST_METHOD, List.of(), Void.VOID, new GenericVars());
+        method.addElement(new NoOpStatement());
+        method.returnVoid();
+        return method;
+    }
+
     public static Method callOneArgumentConstructor() {
         var method = new Method(TEST_METHOD, List.of(), Integer.class, new GenericVars());
         method.returnValue(construct(ReferenceType.of(Integer.class), literal(16)));
