@@ -117,6 +117,21 @@ callStatic(CompilerUtil.internalName(Integer.class), "valueOf",
         ReferenceType.of(Integer.class), literal(0));
 ```
 
+### Arrays
+
+Standard array operations are supported. Array
+
+```java
+
+newArray(5, Builtin.I); // equivalent to int[5];
+// note that we use Builtin.I, not ArrayType.of(Builtin.i), which would create int[][5];
+arraySet(arrayExpression, 0, "abc"); // sets index 0 to "abc"
+arrayRead(arrayExpression, 0); // retrieves the value at index 0;
+arrayLength(arrayExpression); // equivalent of arrayExpression.length;
+```
+
+Note that `arraySet` is a statement, not an expression.
+
 ### Conditionals
 
 Conditionals are created using `cond`, then `withBody`. `else if` is done with the `elseif` method on a conditional. 

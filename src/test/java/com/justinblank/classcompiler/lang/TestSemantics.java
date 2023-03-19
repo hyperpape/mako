@@ -349,6 +349,11 @@ public class TestSemantics {
     }
 
     @Test
+    public void testArraySetAndRead() throws Exception {
+        apply(TestMethods::arraySetAndGet, 2);
+    }
+
+    @Test
     public void testConditional() throws Exception {
         apply(TestMethods::conditional, 3);
     }
