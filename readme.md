@@ -6,13 +6,16 @@
 
 ## Overview 
 
-Mako is a Java library that lets you write high level code then compile it to
-Java bytecode. Classes implemented this way are fully interoperable with standard 
-Java code. That is, they can call regular objects and methods and implement
-interfaces or inherit from classes defined in regular code. 
+Mako is a Java code generation library that produces Java classes/bytecode.
+
+Mako features a high level DSL for defining methods/classes, with a focus on supporting complex or algorithmic code
+(loops, conditionals, switches, etc).
 
 Mako supports generating and loading classes at runtime, or precompiling `.class` 
 files that can be packaged with an application.
+
+Classes implemented via Mako are fully interoperable with standard Java code. That is, they can call regular objects
+and methods and implement interfaces or inherit from classes defined in regular code.
 
 To illustrate, here is how to specify the recursive fibonacci method:
 
@@ -54,7 +57,7 @@ methods, according to what I find most natural to write. Many language
 constructs can be created using static methods, or fluent method calls off of
 the appropriate object (either a `Method` or `CodeElement` or the proper type).
 
-### Basic Expressions and Statements 
+### Basic Expressions and Statements
 
 Variables have function scope. They are defined by adding them to a `Vars` 
 object.
@@ -75,7 +78,7 @@ method.get("x");
 ```
 
 There are no compound assignment operators. You must read a variable, do addition,
-then set the variable. 
+then set the variable.
 
 ```java
 method.set("x", plus((read("x"), literal(1))));
@@ -94,9 +97,12 @@ mod(8, 2);
 There are standard comparisons that produce booleans:
 
 ```java
-gt(read("x"), 1);
-lt(read("x"), 1);
-eq(read("x"), 1);
+gt(2, 1); // true
+gte(1, 1); // true
+lt(0, 1); // true
+lte(0, 0); // true
+eq(1, 1); // true
+neq(1, 2); // true
 ```
 
 Implicit numeric conversions for primitives are supported, but all other 
@@ -119,7 +125,7 @@ callStatic(CompilerUtil.internalName(Integer.class), "valueOf",
 
 ### Arrays
 
-Standard array operations are supported. Array
+Standard array operations are supported. Array types can be constructed with ArrayType#of().
 
 ```java
 
