@@ -5,8 +5,9 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.justinblank.classcompiler.lang.CodeElement.call;
-import static com.justinblank.classcompiler.lang.CodeElement.read;
+import static com.justinblank.classcompiler.lang.ArrayRead.arrayRead;
+import static com.justinblank.classcompiler.lang.CodeElement.*;
+import static com.justinblank.classcompiler.lang.CodeElement.get;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -97,6 +98,11 @@ public class TestSyntax {
     @Test
     public void testArrayFieldReadAndReadFromLocalVariable() throws Exception {
         apply(TestMethods.arrayFieldReadAndReadFromLocalVariable());
+    }
+
+    @Test
+    public void testArrayReadUsingIndexFromByteArray() throws Exception {
+        apply(TestMethods.arrayReadUsingIndexFromByteArray());
     }
 
     @Test

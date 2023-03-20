@@ -154,6 +154,20 @@ public class CompilerUtil {
         }
     }
 
+    /**
+     * Get a descriptor for operations that will need to treat byte/boolean/character as integer.
+     *
+     * TODO: not at all sure this method is correct, may need to change for some uses
+     * @param type a type
+     * @return a descriptor
+     */
+    public static String effectiveDescriptorForType(Type type) {
+        if (type == Builtin.OCTET || type == Builtin.BOOL || type == Builtin.C) {
+            return descriptorForType(Builtin.I);
+        }
+        return descriptorForType(type);
+    }
+
     public static String descriptor(String className) {
         className = className.replaceAll("\\.", "/");
         return "L" + className + ";";

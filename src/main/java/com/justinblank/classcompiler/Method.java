@@ -23,6 +23,8 @@ public class Method {
     private List<Block> blocks;
 
     public final String returnType;
+
+    // TODO: should matchingVars really be nullable?
     private final Vars matchingVars;
     private final Map<String, Object> attributes = new HashMap<>();
     private List<CodeElement> elements = new ArrayList<>();
@@ -988,7 +990,7 @@ public class Method {
 
     private String descriptorForExpression(Expression expression) {
         var type = typeInference.analyze(expression, typeEnvironment);
-        return CompilerUtil.descriptorForType(type);
+        return CompilerUtil.effectiveDescriptorForType(type);
     }
 
     public void setClass(String className, String classPackage) {
