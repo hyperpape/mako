@@ -354,6 +354,11 @@ public class TestSemantics {
     }
 
     @Test
+    public void testArrayFieldReadAndReadFromLocalVariable() throws Exception {
+        apply(TestMethods::arrayFieldReadAndReadFromLocalVariable, 9);
+    }
+
+    @Test
     public void testConditional() throws Exception {
         apply(TestMethods::conditional, 3);
     }

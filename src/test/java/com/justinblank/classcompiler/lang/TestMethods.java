@@ -446,6 +446,14 @@ public class TestMethods {
         return method;
     }
 
+    public static Method arrayFieldReadAndReadFromLocalVariable() {
+        var method = new Method(TEST_METHOD, List.of(), "I", new GenericVars("arrayHolder", "arrayTemp", "idx"));
+        method.set("arrayHolder", construct(Type.of(ArrayHoldingClass.class)));
+        method.set("arrayTemp", get("b", ArrayType.of(Builtin.OCTET), read("arrayHolder")));
+        method.returnValue(arrayRead(read("arrayTemp"), 1));
+        return method;
+    }
+
     public static Method callNoArgMethod() {
         var vars = new GenericVars();
         var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);

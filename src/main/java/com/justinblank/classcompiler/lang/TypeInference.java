@@ -116,8 +116,20 @@ public class TypeInference {
         } else if (element instanceof NewArray) {
             return ArrayType.of(((NewArray) element).type);
         } else if (element instanceof ArrayRead) {
-            var arrayType = analyze(((ArrayRead) element).arrayRef, environment);
-            return ((ArrayType) arrayType.type()).elementType;
+            var analyzed = analyze(((ArrayRead) element).arrayRef, environment);
+            if (analyzed instanceof ArrayType) {
+                return ((ArrayType) analyzed.type()).elementType;
+            }
+            else if (analyzed instanceof TypeVariable) {
+                var typeVar = (TypeVariable) analyzed;
+                if (typeVar.type() == null) {
+                    unify(typeVar, ArrayType.of(TypeVariable.fresh()));
+                }
+                return ((ArrayType) typeVar.type()).elementType;
+            }
+            else {
+                throw new TypeCheckException("Attempted to read from a non-array type:" + analyzed.type());
+            }
         } else if (element instanceof ArraySet) {
             return Void.VOID;
         } else if (element instanceof FieldReference) {

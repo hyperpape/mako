@@ -95,6 +95,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testArrayFieldReadAndReadFromLocalVariable() throws Exception {
+        apply(TestMethods.arrayFieldReadAndReadFromLocalVariable());
+    }
+
+    @Test
     public void testSetAndReadCharVars() throws Exception {
         apply(TestMethods.setAndGetCharVariable());
     }

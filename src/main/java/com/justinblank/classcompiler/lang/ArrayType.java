@@ -20,4 +20,8 @@ public class ArrayType implements Type {
     public String typeString() {
         return "[" + elementType.typeString();
     }
+
+    public String toString() {
+        return "[" + elementType.typeString();
+    }
 }
