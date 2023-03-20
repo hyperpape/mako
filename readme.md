@@ -123,6 +123,12 @@ callStatic(CompilerUtil.internalName(Integer.class), "valueOf",
         ReferenceType.of(Integer.class), literal(0));
 ```
 
+The construct method is used for constructing new object instances.
+
+```java
+construct(ReferenceType.of(Integer.class), literal(16);
+```
+
 ### Arrays
 
 Standard array operations are supported. Array types can be constructed with ArrayType#of().
