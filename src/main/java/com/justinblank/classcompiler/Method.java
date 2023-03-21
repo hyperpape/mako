@@ -259,25 +259,33 @@ public class Method {
 
     void resolve() {
         try {
+            doTypeInference();
+
             this.addBlock();
-            if (this.matchingVars != null) {
-                for (var v : this.matchingVars.allVars()) {
-                    if (v.getRight() < this.arguments.size() + 1) {
-                        typeEnvironment.put(v.getLeft(), typeVariableFor(this.arguments.get(v.getRight() - 1)));
-                    }
-                }
-            }
             for (var element : elements) {
-                typeInference.analyze(element, typeEnvironment);
                 resolveTopLevelElement(element);
             }
             pruneBlocks();
+            // TODO: did I have a good reason for this? Tests pass without it
             this.elements = new ArrayList<>();
         }
         catch (Exception e) {
             var thrown = new ClassCompilationException("Error resolving method", e);
             thrown.setMethodName(methodName);
             throw thrown;
+        }
+    }
+
+    private void doTypeInference() {
+        if (this.matchingVars != null) {
+            for (var v : this.matchingVars.allVars()) {
+                if (v.getRight() < this.arguments.size() + 1) {
+                    typeEnvironment.put(v.getLeft(), typeVariableFor(this.arguments.get(v.getRight() - 1)));
+                }
+            }
+        }
+        for (var element : elements) {
+            typeInference.analyze(element, typeEnvironment);
         }
     }
 
