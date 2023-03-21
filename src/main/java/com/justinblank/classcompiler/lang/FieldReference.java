@@ -20,4 +20,9 @@ public class FieldReference implements Expression {
         Objects.requireNonNull(expression, "Expression cannot be null");
         this.expression = expression;
     }
+
+    @Override
+    public String toString() {
+        return expression.toString() + "." + fieldName;
+    }
 }

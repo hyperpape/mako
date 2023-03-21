@@ -39,4 +39,13 @@ public class TypeVariable implements Type {
         }
         return type.resolved();
     }
+
+    // TODO: make useful
+    public String toString() {
+        // TODO: think harder about this
+        if (type == null || type.resolved()) {
+            return "TypeVariable: " + type;
+        }
+        return super.toString();
+    }
 }

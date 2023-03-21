@@ -19,4 +19,9 @@ public class ArrayRead implements Expression {
     public static Expression arrayRead(Expression arrayRef, Integer integer) {
         return arrayRead(arrayRef, literal(integer));
     }
+
+    @Override
+    public String toString() {
+        return arrayRef.toString() + "[" + index + "]";
+    }
 }
