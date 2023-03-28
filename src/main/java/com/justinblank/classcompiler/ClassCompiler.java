@@ -61,6 +61,9 @@ public class ClassCompiler {
     public byte[] writeClassAsBytes() {
         byte[] classBytes;
         try {
+            // Resolve methods in mako library, translating from the user-visible representation into a lower level
+            // representation internal to mako.
+            // This is where type inference happens.
             for (var method : methodsToWrite(classBuilder.allMethods())) {
                 method.setClass(getClassName(), classBuilder.getClassPackage());
                 method.resolve();
@@ -75,6 +78,7 @@ public class ClassCompiler {
                 printStream.println(stringWriter);
             }
 
+            // Now take that representation and emit calls to the ASM library
             defineClass(classBuilder);
             addFields();
 
