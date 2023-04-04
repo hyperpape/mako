@@ -46,6 +46,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testCallMethodAcceptingChar() throws Exception {
+        apply(TestMethods.testMethodAcceptingChar());
+    }
+
+    @Test
     public void testReturningCharAfterStoringInLocalVariable() throws Exception {
         apply(TestMethods.testCallMethodReturningCharAfterStoringInLocalVariable());
     }

@@ -356,6 +356,8 @@ public class Method {
         switch (s) {
             case "I":
                 return TypeVariable.of(Builtin.I);
+            case "C":
+                return TypeVariable.of(Builtin.C);
             case "F":
                 return TypeVariable.of(Builtin.F);
             case "L":

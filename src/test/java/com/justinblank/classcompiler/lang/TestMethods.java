@@ -519,6 +519,12 @@ public class TestMethods {
     }
 
 
+    public static Method testMethodAcceptingChar() {
+        var method = new Method(TEST_METHOD, List.of("C"), Builtin.C, new GenericVars("c"));
+        method.returnValue(read("c"));
+        return method;
+    }
+
     public static Method testCallMethodReturningChar() {
         var method = new Method(TEST_METHOD, List.of(CompilerUtil.descriptor(String.class)), Builtin.C, new GenericVars("s"));
         method.returnValue(call("charAt", Builtin.C, read("s"), literal(1)));

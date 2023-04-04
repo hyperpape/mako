@@ -127,6 +127,7 @@ public enum Builtin implements Type {
             case D:
             case F:
             case I:
+            case C:
                 return toString();
             case BOOL:
                 return "Z";
