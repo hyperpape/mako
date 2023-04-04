@@ -386,6 +386,7 @@ public class TestSyntax {
         apply(TestClasses.classInPackageWithStaticAccess("TestClassInPackageForTestSyntax3", "com/justinblank/classcompiler"));
     }
 
+    @Test
     public void testTypeInferenceFailure() throws Exception {
         var method = new Method(TestMethods.TEST_METHOD, List.of(), ReferenceType.of(String.class), new GenericVars("a"));
         method.set("a", 1);
