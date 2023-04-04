@@ -21,4 +21,9 @@ public class StaticFieldReference implements Expression {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return receiver.toString() + "." + fieldName;
+    }
+
 }

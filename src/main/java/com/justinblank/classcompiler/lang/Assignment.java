@@ -15,6 +15,6 @@ public class Assignment extends Statement {
     }
 
     public String toString() {
-        return variable + "=" + expression;
+        return variable + " = " + expression;
     }
 }

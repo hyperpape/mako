@@ -9,4 +9,9 @@ public class FieldSet extends Statement {
         this.fieldReference = fieldReference;
         this.expression = expression;
     }
+
+    @Override
+    public String toString() {
+        return fieldReference.toString() + "." + expression;
+    }
 }

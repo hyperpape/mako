@@ -1,5 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
+// TODO: Is this required?
 public class TypedReturn extends Statement {
 
     public final Expression expression;

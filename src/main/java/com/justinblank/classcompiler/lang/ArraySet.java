@@ -16,5 +16,10 @@ public class ArraySet extends Statement {
         return new ArraySet(arrayRef, index, value);
     }
 
+    @Override
+    public String toString() {
+        return arrayRef.toString() + "[" + index + "] = " + value;
+    }
+
 
 }

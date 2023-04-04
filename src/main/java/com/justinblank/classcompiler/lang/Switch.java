@@ -105,4 +105,8 @@ public class Switch extends Statement {
     public CodeElement getExpression() {
         return expression;
     }
+
+    public String toString() {
+        return "switch (" + expression.toString() + ")";
+    }
 }

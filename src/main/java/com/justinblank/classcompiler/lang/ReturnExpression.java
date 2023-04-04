@@ -12,6 +12,6 @@ public class ReturnExpression extends Statement {
     }
 
     public String toString() {
-        return "Return " + expression;
+        return "return " + expression;
     }
 }

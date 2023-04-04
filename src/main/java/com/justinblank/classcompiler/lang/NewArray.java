@@ -19,4 +19,8 @@ public class NewArray implements Expression {
     public static NewArray newArray(int size, Type type) {
         return new NewArray(literal(size), type);
     }
+
+    public String toString() {
+        return "new " + type.typeString() + "[" + size + "]";
+    }
 }

@@ -17,6 +17,6 @@ public class VariableRead implements Expression {
     }
 
     public String toString() {
-        return "Read " + variable;
+        return "" + variable;
     }
 }

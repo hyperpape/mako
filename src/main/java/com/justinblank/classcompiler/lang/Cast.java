@@ -82,4 +82,9 @@ public class Cast implements Expression {
         // TODO: Do I need to warn?
         return List.of();
     }
+
+    @Override
+    public String toString() {
+        return "(" + outputType + ")" + expression;
+    }
 }

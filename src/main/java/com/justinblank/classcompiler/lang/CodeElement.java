@@ -10,6 +10,9 @@ import static com.justinblank.classcompiler.lang.Literal.literal;
 
 public interface CodeElement {
 
+    @Override
+    String toString();
+
     static Conditional cond(Expression expression) {
         return new Conditional(expression);
     }

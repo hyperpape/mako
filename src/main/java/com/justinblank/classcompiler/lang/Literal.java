@@ -11,4 +11,9 @@ public class Literal implements Expression {
     public static Literal literal(Number n) {
         return new Literal(n);
     }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 }
