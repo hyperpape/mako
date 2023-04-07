@@ -28,6 +28,11 @@ public class TestSemantics {
     }
 
     @Test
+    public void testMultiReturn() throws Exception {
+        apply(TestMethods::multiReturn, 1);
+    }
+
+    @Test
     public void testCallingVoidMethod() throws Exception {
         apply(TestMethods::callingVoidMethod, 1);
     }

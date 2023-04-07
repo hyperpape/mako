@@ -41,6 +41,14 @@ public class TestMethods {
         return method;
     }
 
+    // Surprisingly, this is allowed
+    // Probably shouldn't be, but let's hang a hat on it
+    public static Method multiReturn() {
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, null);
+        method.returnValue(1).returnValue(2).returnValue(3).returnValue(4);
+        return method;
+    }
+
     public static Method returnChar() {
         var method = new Method(TEST_METHOD, List.of(), Builtin.C, null);
         method.returnValue((int) 'a');

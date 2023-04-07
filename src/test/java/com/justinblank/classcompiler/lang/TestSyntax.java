@@ -31,6 +31,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testMultiReturn() throws Exception {
+        apply(TestMethods.multiReturn());
+    }
+
+    @Test
     public void testReturnLong() throws Exception {
         apply(TestMethods.returnLong());
     }
