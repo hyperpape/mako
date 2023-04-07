@@ -468,8 +468,7 @@ public class TestMethods {
         method.set("arrayTemp", get("b", ArrayType.of(Builtin.OCTET), read("arrayHolder")));
         method.set("idx", arrayRead(read("arrayTemp"), 4));
         method.set("arrayTemp", get("a", ArrayType.of(Builtin.OCTET), read("arrayHolder")));
-        method.returnValue(arrayRead(read("arrayTemp"), 1));
-        method.returnValue(1);
+        method.returnValue(arrayRead(read("arrayTemp"), read("idx")));
         return method;
     }
 

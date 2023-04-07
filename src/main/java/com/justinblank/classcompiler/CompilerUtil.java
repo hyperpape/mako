@@ -162,7 +162,12 @@ public class CompilerUtil {
      * @return a descriptor
      */
     public static String effectiveDescriptorForType(Type type) {
-        if (type == Builtin.OCTET || type == Builtin.BOOL || type == Builtin.C) {
+        var resolved = type.type();
+        if (resolved instanceof TypeVariable) {
+            // TODO: not obvious this is always right, but seems better to leave it here until I prove it's a problem
+            throw new IllegalStateException("Attempting to get descriptor for a type variable that hasn't been unified");
+        }
+        if (resolved == Builtin.OCTET || resolved == Builtin.BOOL || resolved == Builtin.C) {
             return descriptorForType(Builtin.I);
         }
         return descriptorForType(type);
