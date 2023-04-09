@@ -7,7 +7,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.objectweb.asm.Opcodes.*;
-import static org.objectweb.asm.Opcodes.ACC_FINAL;
 
 public class ClassBuilder {
 

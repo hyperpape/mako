@@ -64,7 +64,7 @@ public class ClassCompiler {
             // Resolve methods in mako library, translating from the user-visible representation into a lower level
             // representation internal to mako.
             // This is where type inference happens.
-            for (var method : methodsToWrite(classBuilder.allMethods())) {
+            for (var method : classBuilder.allMethods()) {
                 method.setClass(getClassName(), classBuilder.getClassPackage());
                 method.resolve();
                 if (debug) {
@@ -109,8 +109,11 @@ public class ClassCompiler {
         return classBytes;
     }
 
+    // TODO: Could consider removing this...it's convenient for needle and possibly some other use-cases, but a bit
+    //  weird
     /**
-     * Get the set of methods we actually wish to include in the generated class, ignoring any private method that is not locally called.
+     * Get the set of methods we actually wish to include in the generated class, ignoring any private method that is
+     * not locally called.
      *
      * @param allMethods all methods defined for the class
      * @return the filtered methods
