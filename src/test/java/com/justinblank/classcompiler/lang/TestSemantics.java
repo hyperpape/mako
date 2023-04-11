@@ -278,9 +278,19 @@ public class TestSemantics {
     @Test
     public void testIntCasts() throws Exception {
         apply(() -> TestCastMethods.castIntMethod(Builtin.I), 1);
+        apply(() -> TestCastMethods.castIntMethod(Builtin.S), (short) 1);
         apply(() -> TestCastMethods.castIntMethod(Builtin.F), 1.0f);
         apply(() -> TestCastMethods.castIntMethod(Builtin.D), 1.0d);
         apply(() -> TestCastMethods.castIntMethod(Builtin.L), 1L);
+    }
+
+    @Test
+    public void testShortCasts() throws Exception {
+        apply(() -> TestCastMethods.castShortMethod(Builtin.I), 1);
+        apply(() -> TestCastMethods.castShortMethod(Builtin.S), (short) 1);
+        apply(() -> TestCastMethods.castShortMethod(Builtin.F), 1.0f);
+        apply(() -> TestCastMethods.castShortMethod(Builtin.D), 1.0d);
+        apply(() -> TestCastMethods.castShortMethod(Builtin.L), 1L);
     }
 
     @Test

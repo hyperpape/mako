@@ -23,6 +23,8 @@ public interface Type {
         switch (returnType) {
             case "I":
                 return Builtin.I;
+            case "S":
+                return Builtin.S;
             case "B":
                 return Builtin.OCTET;
             case "Z":

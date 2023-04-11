@@ -9,6 +9,7 @@ import static org.objectweb.asm.Opcodes.*;
 // TODO: rename primitive?
 public enum Builtin implements Type {
     I(IADD, ISUB, IMUL, IDIV, IREM, -1, -1, IF_ICMPLT, IF_ICMPLE, IF_ICMPGT, IF_ICMPGE),
+    S(IADD, ISUB, IMUL, IDIV, IREM, -1, -1, IF_ICMPLT, IF_ICMPLE, IF_ICMPGT, IF_ICMPGE),
     F(FADD, FSUB, FMUL, FDIV, FREM, FCMPL, FCMPG, IFGE, IFGT, IFLE, IFLT),
     L(LADD, LSUB, LMUL, LDIV, LREM, LCMP, LCMP, IFGE, IFGT, IFLE, IFLT),
     D(DADD, DSUB, DMUL, DDIV, DREM, DCMPL, DCMPG, IFGE, IFGT, IFLE, IFLT),
@@ -133,6 +134,8 @@ public enum Builtin implements Type {
                 return "Z";
             case OCTET:
                 return "B";
+            case S:
+                return "S";
             default:
                 throw new IllegalStateException("Unrecognized Builtin enum member: this error should be impossible");
         }
@@ -147,6 +150,8 @@ public enum Builtin implements Type {
         switch (type) {
             case "I":
                 return Optional.of(I);
+            case "S":
+                return Optional.of(S);
             case "F":
                 return Optional.of(F);
             case "D":

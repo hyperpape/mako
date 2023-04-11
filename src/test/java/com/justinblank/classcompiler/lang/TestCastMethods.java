@@ -17,6 +17,12 @@ public class TestCastMethods {
         return method;
     }
 
+    static Method castShortMethod(Builtin output) {
+        var method = new Method(TEST_METHOD, Collections.emptyList(), output.typeString(), new GenericVars());
+        method.returnValue(cast(output, literal(1)));
+        return method;
+    }
+
     static Method castFloatMethod(Builtin output) {
         var method = new Method(TEST_METHOD, Collections.emptyList(), output.typeString(), new GenericVars());
         method.returnValue(cast(output, literal(1.3f)));

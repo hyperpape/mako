@@ -93,6 +93,7 @@ public class CompilerUtil {
     public static int returnForType(String string) {
         switch (string) {
             case "I":
+            case "S":
             case "B":
             case "Z":
             case "C":
@@ -114,6 +115,8 @@ public class CompilerUtil {
         switch (type) {
             case I:
                 return "I";
+            case S:
+                return "S";
             case F:
                 return "F";
             case L:

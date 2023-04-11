@@ -356,6 +356,8 @@ public class Method {
         switch (s) {
             case "I":
                 return TypeVariable.of(Builtin.I);
+            case "S":
+                return TypeVariable.of(Builtin.S);
             case "C":
                 return TypeVariable.of(Builtin.C);
             case "F":
@@ -401,8 +403,8 @@ public class Method {
         } else if (element instanceof Cast) {
             var cast = (Cast) element;
             resolve(cast.expression);
-            var opcode = cast.op(typeInference.analyze(cast.expression, typeEnvironment));
-            if (opcode > 0) {
+            var opcodes = cast.op(typeInference.analyze(cast.expression, typeEnvironment));
+            for (var opcode : opcodes) {
                 currentBlock().operate(opcode);
             }
         } else if (element instanceof ReturnExpression) {

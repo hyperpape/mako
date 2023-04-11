@@ -1,5 +1,7 @@
 package com.justinblank.classcompiler.lang;
 
+import java.util.List;
+
 import static org.objectweb.asm.Opcodes.*;
 
 public class Cast implements Expression {
@@ -12,55 +14,63 @@ public class Cast implements Expression {
         this.expression = expression;
     }
 
-    public int op(Type inputType) {
+    public List<Integer> op(Type inputType) {
         if (inputType.type() instanceof Builtin && outputType instanceof Builtin) {
             Builtin in = (Builtin) inputType.type();
             Builtin out = (Builtin) outputType;
             if (in == out) {
-                return -1;
+                return List.of();
             }
             switch (in) {
                 case I:
                     switch (out) {
                         case F:
-                            return I2F;
+                            return List.of(I2F);
                         case L:
-                            return I2L;
+                            return List.of(I2L);
                         case D:
-                            return I2D;
+                            return List.of(I2D);
+                        case S:
+                            return List.of(I2S);
                         default:
                             throw new IllegalArgumentException("Not handled:" + out);
                     }
                 case F:
                     switch (out) {
                         case I:
-                            return F2I;
+                            return List.of(F2I);
+                        case S:
+                            return List.of(F2I, I2S);
                         case D:
-                            return F2D;
+                            return List.of(F2D);
                         case L:
-                            return F2L;
+                            return List.of(F2L);
                         default:
                             throw new IllegalArgumentException("Not handled:" + out);
                     }
                 case D:
                     switch (out) {
                         case I:
-                            return D2I;
+                            return List.of(D2I);
+                        case S:
+                            return List.of(D2I, I2S);
                         case F:
-                            return D2F;
+                            return List.of(D2F);
                         case L:
-                            return D2L;
+                            return List.of(D2L);
                         default:
                             throw new IllegalArgumentException("Not handled:" + out);
                     }
                 case L:
                     switch (out) {
                         case I:
-                            return L2I;
+                            return List.of(L2I);
+                        case S:
+                            return List.of(L2I, I2S);
                         case D:
-                            return L2D;
+                            return List.of(L2D);
                         case F:
-                            return L2F;
+                            return List.of(L2F);
                         default:
                             throw new IllegalArgumentException("Not handled:" + out);
                     }
@@ -69,6 +79,7 @@ public class Cast implements Expression {
                     throw new IllegalArgumentException("Oy vey, too many casts");
             }
         }
-        return -1;
+        // TODO: Do I need to warn?
+        return List.of();
     }
 }

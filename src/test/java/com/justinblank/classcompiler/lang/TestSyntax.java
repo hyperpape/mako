@@ -352,14 +352,25 @@ public class TestSyntax {
     @Test
     public void testIntCasts() throws Exception {
         apply(TestCastMethods.castIntMethod(Builtin.I));
+        apply(TestCastMethods.castIntMethod(Builtin.S));
         apply(TestCastMethods.castIntMethod(Builtin.F));
         apply(TestCastMethods.castIntMethod(Builtin.D));
         apply(TestCastMethods.castIntMethod(Builtin.L));
     }
 
     @Test
+    public void testShortCasts() throws Exception {
+        apply(TestCastMethods.castShortMethod(Builtin.I));
+        apply(TestCastMethods.castShortMethod(Builtin.S));
+        apply(TestCastMethods.castShortMethod(Builtin.F));
+        apply(TestCastMethods.castShortMethod(Builtin.D));
+        apply(TestCastMethods.castShortMethod(Builtin.L));
+    }
+
+    @Test
     public void testFloatCasts() throws Exception {
         apply(TestCastMethods.castFloatMethod(Builtin.I));
+        apply(TestCastMethods.castShortMethod(Builtin.S));
         apply(TestCastMethods.castFloatMethod(Builtin.F));
         apply(TestCastMethods.castFloatMethod(Builtin.D));
         apply(TestCastMethods.castFloatMethod(Builtin.L));
@@ -368,6 +379,7 @@ public class TestSyntax {
     @Test
     public void testLongCasts() throws Exception {
         apply(TestCastMethods.castLongMethod(Builtin.I));
+        apply(TestCastMethods.castLongMethod(Builtin.S));
         apply(TestCastMethods.castLongMethod(Builtin.F));
         apply(TestCastMethods.castLongMethod(Builtin.D));
         apply(TestCastMethods.castLongMethod(Builtin.L));
@@ -376,6 +388,7 @@ public class TestSyntax {
     @Test
     public void testDoubleCasts() throws Exception {
         apply(TestCastMethods.castDoubleMethod(Builtin.I));
+        apply(TestCastMethods.castDoubleMethod(Builtin.S));
         apply(TestCastMethods.castDoubleMethod(Builtin.F));
         apply(TestCastMethods.castDoubleMethod(Builtin.D));
         apply(TestCastMethods.castDoubleMethod(Builtin.L));
