@@ -134,9 +134,9 @@ public class CompilerUtil {
         }
     }
 
-    public static String descriptorForType(Type type) {
+    static String descriptorForType(Type type) {
         if (type instanceof Builtin) {
-            return type.toString();
+            return getTypeString((Builtin) type);
         }
         else if (type instanceof ReferenceType) {
             return ((ReferenceType) type).typeString;

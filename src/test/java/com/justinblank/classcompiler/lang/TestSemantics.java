@@ -67,7 +67,13 @@ public class TestSemantics {
 
     @Test
     public void testReturnNewArray() throws Exception {
-        apply(TestMethods::returnNewByteArray, new byte[0]);
+        apply(() -> TestMethods.returnNewBuiltinArray(Builtin.OCTET), new byte[0]);
+        apply(() -> TestMethods.returnNewBuiltinArray(Builtin.I), new int[0]);
+        apply(() -> TestMethods.returnNewBuiltinArray(Builtin.L), new long[0]);
+        apply(() -> TestMethods.returnNewBuiltinArray(Builtin.F), new float[0]);
+        apply(() -> TestMethods.returnNewBuiltinArray(Builtin.D), new double[0]);
+        apply(() -> TestMethods.returnNewBuiltinArray(Builtin.BOOL), new boolean[0]);
+        apply(() -> TestMethods.returnNewBuiltinArray(Builtin.S), new short[0]);
     }
 
     @Test
@@ -388,7 +394,10 @@ public class TestSemantics {
 
     @Test
     public void testArraySetAndRead() throws Exception {
-        apply(TestMethods::arraySetAndGet, 2);
+        apply(() -> TestMethods.arraySetAndGet(Builtin.OCTET, Byte.MAX_VALUE), Byte.MAX_VALUE);
+        apply(() -> TestMethods.arraySetAndGet(Builtin.I, Integer.MAX_VALUE), Integer.MAX_VALUE);
+        apply(() -> TestMethods.arraySetAndGet(Builtin.L, Long.MAX_VALUE), Long.MAX_VALUE);
+        apply(() -> TestMethods.arraySetAndGet(Builtin.S, Short.MAX_VALUE), Short.MAX_VALUE);
     }
 
     @Test
@@ -524,7 +533,7 @@ public class TestSemantics {
     static void apply(Supplier<Method> method, Object expected) throws Exception {
         Object output = call(method.get(), false);
         Class c = expected.getClass();
-        // TODO: improve comparison
+        // TODO: improve comparison--let's try serialization!
         if (c.getName().startsWith("[")) {
             assertEquals(c, output.getClass());
         }

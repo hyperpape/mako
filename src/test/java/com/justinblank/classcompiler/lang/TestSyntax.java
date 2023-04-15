@@ -105,7 +105,14 @@ public class TestSyntax {
 
     @Test
     public void testNewArray() throws Exception {
-        apply(TestMethods.returnNewByteArray());
+        apply(TestMethods.returnNewBuiltinArray(Builtin.OCTET));
+        apply(TestMethods.returnNewBuiltinArray(Builtin.I));
+        apply(TestMethods.returnNewBuiltinArray(Builtin.L));
+        apply(TestMethods.returnNewBuiltinArray(Builtin.F));
+        apply(TestMethods.returnNewBuiltinArray(Builtin.D));
+        apply(TestMethods.returnNewBuiltinArray(Builtin.BOOL));
+        apply(TestMethods.returnNewBuiltinArray(Builtin.S));
+
     }
 
     @Test
@@ -120,7 +127,10 @@ public class TestSyntax {
 
     @Test
     public void testArraySetAndGet() throws Exception {
-        apply(TestMethods.arraySetAndGet());
+        apply(TestMethods.arraySetAndGet(Builtin.OCTET, 1));
+        apply(TestMethods.arraySetAndGet(Builtin.BOOL, 1));
+        apply(TestMethods.arraySetAndGet(Builtin.I, 1));
+        apply(TestMethods.arraySetAndGet(Builtin.L, 1L));
     }
 
     @Test

@@ -109,9 +109,9 @@ public class TestMethods {
         return method;
     }
 
-    public static Method returnNewByteArray() {
-        var method = new Method(TEST_METHOD, List.of(), "[B", new GenericVars());
-        method.returnValue(newArray(literal(1), Builtin.OCTET));
+    public static Method returnNewBuiltinArray(Builtin type) {
+        var method = new Method(TEST_METHOD, List.of(), ArrayType.of(type).typeString(), new GenericVars());
+        method.returnValue(newArray(literal(1), type));
         return method;
     }
 
@@ -127,12 +127,12 @@ public class TestMethods {
         return method;
     }
 
-    public static Method arraySetAndGet() {
+    public static Method arraySetAndGet(Builtin elementType, Number n) {
         var vars = new GenericVars();
         vars.addVar("a");
-        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
-        method.set("a", newArray(literal(1), Builtin.OCTET));
-        method.arraySet(read("a"), literal(0), literal(2));
+        var method = new Method(TEST_METHOD, List.of(), elementType, vars);
+        method.set("a", newArray(literal(1), elementType));
+        method.arraySet(read("a"), literal(0), literal(n));
         method.returnValue(arrayRead(read("a"), literal(0)));
         return method;
     }

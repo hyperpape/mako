@@ -753,6 +753,8 @@ public class Method {
                     case OCTET:
                         currentBlock().newArray(T_BYTE);
                         break;
+                    case S:
+                        currentBlock().newArray(T_SHORT);
                 }
                 currentBlock.pop();
             }
@@ -777,6 +779,9 @@ public class Method {
                 switch ((Builtin) arrayType.elementType) {
                     case I:
                         currentBlock().operate(IALOAD);
+                        return;
+                    case S:
+                        currentBlock().operate(SALOAD);
                         return;
                     case F:
                         currentBlock().operate(FALOAD);
@@ -821,6 +826,8 @@ public class Method {
                     case OCTET:
                         currentBlock().operate(BASTORE);
                         return;
+                    case S:
+                        currentBlock().operate(SASTORE);
                 }
             }
             else {
