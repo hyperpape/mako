@@ -35,9 +35,9 @@ public class TestMethods {
         return method;
     }
 
-    public static Method returnLiteral() {
-        var method = new Method(TEST_METHOD, List.of(), Builtin.I, null);
-        method.returnValue(1);
+    public static Method returnLiteral(Builtin type, Number n) {
+        var method = new Method(TEST_METHOD, List.of(), type, null);
+        method.returnValue(n);
         return method;
     }
 

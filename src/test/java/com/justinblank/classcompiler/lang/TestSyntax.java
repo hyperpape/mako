@@ -27,7 +27,30 @@ public class TestSyntax {
 
     @Test
     public void testReturnLiteral() throws Exception {
-        apply(TestMethods.returnLiteral());
+        apply(TestMethods.returnLiteral(Builtin.I, 1));
+        apply(TestMethods.returnLiteral(Builtin.I, Integer.MIN_VALUE));
+        apply(TestMethods.returnLiteral(Builtin.I, Integer.MAX_VALUE));
+
+        apply(TestMethods.returnLiteral(Builtin.BOOL, 0));
+        apply(TestMethods.returnLiteral(Builtin.BOOL, 1));
+
+        apply(TestMethods.returnLiteral(Builtin.C, (int) Character.MIN_VALUE));
+        apply(TestMethods.returnLiteral(Builtin.C, (int) Character.MAX_VALUE));
+
+        apply(TestMethods.returnLiteral(Builtin.OCTET, 1));
+        apply(TestMethods.returnLiteral(Builtin.OCTET, 127));
+
+        apply(TestMethods.returnLiteral(Builtin.L, 1L));
+        apply(TestMethods.returnLiteral(Builtin.L, Long.MIN_VALUE));
+        apply(TestMethods.returnLiteral(Builtin.L, Long.MAX_VALUE));
+
+        apply(TestMethods.returnLiteral(Builtin.F, 1f));
+        apply(TestMethods.returnLiteral(Builtin.F, Float.MIN_VALUE));
+        apply(TestMethods.returnLiteral(Builtin.F, Float.MAX_VALUE));
+
+        apply(TestMethods.returnLiteral(Builtin.D, 1d));
+        apply(TestMethods.returnLiteral(Builtin.D, Double.MIN_VALUE));
+        apply(TestMethods.returnLiteral(Builtin.D, Double.MAX_VALUE));
     }
 
     @Test

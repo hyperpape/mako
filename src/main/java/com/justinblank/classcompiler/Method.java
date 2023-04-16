@@ -281,7 +281,7 @@ public class Method {
     private void doTypeInference() {
         if (this.matchingVars != null) {
             for (var v : this.matchingVars.allVars()) {
-                if (v.getRight() < this.arguments.size() + 1) {
+                if (v.getRight() <= this.arguments.size()) {
                     typeEnvironment.put(v.getLeft(), typeVariableFor(this.arguments.get(v.getRight() - 1)));
                 }
             }
@@ -398,6 +398,12 @@ public class Method {
                 currentBlock().push(value);
             } else if (lit.value instanceof Long) {
                 var value = (Long) lit.value;
+                currentBlock().push(value);
+            } else if (lit.value instanceof Byte) {
+                var value = (Byte) lit.value;
+                currentBlock().push(value);
+            } else if (lit.value instanceof Short) {
+                var value = (Short) lit.value;
                 currentBlock().push(value);
             }
         } else if (element instanceof Cast) {
@@ -844,6 +850,9 @@ public class Method {
         var analyzedType = typeInference.analyze(arrayRef, typeEnvironment);
         if (analyzedType instanceof TypeVariable) {
             analyzedType = analyzedType.type();
+        }
+        if (!(analyzedType instanceof ArrayType)) {
+            throw new TypeInference.TypeCheckException("Attempting to get array type from non-array expression");
         }
         var arrayType = (ArrayType) analyzedType;
         return arrayType;

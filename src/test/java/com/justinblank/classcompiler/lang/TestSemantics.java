@@ -24,7 +24,30 @@ public class TestSemantics {
 
     @Test
     public void testReturnLiteral() throws Exception {
-        apply(TestMethods::returnLiteral, 1);
+        apply(() -> TestMethods.returnLiteral(Builtin.I, 1), 1);
+        apply(() -> TestMethods.returnLiteral(Builtin.I, Integer.MIN_VALUE), Integer.MIN_VALUE);
+        apply(() -> TestMethods.returnLiteral(Builtin.I, Integer.MAX_VALUE), Integer.MAX_VALUE);
+
+        apply(() -> TestMethods.returnLiteral(Builtin.BOOL, 0), false);
+        apply(() -> TestMethods.returnLiteral(Builtin.BOOL, 1), true);
+
+        apply(() -> TestMethods.returnLiteral(Builtin.C, (int) Character.MIN_VALUE), Character.MIN_VALUE);
+        apply(() -> TestMethods.returnLiteral(Builtin.C, (int) Character.MAX_VALUE), Character.MAX_VALUE);
+
+        apply(() -> TestMethods.returnLiteral(Builtin.OCTET, 1), (byte) 1);
+        apply(() -> TestMethods.returnLiteral(Builtin.OCTET, 127), (byte) 127);
+
+        apply(() -> TestMethods.returnLiteral(Builtin.L, 1L), 1L);
+        apply(() -> TestMethods.returnLiteral(Builtin.L, Long.MIN_VALUE), Long.MIN_VALUE);
+        apply(() -> TestMethods.returnLiteral(Builtin.L, Long.MAX_VALUE), Long.MAX_VALUE);
+
+        apply(() -> TestMethods.returnLiteral(Builtin.F, 1f), 1f);
+        apply(() -> TestMethods.returnLiteral(Builtin.F, Float.MIN_VALUE), Float.MIN_VALUE);
+        apply(() -> TestMethods.returnLiteral(Builtin.F, Float.MAX_VALUE), Float.MAX_VALUE);
+
+        apply(() -> TestMethods.returnLiteral(Builtin.D, 1d), 1d);
+        apply(() -> TestMethods.returnLiteral(Builtin.D, Double.MIN_VALUE), Double.MIN_VALUE);
+        apply(() -> TestMethods.returnLiteral(Builtin.D, Double.MAX_VALUE), Double.MAX_VALUE);
     }
 
     @Test
