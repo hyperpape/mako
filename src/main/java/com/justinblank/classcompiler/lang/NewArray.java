@@ -1,5 +1,7 @@
 package com.justinblank.classcompiler.lang;
 
+import java.util.Objects;
+
 import static com.justinblank.classcompiler.lang.Literal.literal;
 
 public class NewArray implements Expression {
@@ -8,8 +10,8 @@ public class NewArray implements Expression {
     public final Type type;
 
     private NewArray(Expression size, Type type) {
-        this.size = size;
-        this.type = type;
+        this.size = Objects.requireNonNull(size, "array size cannot be null");
+        this.type = Objects.requireNonNull(type, "array type cannot be null");
     }
 
     public static NewArray newArray(Expression size, Type type) {

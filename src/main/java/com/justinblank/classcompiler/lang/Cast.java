@@ -1,6 +1,7 @@
 package com.justinblank.classcompiler.lang;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -10,8 +11,8 @@ public class Cast implements Expression {
     public final Expression expression;
 
     Cast(Type outputType, Expression expression) {
-        this.outputType = outputType;
-        this.expression = expression;
+        this.outputType = Objects.requireNonNull(outputType, "output type cannot be null");
+        this.expression = Objects.requireNonNull(expression, "expression cannot be null");
     }
 
     public List<Integer> op(Type inputType) {

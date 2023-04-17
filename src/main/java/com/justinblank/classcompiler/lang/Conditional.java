@@ -2,9 +2,11 @@ package com.justinblank.classcompiler.lang;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Conditional implements ElementContainer {
 
+    // Nullable, as with else, this can be null
     public final Expression condition;
     public List<Conditional> alternates;
     public List<CodeElement> body;

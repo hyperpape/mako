@@ -1,5 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
+import com.justinblank.util.Validate;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
@@ -9,11 +10,7 @@ public class VariableRead implements Expression {
     public final String variable;
 
     public VariableRead(String variable) {
-        Objects.requireNonNull(variable, "Cannot read variable with null name");
-        if (StringUtils.isBlank(variable)) {
-            throw new IllegalArgumentException("Cannot read variable with name='" + variable + "'");
-        }
-        this.variable = variable;
+        this.variable = Validate.requireNonEmpty(variable, "variable name cannot be blank");
     }
 
     public String toString() {

@@ -12,8 +12,7 @@ public class Switch extends Statement {
     Boolean isIntegerSwitch = null;
 
     public Switch(Expression expression) {
-        Objects.requireNonNull(expression, "Cannot have a null expression for a switch constructor");
-        this.expression = expression;
+        this.expression = Objects.requireNonNull(expression, "Cannot have a null expression for a switch constructor");
     }
 
     public boolean isComplete() {

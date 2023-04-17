@@ -8,10 +8,8 @@ public class Assignment extends Statement {
     public final Expression expression;
 
     public Assignment(String variable, Expression expression) {
-        Objects.requireNonNull(variable, "variable cannot be null in an assignment");
-        Objects.requireNonNull(expression, "expression cannot be null in an assignment");
-        this.variable = variable;
-        this.expression = expression;
+        this.variable = Objects.requireNonNull(variable, "variable cannot be null in an assignment");
+        this.expression = Objects.requireNonNull(expression, "expression cannot be null in an assignment");
     }
 
     public String toString() {

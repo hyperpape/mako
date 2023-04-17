@@ -1,5 +1,6 @@
 package com.justinblank.classcompiler.lang;
 
+import com.justinblank.util.Validate;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
@@ -11,14 +12,9 @@ public class StaticFieldReference implements Expression {
     public final Type type;
 
     public StaticFieldReference(String fieldName, Type receiver, Type type) {
-        if (StringUtils.isBlank(fieldName)) {
-            throw new IllegalArgumentException("FieldName cannot be blank");
-        }
-        this.fieldName = fieldName;
-        Objects.requireNonNull(receiver, "Receiver cannot be null");
-        this.receiver = receiver;
-        Objects.requireNonNull(type, "Type cannot be null");
-        this.type = type;
+        this.fieldName = Validate.requireNonEmpty(fieldName, "fieldName cannot be blank");
+        this.receiver = Objects.requireNonNull(receiver, "Receiver cannot be null");
+        this.type = Objects.requireNonNull(type, "Type cannot be null");
     }
 
     @Override

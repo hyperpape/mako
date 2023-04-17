@@ -7,8 +7,7 @@ public class ReturnExpression extends Statement {
     public final Expression expression;
 
     ReturnExpression(Expression expression) {
-        Objects.requireNonNull(expression, "cannot return a null expression");
-        this.expression = expression;
+        this.expression = Objects.requireNonNull(expression, "cannot return a null expression");
     }
 
     public String toString() {

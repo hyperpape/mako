@@ -1,13 +1,15 @@
 package com.justinblank.classcompiler.lang;
 
+import java.util.Objects;
+
 public class Constructor implements Expression {
 
     public final Type returnType;
     public final Expression[] arguments;
 
     public Constructor(Type returnType, Expression[] arguments) {
-        this.returnType = returnType;
-        this.arguments = arguments;
+        this.returnType = Objects.requireNonNull(returnType, "returnType cannot be null");
+        this.arguments = Objects.requireNonNull(arguments, "arguments cannot be null)");
     }
 
     @Override

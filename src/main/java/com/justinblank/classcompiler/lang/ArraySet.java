@@ -1,5 +1,7 @@
 package com.justinblank.classcompiler.lang;
 
+import java.util.Objects;
+
 public class ArraySet extends Statement {
 
     public final Expression arrayRef;
@@ -7,9 +9,9 @@ public class ArraySet extends Statement {
     public final Expression value;
 
     private ArraySet(Expression arrayRef, Expression index, Expression value) {
-        this.arrayRef = arrayRef;
-        this.index = index;
-        this.value = value;
+        this.arrayRef = Objects.requireNonNull(arrayRef, "arrayRef cannot be null");
+        this.index = Objects.requireNonNull(index, "index cannot be null");
+        this.value = Objects.requireNonNull(value, "value cannot be null");
     }
 
     public static ArraySet arraySet(Expression arrayRef, Expression index, Expression value) {

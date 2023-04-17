@@ -2,6 +2,7 @@ package com.justinblank.classcompiler.lang;
 
 import com.justinblank.classcompiler.Method;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class Binary extends Operation {
@@ -10,10 +11,10 @@ public class Binary extends Operation {
     public final Expression left;
     public final Expression right;
 
-    public Binary(BinaryOperator operator, Expression left, Expression right) {
-        this.operator = operator;
-        this.left = left;
-        this.right = right;
+    Binary(BinaryOperator operator, Expression left, Expression right) {
+        this.operator = Objects.requireNonNull(operator, "operator cannot be null");
+        this.left = Objects.requireNonNull(left, "left side of operator cannot be null");
+        this.right = Objects.requireNonNull(right, "right side of operator cannot be null");
     }
 
     public static Binary of(BinaryOperator operator, Expression left, Expression right) {
