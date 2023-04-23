@@ -11,7 +11,7 @@
     <url>https://github.com/hyperpape/mako</url>
     <artifactId>mako</artifactId>
     <groupId>com.justinblank</groupId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.3</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
