@@ -415,20 +415,12 @@ public class Method {
             }
         } else if (element instanceof ReturnExpression) {
             var returnExpression = (ReturnExpression) element;
-            resolve(returnExpression.expression, true);
-            var type = typeInference.analyze(returnExpression.expression, typeEnvironment);
-            if (type.type() instanceof Builtin) {
-                Builtin.from(returnType).ifPresent(returning -> {
-                    var builtin = (Builtin) type.type();
-                    if (!builtin.equals(returning)) {
-                        var cast = builtin.cast(returning);
-                        if (cast > 0) {
-                            currentBlock().addOperation(Operation.mkOperation(builtin.cast(returning)));
-                        }
-                    }
-                });
-
-            }
+            Expression expression = returnExpression.expression;
+            resolve(expression, true);
+            var type = typeInference.analyze(expression, typeEnvironment);
+            Builtin.from(returnType).ifPresent(returning -> {
+                applyCast(type, returning);
+            });
             currentBlock().addReturn(CompilerUtil.returnForType(returnType));
         } else if (element instanceof ReturnVoid) {
             currentBlock().addReturn(RETURN);
@@ -839,6 +831,24 @@ public class Method {
             currentBlock().operate(ARRAYLENGTH);
         } else if (element instanceof NoOpStatement) {
             // do nothing
+        }
+    }
+
+    private void applyCast(Type origin, Type target) {
+        var type1 = target.type();
+        var type2 = origin.type();
+        if (!(type1 instanceof Builtin && type2 instanceof Builtin)) {
+            return;
+        }
+        applyCastToBuiltins((Builtin) type2, (Builtin) type1);
+    }
+
+    private void applyCastToBuiltins(Builtin source, Builtin target) {
+        if (!target.equals(source)) {
+            var cast = source.cast(target);
+            if (cast > 0) {
+                currentBlock().addOperation(Operation.mkOperation(cast));
+            }
         }
     }
 

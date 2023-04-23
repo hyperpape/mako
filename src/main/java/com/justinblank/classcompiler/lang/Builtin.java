@@ -167,10 +167,10 @@ public enum Builtin implements Type {
         }
     }
 
-    public int cast(Builtin other) {
+    public int cast(Builtin target) {
         switch (this) {
             case I:
-                switch (other) {
+                switch (target) {
                     case L:
                         return I2L;
                     case F:
@@ -179,7 +179,7 @@ public enum Builtin implements Type {
                         return I2D;
                 }
             case F:
-                switch (other) {
+                switch (target) {
                     case I:
                         return F2I;
                     case D:
@@ -188,7 +188,7 @@ public enum Builtin implements Type {
                         return F2L;
                 }
             case D:
-                switch (other) {
+                switch (target) {
                     case I:
                         return D2I;
                     case F:
@@ -197,7 +197,7 @@ public enum Builtin implements Type {
                         return D2L;
                 }
             case L:
-                switch (other) {
+                switch (target) {
                     case I:
                         return L2I;
                     case F:
