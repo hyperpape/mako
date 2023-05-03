@@ -1,6 +1,7 @@
 package com.justinblank.classcompiler.lang;
 
 import com.justinblank.util.Validate;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
 
@@ -40,4 +41,20 @@ public class Call implements Expression {
     public Expression receiver() {
         return this.arguments[0];
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(arguments[0]).append('.').append(methodName);
+        sb.append('(');
+        for (var i = 1; i < arguments.length; i++) {
+            if (i > 1) {
+                sb.append(",");
+            }
+            sb.append(arguments[i]);
+        }
+        sb.append(')');
+        return sb.toString();
+    }
+
 }
