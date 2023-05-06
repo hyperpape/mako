@@ -105,6 +105,7 @@ public class Method {
         return inserted;
     }
 
+    // TODO: consider removing these methods, not obvious they're useful anymore
     public Object getAttribute(String s) {
         return attributes.get(s);
     }
