@@ -260,6 +260,12 @@ public class Method {
         return this;
     }
 
+
+    public Method callStatic(Type type, String methodName, Type returnType, Expression...arguments) {
+        this.addElement(CodeElement.callStatic(CompilerUtil.internalName(type), methodName, returnType, arguments));
+        return this;
+    }
+
     void resolve() {
         try {
             doTypeInference();

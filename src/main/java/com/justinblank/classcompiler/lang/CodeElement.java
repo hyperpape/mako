@@ -49,6 +49,10 @@ public interface CodeElement {
         return new Call(CompilerUtil.internalName(cls), methodName, returnType, true, false, false, arguments);
     }
 
+    static Expression callStatic(Type type, String methodName, Type returnType, Expression...arguments) {
+        return new Call(CompilerUtil.internalName(type), methodName, returnType, true, false, false, arguments);
+    }
+
     static Expression cast(Type outputType, Expression value) {
         return new Cast(outputType, value);
     }
