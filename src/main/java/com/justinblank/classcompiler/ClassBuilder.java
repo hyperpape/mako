@@ -29,10 +29,10 @@ public class ClassBuilder {
 
     public ClassBuilder(String className, String classPackage, String superClass, String[] interfaces) {
         if (StringUtils.isBlank(className)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Cannot generate a class with a blank name");
         }
         if (StringUtils.isBlank(superClass)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Super class name cannot be blank");
         }
         classPackage = CompilerUtil.internalName(StringUtils.defaultString(classPackage));
 

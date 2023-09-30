@@ -34,7 +34,7 @@ public class GenericVars implements Vars {
     public String nameByIndex(int i) {
         String name = reverseVars.get(i);
         if (name == null) {
-            throw new IllegalStateException("Tried to get name for out of bound index Index=" + name);
+            throw new IllegalStateException("Tried to get name for out of bound index Index=" + i);
         }
         return name;
     }

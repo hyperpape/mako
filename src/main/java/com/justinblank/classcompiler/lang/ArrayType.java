@@ -1,5 +1,7 @@
 package com.justinblank.classcompiler.lang;
 
+import java.util.Objects;
+
 public class ArrayType implements Type {
 
     public final Type elementType;
@@ -9,6 +11,7 @@ public class ArrayType implements Type {
     }
 
     public static ArrayType of(Type elementType) {
+        Objects.requireNonNull(elementType, "Array cannot be of a null type");
         return new ArrayType(elementType);
     }
 
