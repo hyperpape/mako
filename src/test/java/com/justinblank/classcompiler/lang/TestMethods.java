@@ -455,7 +455,7 @@ public class TestMethods {
     }
 
     public static Method arrayFieldReadAndReadFromLocalVariable() {
-        var method = new Method(TEST_METHOD, List.of(), "I", new GenericVars("arrayHolder", "arrayTemp", "idx"));
+        var method = new Method(TEST_METHOD, List.of(), "I", new GenericVars("arrayHolder", "arrayTemp"));
         method.set("arrayHolder", construct(Type.of(ArrayHoldingClass.class)));
         method.set("arrayTemp", get("b", ArrayType.of(Builtin.OCTET), read("arrayHolder")));
         method.returnValue(arrayRead(read("arrayTemp"), 1));

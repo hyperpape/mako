@@ -1,6 +1,8 @@
 package com.justinblank.classcompiler;
 
+import com.justinblank.classcompiler.lang.Type;
 import com.justinblank.classloader.MyClassLoader;
+import org.apache.commons.lang3.tuple.Pair;
 import org.objectweb.asm.*;
 import org.objectweb.asm.util.CheckClassAdapter;
 
@@ -9,7 +11,9 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static com.justinblank.classcompiler.CompilerUtil.descriptor;
 import static com.justinblank.classcompiler.CompilerUtil.pushInt;
+import static com.justinblank.classcompiler.lang.CodeElement.read;
 import static org.objectweb.asm.Opcodes.*;
 
 // TODO: Simplify/remove functionality that just passes through to ASM
@@ -184,12 +188,19 @@ public class ClassCompiler {
     void writeMethod(Method method) {
         try {
             var mv = classVisitor.visitMethod(method.modifiers, method.methodName, method.descriptor(), null, null);
-            var vars = method.getMatchingVars();
+            Optional<Vars> vars = method.getMatchingVars();
 
             mv.visitCode();
+            Label startLabel = new Label();
+            mv.visitLabel(startLabel);
             for (var block : method.getBlocks()) {
                 visitBlock(mv, vars, block);
             }
+
+            Label endLabel = new Label();
+            mv.visitLabel(endLabel);
+            visitLocalVars(method, mv, startLabel, endLabel);
+
             if (debug) {
                 mv.visitMaxs(12, 12);
             }
@@ -207,6 +218,28 @@ public class ClassCompiler {
             ex.setMethodName(method.methodName);
             throw ex;
         }
+    }
+
+    private static void visitLocalVars(Method method, MethodVisitor mv, Label startLabel, Label endLabel) {
+        var vars = method.getMatchingVars();
+        vars.ifPresent((v) -> {
+            List<Pair<String, Integer>> variablesWithIndexes = v.allVars();
+            for (var pair : variablesWithIndexes) {
+                String variableName = pair.getLeft();
+                Type type = method.typeOf(read(variableName));
+                // TODO: null will need to change when we handle generics better
+                String typeDescriptor = null;
+                try {
+                     typeDescriptor = CompilerUtil.descriptor(type);
+                }
+                catch (IllegalStateException e) {
+                    // TODO: Improve handling, perhaps?
+                    // Typically this is an unused variable, we can omit it from the debug info, rather than crash
+                    continue;
+                }
+                mv.visitLocalVariable(variableName, typeDescriptor, null, startLabel, endLabel, pair.getRight());
+            }
+        });
     }
 
     private void visitBlock(MethodVisitor mv, Optional<Vars> vars, Block block) {
