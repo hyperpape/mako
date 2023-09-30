@@ -167,14 +167,6 @@ public class Block {
         return label;
     }
 
-    public void setOperations(List<Operation> transformed) {
-        this.operations = new ArrayList<>(transformed);
-    }
-
-    public List<Operation> getOperations() {
-        return Collections.unmodifiableList(operations);
-    }
-
     public boolean isEmpty() {
         return operations.isEmpty();
     }
