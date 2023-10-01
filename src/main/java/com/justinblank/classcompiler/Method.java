@@ -205,6 +205,11 @@ public class Method {
         return this;
     }
 
+    public Method staticFieldSet(StaticFieldReference ref, Expression expression) {
+        this.addElement(new StaticFieldSet(ref, expression));
+        return this;
+    }
+
     public Method arraySet(Expression arrayRef, Expression index, Expression value) {
         this.addElement(ArraySet.arraySet(arrayRef, index, value));
         return this;
@@ -460,6 +465,14 @@ public class Method {
                     Operation.mkSetField(fieldReference.fieldName,
                             CompilerUtil.internalName(typeInference.analyze(fieldReference.expression, typeEnvironment)),
                             descriptorForExpression(expression)));
+        } else if (element instanceof StaticFieldSet) {
+            var set = (StaticFieldSet) element;
+            var fieldReference = set.fieldReference;
+            var expression = set.expression;
+            resolve(expression);
+            currentBlock().putStatic(fieldReference.fieldName,
+                    CompilerUtil.internalName(fieldReference.receiver),
+                    CompilerUtil.descriptor(fieldReference.type));
         } else if (element instanceof Assignment) {
             var assignment = (Assignment) element;
             resolve(assignment.expression);

@@ -122,6 +122,11 @@ public class TestSemantics {
     }
 
     @Test
+    public void testSetStatic() throws Exception {
+        apply(TestMethods::setStatic, 1);
+    }
+
+    @Test
     public void testReadWriteReferenceTypeLocalVariables() throws Exception {
         var s = call(TestMethods.readWriteLocalVariableStringBuilder());
         assertEquals("", s);

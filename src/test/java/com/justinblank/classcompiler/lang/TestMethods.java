@@ -447,6 +447,13 @@ public class TestMethods {
         return method;
     }
 
+    public static Method setStatic() {
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars());
+        method.staticFieldSet(new StaticFieldReference("x", Type.of(ClassWithStaticField.class), Builtin.I), literal(1));
+        method.returnValue(getStatic("x", Type.of(ClassWithStaticField.class), Builtin.I));
+        return method;
+    }
+
     public static Method arrayLength(Type type) {
         var method = new Method(TEST_METHOD, List.of(), type, new GenericVars("a"));
         method.set("a", newArray(5, type));

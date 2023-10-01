@@ -249,6 +249,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testSetStatic() throws Exception {
+        apply(TestMethods.setStatic());
+    }
+
+    @Test
     public void testArrayLength() throws Exception {
         apply(TestMethods.arrayLength(Builtin.I));
         apply(TestMethods.arrayLength(Builtin.F));

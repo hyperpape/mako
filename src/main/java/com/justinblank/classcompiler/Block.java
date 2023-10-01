@@ -1,10 +1,9 @@
 package com.justinblank.classcompiler;
 
+import com.justinblank.classcompiler.lang.StaticFieldReference;
 import org.objectweb.asm.Label;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Block {
 
@@ -45,6 +44,12 @@ public class Block {
 
     public Block putStatic(String field, boolean isSelf, String descriptor) {
         addOperation(Operation.mkPutStatic(field, isSelf, descriptor));
+        return this;
+    }
+
+    public Block putStatic(String fieldName, String className, String descriptor) {
+        var spec = new RefSpec(fieldName, className, descriptor, false);
+        addOperation(new Operation(Operation.Inst.PUT_STATIC, -1, null, spec, null));
         return this;
     }
 

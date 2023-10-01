@@ -84,6 +84,8 @@ public class TypeInference {
             return type;
         } else if (element instanceof FieldSet) {
             return Void.VOID;
+        } else if (element instanceof StaticFieldSet) {
+            return Void.VOID;
         } else if (element instanceof Loop) {
             var loop = (Loop) element;
             if (loop.condition != null) {
