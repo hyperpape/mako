@@ -157,7 +157,7 @@ public class Block {
 
     @Override
     public String toString() {
-        return "Block" + number;
+        return "Block" + number + ", operationCount=" + operations.size();
     }
 
     public Block addOperation(Operation op) {
