@@ -125,6 +125,10 @@ public interface CodeElement {
         return new ReturnExpression(literal(number));
     }
 
+    static Statement returnValue(boolean returnValue) {
+        return new ReturnExpression(literal(returnValue ? 1 : 0));
+    }
+
     static Statement returnVoid() {
         return new ReturnVoid();
     }

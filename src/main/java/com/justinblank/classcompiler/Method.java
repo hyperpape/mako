@@ -230,6 +230,11 @@ public class Method {
         return this;
     }
 
+    public Method returnValue(boolean returnValue) {
+        this.addElement(CodeElement.returnValue(returnValue));
+        return this;
+    }
+
     public Method returnVoid() {
         this.addElement(CodeElement.returnVoid());
         return this;
