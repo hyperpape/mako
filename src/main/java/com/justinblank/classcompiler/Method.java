@@ -999,7 +999,7 @@ public class Method {
             Class<?> actualClass = Class.forName(type.typeString());
             return paramClass.isAssignableFrom(actualClass);
         }
-        catch (Exception e) {
+        catch (ClassNotFoundException e) {
             return false;
         }
     }
@@ -1027,8 +1027,9 @@ public class Method {
                 }
             }
         }
-        catch (Exception e) {
+        catch (ClassNotFoundException e) {
             // YOLO: ignore for now, future approach is to distinguish user-defined types from builtins
+            // if a type is user defined, then we can inspect the generated class to search for methods
         }
         return methods;
     }
