@@ -1,6 +1,5 @@
 package com.justinblank.classcompiler;
 
-import com.justinblank.classcompiler.lang.StaticFieldReference;
 import org.objectweb.asm.Label;
 
 import java.util.*;
@@ -32,11 +31,26 @@ public class Block {
         return this;
     }
 
-    public Block readStatic(String field, boolean isSelf, String descriptor) {
-        addOperation(Operation.mkReadStatic(field, isSelf, descriptor));
+    /**
+     * Add an operation for reading a static value off of the current class
+     *
+     * @param field the fieldName
+     * @param descriptor the descriptor for the field type, see {@link CompilerUtil#descriptor}.
+     * @return this block
+     */
+    public Block readStatic(String field, String descriptor) {
+        addOperation(Operation.mkReadStatic(field, true, descriptor));
         return this;
     }
 
+    /**
+     * Add an operation for reading a static value off of the specified class
+     *
+     * @param field the fieldName
+     * @param className the internal name of a class, see {@link CompilerUtil#internalName}.
+     * @param descriptor the descriptor for the field type, see {@link CompilerUtil#descriptor}.
+     * @return this block
+     */
     public Block readStatic(String field, String className, String descriptor) {
         addOperation(Operation.mkReadStatic(field, className, descriptor));
         return this;
