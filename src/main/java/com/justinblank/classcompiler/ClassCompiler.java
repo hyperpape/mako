@@ -304,6 +304,9 @@ public class ClassCompiler {
                 return;
             case SET_VAR:
                 if (op.spec != null) {
+                    if (op.count < 0) {
+                        throw new IllegalArgumentException("Illegal variable: index=" + op.count + ", Spec=" + op.spec);
+                    }
                     switch (op.spec.descriptor) {
                         case "I":
                         case "Z":
@@ -397,8 +400,8 @@ public class ClassCompiler {
                         count.set(v.indexByName(op.spec.name));
                     }
                 });
-                if (op.count < 0) {
-                    throw new IllegalArgumentException("Illegal variable: index=" + op.count + ", Spec=" + op.spec);
+                if (count.get() < 0) {
+                    throw new IllegalArgumentException("Illegal variable: index=" + count.get() + ", Spec=" + op.spec);
                 }
                 mv.visitVarInsn(ALOAD, count.get());
                 return;
