@@ -401,7 +401,14 @@ public class Method {
         resolve(element, true);
     }
 
-    void resolve(CodeElement element, boolean recursive) {
+    /**
+     * Resolves an element, turning the CodeElement into lower level Blocks/Operations.
+     *
+     * @param element the element to resolve
+     * @param asConsumedValue true if we're inside a context where a value pushed to the stack will be consumed (binary
+     *                       operation, method call, assignment, etc). Otherwise false.
+     */
+    void resolve(CodeElement element, boolean asConsumedValue) {
         if (element instanceof Literal) {
             var lit = (Literal) element;
             if (lit.value instanceof Integer) {
@@ -433,7 +440,7 @@ public class Method {
         } else if (element instanceof ReturnExpression) {
             var returnExpression = (ReturnExpression) element;
             Expression expression = returnExpression.expression;
-            resolve(expression, true);
+            resolve(expression);
             var type = typeInference.analyze(expression, typeEnvironment);
             Builtin.from(returnType).ifPresent(returning -> {
                 applyCast(type, returning);
@@ -646,7 +653,7 @@ public class Method {
             else {
                 currentBlock().call(call.methodName, className, buildDescriptor(call));
             }
-            if (!recursive && producesValue(call)) {
+            if (!asConsumedValue && producesValue(call)) {
                 currentBlock().operate(POP);
             }
         }
@@ -880,10 +887,7 @@ public class Method {
     private void resolveBody(ElementContainer container) {
         withBlock(addBlock(), () -> {
             for (var codeElement : container.getBody()) {
-                resolve(codeElement);
-                if (producesValue(codeElement)) {
-                    currentBlock().operate(POP);
-                }
+                resolve(codeElement, false);
             }
         });
     }
