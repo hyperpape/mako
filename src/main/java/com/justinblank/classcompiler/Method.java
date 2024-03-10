@@ -280,7 +280,9 @@ public class Method {
         try {
             doTypeInference();
 
-            this.addBlock();
+            if (this.blocks.isEmpty()) {
+                this.addBlock();
+            }
             for (var element : elements) {
                 resolveTopLevelElement(element);
             }
