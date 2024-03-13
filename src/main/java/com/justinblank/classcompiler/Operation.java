@@ -16,10 +16,6 @@ public class Operation {
     final List<Integer> ints;
     final Map<String, Object> attributes = new HashMap<>();
 
-    public static Operation mkReadChar() {
-        return new Operation(Inst.READ_CHAR, -1, null, null, null);
-    }
-
     @Override
     public String toString() {
         return "Operation{" +
@@ -57,16 +53,8 @@ public class Operation {
         this.number = null;
     }
 
-    public static Operation checkBounds(Block returnBlock) {
-        return new Operation(Inst.CHECK_BOUNDS, -1, returnBlock, null, null);
-    }
-
     public static Operation mkJump(Block target, int insn) {
         return new Operation(Inst.JUMP, insn, target, null, null);
-    }
-
-    public static Operation mkCallState(Block targetBlock) {
-        return new Operation(Inst.CALL_STATE, 0, targetBlock, null, null);
     }
 
     public static Operation call(String methodName, String className, String descriptor) {
@@ -215,10 +203,7 @@ public class Operation {
 
     public enum Inst {
         VALUE,
-        READ_CHAR,
         INCREMENT,
-        CHECK_BOUNDS,
-        CHECK_CHARS,
         SET_VAR,
         SET_FIELD,
         READ_STATIC,

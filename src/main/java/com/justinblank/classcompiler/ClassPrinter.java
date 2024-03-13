@@ -96,8 +96,7 @@ public class ClassPrinter {
             case JUMP:
                 print(REPRESENTATIONS.get(op.count));
                 print(' ');
-            case CHECK_BOUNDS:
-                println(op.target);
+                println("Block" + op.target.number);
                 return;
             case CALL:
             case READ_STATIC:
