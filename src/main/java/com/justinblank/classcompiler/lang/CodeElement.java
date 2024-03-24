@@ -109,10 +109,20 @@ public interface CodeElement {
         return new Assignment(name, literal(value));
     }
 
+
+    /**
+     * Return an Escape statement, equivalent to a break
+     * @return an Escape statement
+     */
     static Escape escape() {
         return new Escape();
     }
 
+
+    /**
+     * Return a Skip statement, equivalent to a continue
+     * @return a Skip statement
+     */
     static Skip skip() {
         return new Skip();
     }
