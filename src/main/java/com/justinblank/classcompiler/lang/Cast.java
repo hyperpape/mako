@@ -24,7 +24,10 @@ public class Cast implements Expression {
             }
             switch (in) {
                 case I:
+                case C:
                     switch (out) {
+                        case I:
+                            return List.of();
                         case F:
                             return List.of(I2F);
                         case L:
@@ -40,6 +43,8 @@ public class Cast implements Expression {
                     }
                 case F:
                     switch (out) {
+                        case F:
+                            return List.of();
                         case I:
                             return List.of(F2I);
                         case S:
@@ -53,6 +58,8 @@ public class Cast implements Expression {
                     }
                 case D:
                     switch (out) {
+                        case D:
+                            return List.of();
                         case I:
                             return List.of(D2I);
                         case S:
@@ -68,6 +75,8 @@ public class Cast implements Expression {
                     }
                 case L:
                     switch (out) {
+                        case L:
+                            return List.of();
                         case I:
                             return List.of(L2I);
                         case S:
@@ -84,6 +93,7 @@ public class Cast implements Expression {
                 case OCTET:
                     switch (out) {
                         case I:
+                        case OCTET:
                         case L:
                         case S:
                             return List.of();
