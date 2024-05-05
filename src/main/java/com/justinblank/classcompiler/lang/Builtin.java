@@ -15,7 +15,7 @@ public enum Builtin implements Type {
     D(DADD, DSUB, DMUL, DDIV, DREM, DCMPL, DCMPG, IFGE, IFGT, IFLE, IFLT),
     // TODO: check semantics of Bool/Octet, can we add, etc?
     BOOL(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
-    OCTET(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1),
+    OCTET(IADD, ISUB, IMUL, IDIV, -1, -1, -1, -1, -1, -1, -1),
     C(IADD, ISUB, IMUL, IDIV, IREM, -1, -1, IF_ICMPLT, IF_ICMPLE, IF_ICMPGT, IF_ICMPGE);
 
     private final int addOperation;
