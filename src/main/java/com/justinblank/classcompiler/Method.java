@@ -429,6 +429,8 @@ public class Method {
             } else if (lit.value instanceof Short) {
                 var value = (Short) lit.value;
                 currentBlock().push(value);
+            } else {
+                throw new IllegalStateException("Illegal literal value " + lit.value);
             }
         } else if (element instanceof Cast) {
             var cast = (Cast) element;
