@@ -194,6 +194,10 @@ method.set("d", 2);
 method.returnValue(read("d"));
 ```
 
+Although the vars object is a map, the order in which vars are defined is tracked. Arguments to the method are
+automatically assigned to the initial elements of the Vars array. So in the example above, the integer argument to
+TEST_METHOD will be assigned to `a` at the beginning of the method.
+
 ### Defining Classes
 
 To define a class, create a `ClassBuilder`, add methods to it, then pass it to a `ClassCompiler`. 

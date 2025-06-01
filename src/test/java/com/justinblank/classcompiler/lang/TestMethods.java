@@ -514,6 +514,27 @@ public class TestMethods {
         return method;
     }
 
+    public static Method methodReadingArgument() {
+        var vars = new GenericVars();
+        vars.addVar("i");
+        String descriptor = CompilerUtil.descriptor(ReferenceType.of(Integer.class));
+        var method = new Method(TEST_METHOD, List.of(descriptor), descriptor, vars);
+        method.returnValue(read("i"));
+        return method;
+    }
+
+    /**
+     * Generate a method where there are no variables defined for some of the arguments to the method.
+     * This is an edge case that I'm not sure how it should work. It's probably safe to allow. 
+     */
+    public static Method methodWithArgumentsNotInVars() {
+        var vars = new GenericVars();
+        var descriptor = CompilerUtil.descriptor(ReferenceType.of(Boolean.class));
+        var method = new Method(TEST_METHOD, List.of(descriptor), descriptor, vars);
+        method.returnValue(getStatic("TRUE", ReferenceType.of(Boolean.class), ReferenceType.of(Boolean.class)));
+        return method;
+    }
+
     public static Method argumentOfReferenceType() {
         var method = new Method(TEST_METHOD, List.of(CompilerUtil.descriptor(String.class)), String.class, new GenericVars("s"));
         method.returnValue(read("s"));

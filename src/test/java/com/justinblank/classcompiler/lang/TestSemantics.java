@@ -386,6 +386,19 @@ public class TestSemantics {
     }
 
     @Test
+    public void testMethodReadingArgument() throws Exception {
+        apply(1, TestMethods::methodReadingArgument, List.of(1));
+        apply(-13, TestMethods::methodReadingArgument, List.of(-13));
+    }
+
+    @Test
+    public void testMethodWithArgumentsNotInVars() throws Exception {
+        apply(Boolean.TRUE, TestMethods::methodWithArgumentsNotInVars, List.of(Boolean.TRUE));
+    }
+
+
+
+    @Test
     public void testLoopWithAndInCondition() throws Exception {
         apply(TestMethods::loopWithAndInCondition, 5);
     }

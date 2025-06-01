@@ -383,6 +383,16 @@ public class TestSyntax {
     }
 
     @Test
+    public void testMethodReadingArgument() throws Exception {
+        apply(TestMethods.methodReadingArgument());
+    }
+
+    @Test
+    public void testMethodWithArgumentNotInVars() throws Exception {
+        apply(TestMethods.methodWithArgumentsNotInVars());
+    }
+
+    @Test
     public void testFibonacci() throws Exception {
         apply(TestMethods.fibonacci());
     }
