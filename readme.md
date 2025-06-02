@@ -110,7 +110,7 @@ conversions must be explicit (no auto-boxing).
 
 ```java
 // define a method returning a long
-Method method = new Method(TEST_METHOD, List.of(), Builtin.L, null);
+Method method = new Method("returnsLong", List.of(), Builtin.L, null);
 method.returnValue(1);
 ```
 
@@ -161,7 +161,7 @@ method.cond(eq(read("i"), 3))
 Mako has only while loops for now.
 
 ```java
-        var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars("a"));
+        var method = new Method("loopMethod", List.of(), Builtin.I, new GenericVars("a"));
         method.set("a", 1);
         method.loop(lt(read("a"), 5),
                 List.of(set("a", plus(read("a"), 1))));
@@ -189,14 +189,14 @@ method.loop(lt( read("a"), 5),
 
 Vars vars = new GenericVars("a", "b", "c", "d");
 // Arguments to the method constructor are name, arguments, return type, the variables
-Method method = new Method(TEST_METHOD, List.of(Builtin.I), Builtin.I, vars);
+Method method = new Method("argumentDemo", List.of(Builtin.I), Builtin.I, vars);
 method.set("d", 2);
 method.returnValue(read("d"));
 ```
 
 Although the vars object is a map, the order in which vars are defined is tracked. Arguments to the method are
 automatically assigned to the initial elements of the Vars array. So in the example above, the integer argument to
-TEST_METHOD will be assigned to `a` at the beginning of the method.
+`argumentDemo` will be assigned to `a` at the beginning of the method.
 
 ### Defining Classes
 
