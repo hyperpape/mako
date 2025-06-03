@@ -326,6 +326,16 @@ public class TestMethods {
         return method;
     }
 
+    public static Method conditionWithElseIf_fromArgument() {
+        var vars = new GenericVars("i");
+        var method = new Method(TEST_METHOD, List.of("I"), Builtin.I, vars);
+        method.cond(eq(read("i"), 1))
+                .withBody(List.of(returnValue(2)))
+                .elseif(eq(read("i"), 3)).withBody(List.of(returnValue(4)));
+        method.returnValue(5);
+        return method;
+    }
+
     public static Method conditionWithElse() {
         var vars = new GenericVars("i");
         var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);

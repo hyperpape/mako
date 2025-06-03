@@ -379,6 +379,13 @@ public class TestSemantics {
     }
 
     @Test
+    public void testConditionalWithOrElse_Again() throws Exception {
+        apply_int(2, TestMethods::conditionWithElseIf_fromArgument, 1);
+        apply_int(4, TestMethods::conditionWithElseIf_fromArgument, 3);
+        apply_int(5, TestMethods::conditionWithElseIf_fromArgument, 6);
+    }
+
+    @Test
     public void testDFALoopThingy() throws Exception {
         apply(-1, TestMethods::loopDFAThingy, List.of("abc"));
         apply(0, TestMethods::loopDFAThingy, List.of("0"));
@@ -615,5 +622,24 @@ public class TestSemantics {
             clsArgs.add(obj.getClass());
         }
         return compiled.getMethod(TEST_METHOD, clsArgs.toArray(new Class[0])).invoke(instance, arguments.toArray());
+    }
+
+
+    static void apply_int(int expected, Supplier<Method> method, int argument) throws Exception {
+        Object output = call_int(method.get(), argument, true);
+        assertEquals(expected, output);
+        output = call_int(method.get(), argument, true);
+        assertEquals(expected, output);
+    }
+
+    // TODO: figure out how to generalize
+    private static Object call_int(Method method, int arg, boolean debug) throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException {
+        var builder = new ClassBuilder("TestSemanticsTestClass" + classNumber++, "", "java/lang/Object", new String[]{});
+        builder.addMethod(method);
+        builder.addMethod(builder.addEmptyConstructor());
+        var cls = new ClassCompiler(builder, debug, new NoOpPrintStream());
+        Class<?> compiled = cls.generateClass();
+        var instance = compiled.getConstructors()[0].newInstance();
+        return compiled.getMethod(TEST_METHOD, int.class).invoke(instance, arg);
     }
 }

@@ -286,7 +286,7 @@ public class Method {
             for (var element : elements) {
                 resolveTopLevelElement(element);
             }
-            pruneBlocks();
+            // pruneBlocks();
             // TODO: did I have a good reason for this? Tests pass without it
             this.elements = new ArrayList<>();
         }
@@ -718,28 +718,34 @@ public class Method {
         }
         else if (element instanceof Conditional) {
             var cond = (Conditional) element;
-            currentBlock.push(addBlock());
-            resolve(cond.condition);
+            // We track the start and end of the blocks for each arm of the conditional so that we can properly
+            // implement fallthrough
+            List<Block> bodyEndingBlocks = new ArrayList<>();
+            List<Block> conditionStartingBlocks = new ArrayList<>();
+            List<Block> conditionEndingBlocks = new ArrayList<>();
 
-            List<Block> visitedBlocks = new ArrayList<>();
-            List<Block> conditionBlocks = new ArrayList<>();
-            conditionBlocks.add(addBlock());
+            currentBlock.push(addBlock());
+            conditionStartingBlocks.add(currentBlock());
+            resolve(cond.condition);
+            conditionEndingBlocks.add(addBlock());
 
             resolveBody(cond);
-            visitedBlocks.add(this.blocks.get(this.blocks.size() - 1));
+            bodyEndingBlocks.add(this.blocks.get(this.blocks.size() - 1));
 
             Block elseBlock = null;
             for (var alternate : cond.alternates) {
                 if (alternate.condition != null) {
                     currentBlock.push(addBlock());
+                    conditionStartingBlocks.add(currentBlock());
                     resolve(alternate.condition);
-                    conditionBlocks.add(addBlock());
+                    conditionEndingBlocks.add(addBlock());
                     resolveBody(alternate);
-                    visitedBlocks.add(this.blocks.get(this.blocks.size() - 1));
+                    bodyEndingBlocks.add(this.blocks.get(this.blocks.size() - 1));
                 }
                 else {
                     elseBlock = addBlock();
                     currentBlock.push(elseBlock);
+                    conditionStartingBlocks.add(currentBlock());
                     resolveBody(alternate);
                 }
             }
@@ -749,12 +755,18 @@ public class Method {
                 elseBlock = afterLoopBlock;
             }
 
-            for (var conditionBlock : conditionBlocks) {
-                conditionBlock.jump(elseBlock, IFEQ);
+            for (int i = 0; i < conditionEndingBlocks.size(); i++) {
+                var conditionBlock = conditionEndingBlocks.get(i);
+                if (i + 1 == conditionEndingBlocks.size()) {
+                    conditionBlock.jump(elseBlock, IFEQ);
+                }
+                else {
+                    conditionBlock.jump(conditionStartingBlocks.get(i + 1), IFEQ);
+                }
             }
-            for (var visitedBlock : visitedBlocks) {
-                if (!visitedBlock.endsWithReturn()) {
-                    visitedBlock.jump(afterLoopBlock, GOTO);
+            for (var bodyEndingBlock : bodyEndingBlocks) {
+                if (!bodyEndingBlock.endsWithReturn()) {
+                    bodyEndingBlock.jump(afterLoopBlock, GOTO);
                 }
             }
             currentBlock.push(afterLoopBlock);
