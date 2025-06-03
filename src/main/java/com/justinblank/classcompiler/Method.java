@@ -722,8 +722,8 @@ public class Method {
             resolve(cond.condition);
 
             List<Block> visitedBlocks = new ArrayList<>();
-            List<Block> booleanJumpBlocks = new ArrayList<>();
-            booleanJumpBlocks.add(addBlock());
+            List<Block> conditionBlocks = new ArrayList<>();
+            conditionBlocks.add(addBlock());
 
             resolveBody(cond);
             visitedBlocks.add(this.blocks.get(this.blocks.size() - 1));
@@ -733,7 +733,7 @@ public class Method {
                 if (alternate.condition != null) {
                     currentBlock.push(addBlock());
                     resolve(alternate.condition);
-                    booleanJumpBlocks.add(addBlock());
+                    conditionBlocks.add(addBlock());
                     resolveBody(alternate);
                     visitedBlocks.add(this.blocks.get(this.blocks.size() - 1));
                 }
@@ -749,11 +749,13 @@ public class Method {
                 elseBlock = afterLoopBlock;
             }
 
-            for (var booleanJumpBlock : booleanJumpBlocks) {
-                booleanJumpBlock.jump(elseBlock, IFEQ);
+            for (var conditionBlock : conditionBlocks) {
+                conditionBlock.jump(elseBlock, IFEQ);
             }
             for (var visitedBlock : visitedBlocks) {
-                visitedBlock.jump(afterLoopBlock, GOTO);
+                if (!visitedBlock.endsWithReturn()) {
+                    visitedBlock.jump(afterLoopBlock, GOTO);
+                }
             }
             currentBlock.push(afterLoopBlock);
         }
