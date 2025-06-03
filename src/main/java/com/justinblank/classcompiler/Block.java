@@ -189,4 +189,16 @@ public class Block {
     public boolean isEmpty() {
         return operations.isEmpty();
     }
+
+    protected boolean endsWithReturn() {
+        if (this.operations.isEmpty()) {
+            return false;
+        }
+        var lastOperation = this.operations.get(this.operations.size() - 1);
+        if (lastOperation.inst == Operation.Inst.RETURN) {
+            return true;
+        }
+
+        return false;
+    }
 }
