@@ -16,9 +16,10 @@ public class Conditional implements ElementContainer {
         this.alternates = new ArrayList<>();
     }
 
-    public Conditional elseif(Expression condition) {
-        var cond = new Conditional(condition);
-        this.alternates.add(cond);
+    public ConditionalContinuation elseif(Expression condition) {
+        var conditional = new Conditional(condition);
+        var cond = new ConditionalContinuation(this, conditional);
+        this.alternates.add(conditional);
         return cond;
     }
 

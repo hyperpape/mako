@@ -379,10 +379,19 @@ public class TestSemantics {
     }
 
     @Test
-    public void testConditionalWithOrElse_Again() throws Exception {
-        apply_int(2, TestMethods::conditionWithElseIf_fromArgument, 1);
-        apply_int(4, TestMethods::conditionWithElseIf_fromArgument, 3);
-        apply_int(5, TestMethods::conditionWithElseIf_fromArgument, 6);
+    public void testConditionalWithElseif_fromArgument() throws Exception {
+        apply_int(2, TestMethods::conditionWithElseif_fromArgument, 1);
+        apply_int(4, TestMethods::conditionWithElseif_fromArgument, 3);
+        apply_int(5, TestMethods::conditionWithElseif_fromArgument, 6);
+    }
+
+    @Test
+    public void testConditionalWithMultipleElseif_fromArgument() throws Exception {
+        apply_int(2, TestMethods::conditionWithMultipleElseif_fromArgument, 1);
+        apply_int(4, TestMethods::conditionWithMultipleElseif_fromArgument, 3);
+        apply_int(6, TestMethods::conditionWithMultipleElseif_fromArgument, 5);
+        apply_int(8, TestMethods::conditionWithMultipleElseif_fromArgument, 7);
+        apply_int(9, TestMethods::conditionWithMultipleElseif_fromArgument, 0);
     }
 
     @Test
