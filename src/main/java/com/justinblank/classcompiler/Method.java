@@ -465,11 +465,11 @@ public class Method {
     }
 
     void resolveTopLevelElement(CodeElement element) {
-        resolve(element, false);
+        resolve(element, false, false);
     }
 
     void resolve(CodeElement element) {
-        resolve(element, true);
+        resolve(element, true, false);
     }
 
     /**
@@ -478,8 +478,9 @@ public class Method {
      * @param element the element to resolve
      * @param asConsumedValue true if we're inside a context where a value pushed to the stack will be consumed (binary
      *                       operation, method call, assignment, etc). Otherwise false.
+     * @param asAssignment if the value produced by this expression will be stored in a value
      */
-    void resolve(CodeElement element, boolean asConsumedValue) {
+    void resolve(CodeElement element, boolean asConsumedValue, boolean asAssignment) {
         if (element instanceof Literal) {
             var lit = (Literal) element;
             if (lit.value instanceof Integer) {
@@ -560,7 +561,7 @@ public class Method {
                     CompilerUtil.descriptor(fieldReference.type));
         } else if (element instanceof Assignment) {
             var assignment = (Assignment) element;
-            resolve(assignment.expression);
+            resolve(assignment.expression, true, true);
             currentBlock().setVar(getMatchingVars().get().indexByName(assignment.variable), descriptorForExpression(assignment.expression));
         } else if (element instanceof Binary) {
             var operation = (Binary) element;
@@ -974,7 +975,7 @@ public class Method {
     private void resolveBody(ElementContainer container) {
         withBlock(addBlock(), () -> {
             for (var codeElement : container.getBody()) {
-                resolve(codeElement, false);
+                resolve(codeElement, false, false);
             }
         });
     }
