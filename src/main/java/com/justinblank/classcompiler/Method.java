@@ -3,6 +3,7 @@ package com.justinblank.classcompiler;
 import com.justinblank.classcompiler.lang.*;
 import com.justinblank.classcompiler.lang.Void;
 import org.apache.commons.lang3.StringUtils;
+import org.objectweb.asm.Opcodes;
 
 import java.util.*;
 
@@ -286,7 +287,7 @@ public class Method {
             for (var element : elements) {
                 resolveTopLevelElement(element);
             }
-            // pruneBlocks();
+            pruneBlocks();
             // TODO: did I have a good reason for this? Tests pass without it
             this.elements = new ArrayList<>();
         }
@@ -350,6 +351,42 @@ public class Method {
             block.number = i++;
         }
         this.blocks = newBlocks;
+
+        // This looks like a place where we should run until we reach a fix-point
+        pruneDeadGotos();
+        redirectRedundantJumps();
+    }
+
+    private void pruneDeadGotos() {
+        for (var block : blocks) {
+            int pruneIndex = -1;
+            for (int i = 0; i < block.operations.size(); i++) {
+                var op = block.operations.get(i);
+                if (op.inst == Operation.Inst.RETURN) {
+                    pruneIndex = i;
+                    break;
+                }
+            }
+            if (pruneIndex != -1) {
+                while (block.operations.size() > pruneIndex + 1) {
+                    block.operations.remove(block.operations.size() - 1);
+                }
+            }
+        }
+    }
+
+    private void redirectRedundantJumps() {
+        for (var block : blocks) {
+            for (var op : block.operations) {
+                if (op.inst == JUMP) {
+                    var target = GraphUtil.actualTarget(this, op.target.number);
+                    var firstInstruction = target.operations.get(0);
+                    if (firstInstruction.inst == JUMP && firstInstruction.count == Opcodes.GOTO) {
+                        op.target = firstInstruction.target;
+                    }
+                }
+            }
+        }
     }
 
     private boolean mustTake(Block b) {
