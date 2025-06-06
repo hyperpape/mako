@@ -4,6 +4,7 @@ import com.justinblank.classcompiler.lang.*;
 import com.justinblank.classcompiler.lang.Void;
 import org.apache.commons.lang3.StringUtils;
 import org.objectweb.asm.Opcodes;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
@@ -468,8 +469,8 @@ public class Method {
         resolve(element, false, false);
     }
 
-    void resolve(CodeElement element) {
-        resolve(element, true, false);
+    Optional<Integer> resolve(CodeElement element) {
+        return resolve(element, true, false);
     }
 
     /**
@@ -478,9 +479,10 @@ public class Method {
      * @param element the element to resolve
      * @param asConsumedValue true if we're inside a context where a value pushed to the stack will be consumed (binary
      *                       operation, method call, assignment, etc). Otherwise false.
-     * @param asAssignment if the value produced by this expression will be stored in a value
+     * @param asValue if the value produced by this expression will be stored/returned as a value, rather than used for
+     *               a conditional
      */
-    void resolve(CodeElement element, boolean asConsumedValue, boolean asAssignment) {
+    Optional<Integer> resolve(CodeElement element, boolean asConsumedValue, boolean asValue) {
         if (element instanceof Literal) {
             var lit = (Literal) element;
             if (lit.value instanceof Integer) {
@@ -514,7 +516,7 @@ public class Method {
         } else if (element instanceof ReturnExpression) {
             var returnExpression = (ReturnExpression) element;
             Expression expression = returnExpression.expression;
-            resolve(expression);
+            resolve(expression, true, true);
             var type = typeInference.analyze(expression, typeEnvironment);
             Builtin.from(returnType).ifPresent(returning -> {
                 applyCast(type, returning);
@@ -571,34 +573,49 @@ public class Method {
                 case GREATER_THAN:
                 case GREATER_THAN_OR_EQUALS:
                     var block = addBlock();
-                    withBlock(block, () -> {
+                    var analyzed = typeInference.analyze(operation.left, typeEnvironment).type();
+                    var asmOp = operation.asmOP(this);
+                    if (asValue) {
+                        final var targetBlock = block;
+                        withBlock(targetBlock, () -> {
+                            resolve(operation.left);
+                            resolve(operation.right);
+                            var eqBlock = addBlock().push(1);
+                            var finalBlock = addBlock();
+
+
+                            // TODO: need specific test case for characters
+                            if (analyzed == Builtin.I || analyzed == Builtin.C) {
+                                targetBlock.jump(eqBlock, asmOp)
+                                        .push(0)
+                                        .jump(finalBlock, GOTO);
+                            }
+                            else {
+                                operation.comparisonOperation(this).ifPresent(targetBlock::operate);
+                                targetBlock.jump(eqBlock, asmOp)
+                                        .push(0)
+                                        .jump(finalBlock, GOTO);
+                            }
+                        });
+                        return Optional.empty();
+                    } else {
                         resolve(operation.left);
                         resolve(operation.right);
-                        var eqBlock = addBlock().push(1);
-                        var finalBlock = addBlock();
-
-                        var analyzed = typeInference.analyze(operation.left, typeEnvironment).type();
                         // TODO: need specific test case for characters
                         if (analyzed == Builtin.I || analyzed == Builtin.C) {
-                            block.jump(eqBlock, operation.asmOP(this))
-                                    .push(0)
-                                    .jump(finalBlock, GOTO);
+                            return Optional.of(asmOp);
                         }
                         else {
                             operation.comparisonOperation(this).ifPresent(block::operate);
-                            block.jump(eqBlock, operation.asmOP(this))
-                                    .push(0)
-                                    .jump(finalBlock, GOTO);
+                            return Optional.of(asmOp);
                         }
-
-                    });
-                    return;
+                    }
                 case EQUALS:
                 case NOT_EQUALS:
                     block = addBlock();
                     withBlock(block, () -> {
-                        resolve(operation.left);
-                        resolve(operation.right);
+                        resolve(operation.left, true, true);
+                        resolve(operation.right, true, true);
                         var eqBlock = addBlock().push(1);
                         var finalBlock = addBlock();
 
@@ -606,19 +623,19 @@ public class Method {
                                 .push(0)
                                 .jump(finalBlock, GOTO);
                     });
-                    return;
+                    return Optional.empty();
                 case OR:
                     // TODO: this generates significantly more verbose bytecode than javac
                     var firstConditionBlock = addBlock();
 
                     withBlock(firstConditionBlock, () -> {
-                        resolve(operation.left);
+                        resolve(operation.left, true, true);
                     });
                     firstConditionBlock = addBlock();
 
                     var secondConditionBlock = addBlock();
                     withBlock(secondConditionBlock, () -> {
-                        resolve(operation.right);
+                        resolve(operation.right, true, true);
                     });
                     secondConditionBlock = addBlock();
 
@@ -633,18 +650,18 @@ public class Method {
                     firstConditionBlock.jump(successBlock, IFNE);
                     secondConditionBlock.jump(failureBlock, IFEQ);
 
-                    return;
+                    return Optional.empty();
                 case AND:
                     firstConditionBlock = addBlock();
 
                     withBlock(firstConditionBlock, () -> {
-                        resolve(operation.left);
+                        resolve(operation.left, true, true);
                     });
                     firstConditionBlock = addBlock();
 
                     secondConditionBlock = addBlock();
                     withBlock(secondConditionBlock, () -> {
-                        resolve(operation.right);
+                        resolve(operation.right, true, true);
                     });
                     secondConditionBlock = addBlock();
 
@@ -658,16 +675,16 @@ public class Method {
 
                     firstConditionBlock.jump(failureBlock, IFEQ);
                     secondConditionBlock.jump(failureBlock, IFEQ);
-                    return;
+                    return Optional.empty();
                 default:
                     resolve(operation.left);
                     resolve(operation.right);
                     currentBlock().operate(operation.asmOP(this));
-                    return;
+                    return Optional.empty();
             }
         } else if (element instanceof Unary) {
             var unary = (Unary) element;
-            resolve(unary.expression);
+            var operation = resolve(unary.expression);
             switch (unary.operator) {
                 case NOT:
                     addBlock().push(1).operate(IXOR);
@@ -679,8 +696,9 @@ public class Method {
             var loop = (Loop) element;
             var conditionsBlock = currentBlock.push(addBlock());
             currentLoop.push(conditionsBlock);
+            Optional<Integer> jumpOperation = Optional.empty();
             if (loop.condition != null) {
-                resolve(loop.condition);
+                jumpOperation = resolve(loop.condition, true, false);
             }
             var postConditionsBlock = addBlock();
 
@@ -690,7 +708,7 @@ public class Method {
 
             var afterLoop = addBlock();
             if (loop.condition != null) {
-                postConditionsBlock.jump(afterLoop, IFEQ);
+                postConditionsBlock.jump(afterLoop, jumpOperation.map(ASMUtil::negateJump).orElse(IFEQ));
             }
             currentLoop.pop();
             currentBlock.push(afterLoop);
@@ -792,12 +810,12 @@ public class Method {
             // implement fallthrough
             List<Block> bodyEndingBlocks = new ArrayList<>();
             List<Block> conditionStartingBlocks = new ArrayList<>();
-            List<Block> conditionEndingBlocks = new ArrayList<>();
+            List<Pair<Block, Optional<Integer>>> conditionEndingBlocks = new ArrayList<>();
 
             currentBlock.push(addBlock());
             conditionStartingBlocks.add(currentBlock());
-            resolve(cond.condition);
-            conditionEndingBlocks.add(addBlock());
+            var operation = resolve(cond.condition);
+            conditionEndingBlocks.add(Pair.of(addBlock(), operation));
 
             resolveBody(cond);
             bodyEndingBlocks.add(this.blocks.get(this.blocks.size() - 1));
@@ -807,8 +825,8 @@ public class Method {
                 if (alternate.condition != null) {
                     currentBlock.push(addBlock());
                     conditionStartingBlocks.add(currentBlock());
-                    resolve(alternate.condition);
-                    conditionEndingBlocks.add(addBlock());
+                    operation = resolve(alternate.condition);
+                    conditionEndingBlocks.add(Pair.of(addBlock(), operation));
                     resolveBody(alternate);
                     bodyEndingBlocks.add(this.blocks.get(this.blocks.size() - 1));
                 }
@@ -827,11 +845,12 @@ public class Method {
 
             for (int i = 0; i < conditionEndingBlocks.size(); i++) {
                 var conditionBlock = conditionEndingBlocks.get(i);
+                operation = conditionBlock.getRight().map(ASMUtil::negateJump);
                 if (i + 1 == conditionEndingBlocks.size()) {
-                    conditionBlock.jump(elseBlock, IFEQ);
+                    conditionBlock.getLeft().jump(elseBlock, operation.orElse(IFEQ));
                 }
                 else {
-                    conditionBlock.jump(conditionStartingBlocks.get(i + 1), IFEQ);
+                    conditionBlock.getLeft().jump(conditionStartingBlocks.get(i + 1), operation.orElse(IFEQ));
                 }
             }
             for (var bodyEndingBlock : bodyEndingBlocks) {
@@ -891,23 +910,23 @@ public class Method {
                 switch ((Builtin) arrayType.elementType) {
                     case I:
                         currentBlock().operate(IALOAD);
-                        return;
+                        return Optional.empty();
                     case S:
                         currentBlock().operate(SALOAD);
-                        return;
+                        return Optional.empty();
                     case F:
                         currentBlock().operate(FALOAD);
-                        return;
+                        return Optional.empty();
                     case L:
                         currentBlock().operate(LALOAD);
-                        return;
+                        return Optional.empty();
                     case D:
                         currentBlock().operate(DALOAD);
-                        return;
+                        return Optional.empty();
                     case BOOL:
                     case OCTET:
                         currentBlock().operate(BALOAD);
-                        return;
+                        return Optional.empty();
                 }
             }
             else {
@@ -924,20 +943,20 @@ public class Method {
                 switch ((Builtin) arrayType.elementType) {
                     case I:
                         currentBlock().operate(IASTORE);
-                        return;
+                        return Optional.empty();
                     case F:
                         currentBlock().operate(FASTORE);
-                        return;
+                        return Optional.empty();
                     case L:
                         currentBlock().operate(LASTORE);
-                        return;
+                        return Optional.empty();
                     case D:
                         currentBlock().operate(DASTORE);
-                        return;
+                        return Optional.empty();
                     case BOOL:
                     case OCTET:
                         currentBlock().operate(BASTORE);
-                        return;
+                        return Optional.empty();
                     case S:
                         currentBlock().operate(SASTORE);
                 }
@@ -952,6 +971,7 @@ public class Method {
         } else if (element instanceof NoOpStatement) {
             // do nothing
         }
+        return Optional.empty();
     }
 
     private void applyCast(Type origin, Type target) {
