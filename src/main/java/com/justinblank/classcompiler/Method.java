@@ -613,17 +613,25 @@ public class Method {
                 case EQUALS:
                 case NOT_EQUALS:
                     block = addBlock();
-                    withBlock(block, () -> {
-                        resolve(operation.left, true, true);
-                        resolve(operation.right, true, true);
-                        var eqBlock = addBlock().push(1);
-                        var finalBlock = addBlock();
+                    asmOp = operation.asmOP(this);
+                    if (asValue) {
+                        withBlock(block, () -> {
+                            resolve(operation.left, true, true);
+                            resolve(operation.right, true, true);
+                            var eqBlock = addBlock().push(1);
+                            var finalBlock = addBlock();
 
-                        block.jump(eqBlock, operation.asmOP(this))
-                                .push(0)
-                                .jump(finalBlock, GOTO);
-                    });
-                    return Optional.empty();
+                            block.jump(eqBlock, operation.asmOP(this))
+                                    .push(0)
+                                    .jump(finalBlock, GOTO);
+                        });
+                        return Optional.empty();
+                    }
+                    else {
+                        resolve(operation.left);
+                        resolve(operation.right);
+                        return Optional.of(asmOp);
+                    }
                 case OR:
                     // TODO: this generates significantly more verbose bytecode than javac
                     var firstConditionBlock = addBlock();
@@ -684,7 +692,7 @@ public class Method {
             }
         } else if (element instanceof Unary) {
             var unary = (Unary) element;
-            var operation = resolve(unary.expression);
+            var operation = resolve(unary.expression, true, true);
             switch (unary.operator) {
                 case NOT:
                     addBlock().push(1).operate(IXOR);
