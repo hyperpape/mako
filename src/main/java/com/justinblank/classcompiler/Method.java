@@ -312,9 +312,19 @@ public class Method {
     }
 
     private void pruneBlocks() {
-        // TODO: still a lot of ways to improve the pruning here
         // TODO: not sure how to test that this is working--can test that it doesn't break code, but
         // testing that we're actually pruning is going to be obnoxious/brittle
+        // maybe snapshot testing is the way, once we fix the low-hanging fruit of emitting decent bytecode?
+        var changed = false;
+        do {
+            changed = removeEmptyBlocks();
+            changed |= pruneDeadGotos();
+            changed |= pruneDeadInstructions();
+            changed |= redirectRedundantJumps();
+        } while (changed);
+    }
+
+    private boolean removeEmptyBlocks() {
         Set<Integer> blocksToTake = new HashSet<>();
         for (var b : blocks) {
             if (!b.isEmpty()) {
@@ -341,6 +351,8 @@ public class Method {
         var listBlocksToTake = new ArrayList<>(blocksToTake);
         Collections.sort(listBlocksToTake);
 
+        boolean changed = blocksToTake.size() < this.blocks.size();
+
         var newBlocks = new ArrayList<Block>();
         for (var n : listBlocksToTake) {
             newBlocks.add(blocks.get(n));
@@ -351,13 +363,28 @@ public class Method {
             block.number = i++;
         }
         this.blocks = newBlocks;
-
-        // This looks like a place where we should run until we reach a fix-point
-        pruneDeadGotos();
-        redirectRedundantJumps();
+        return changed;
     }
 
-    private void pruneDeadGotos() {
+    private boolean pruneDeadGotos() {
+        var pruned = false;
+        for (var block : blocks) {
+            if (!block.isEmpty()) {
+                var lastOperation = block.operations.get(block.operations.size() - 1);
+                if (lastOperation.inst == JUMP && lastOperation.count == GOTO) {
+                    var target = lastOperation.target;
+                    if (target.number == block.number + 1) {
+                        block.operations.remove(block.operations.size() - 1);
+                        pruned = true;
+                    }
+                }
+            }
+        }
+        return pruned;
+    }
+
+    private boolean pruneDeadInstructions() {
+        var pruned = false;
         for (var block : blocks) {
             int pruneIndex = -1;
             for (int i = 0; i < block.operations.size(); i++) {
@@ -369,13 +396,16 @@ public class Method {
             }
             if (pruneIndex != -1) {
                 while (block.operations.size() > pruneIndex + 1) {
+                    pruned = true;
                     block.operations.remove(block.operations.size() - 1);
                 }
             }
         }
+        return pruned;
     }
 
-    private void redirectRedundantJumps() {
+    private boolean redirectRedundantJumps() {
+        boolean changed = false;
         for (var block : blocks) {
             for (var op : block.operations) {
                 if (op.inst == JUMP) {
@@ -383,10 +413,12 @@ public class Method {
                     var firstInstruction = target.operations.get(0);
                     if (firstInstruction.inst == JUMP && firstInstruction.count == Opcodes.GOTO) {
                         op.target = firstInstruction.target;
+                        changed = true;
                     }
                 }
             }
         }
+        return changed;
     }
 
     private boolean mustTake(Block b) {
