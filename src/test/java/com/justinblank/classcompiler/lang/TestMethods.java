@@ -3,6 +3,7 @@ package com.justinblank.classcompiler.lang;
 import com.justinblank.classcompiler.CompilerUtil;
 import com.justinblank.classcompiler.GenericVars;
 import com.justinblank.classcompiler.Method;
+import org.quicktheories.core.Gen;
 
 import java.io.PrintStream;
 import java.time.temporal.ChronoField;
@@ -32,6 +33,22 @@ public class TestMethods {
         method.call("println", Void.VOID, getStatic("out", ReferenceType.of(System.class),
                 ReferenceType.of(PrintStream.class)), literal(1));
         method.returnValue(1);
+        return method;
+    }
+
+    public static Method callingBooleanMethod() {
+        var method = new Method(TEST_METHOD, List.of(), Void.VOID, null);
+        method.callStatic(ReferenceType.of(TestUtilMethods.class), "returnsBool", Builtin.BOOL);
+        method.returnVoid();
+        return method;
+    }
+
+    public static Method callingBooleanMethodAsValue() {
+        var vars = new GenericVars();
+        vars.addVar("a");
+        var method = new Method(TEST_METHOD, List.of(), Void.VOID, vars);
+        method.set("a", callStatic(ReferenceType.of(TestUtilMethods.class), "returnsBool", Builtin.BOOL));
+        method.returnVoid();
         return method;
     }
 

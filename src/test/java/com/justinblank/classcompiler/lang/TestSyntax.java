@@ -26,6 +26,16 @@ public class TestSyntax {
     }
 
     @Test
+    public void testCallingBooleanMethod() throws Exception {
+        apply(TestMethods.callingBooleanMethod());
+    }
+
+    @Test
+    public void testCallingBooleanMethodAsValue() throws Exception {
+        apply(TestMethods.callingBooleanMethodAsValue());
+    }
+
+    @Test
     public void testReturnLiteral() throws Exception {
         apply(TestMethods.returnLiteral(Builtin.I, 1));
         apply(TestMethods.returnLiteral(Builtin.I, Integer.MIN_VALUE));
