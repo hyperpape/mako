@@ -371,7 +371,7 @@ public class Method {
         for (var block : blocks) {
             if (!block.isEmpty()) {
                 var lastOperation = block.operations.get(block.operations.size() - 1);
-                if (lastOperation.inst == JUMP && lastOperation.count == GOTO) {
+                if (lastOperation.isGoto()) {
                     var target = lastOperation.target;
                     if (target.number == block.number + 1) {
                         block.operations.remove(block.operations.size() - 1);
@@ -389,7 +389,7 @@ public class Method {
             int pruneIndex = -1;
             for (int i = 0; i < block.operations.size(); i++) {
                 var op = block.operations.get(i);
-                if (op.inst == Operation.Inst.RETURN) {
+                if (op.inst == Operation.Inst.RETURN || op.isGoto() ) {
                     pruneIndex = i;
                     break;
                 }
@@ -411,7 +411,7 @@ public class Method {
                 if (op.inst == JUMP) {
                     var target = GraphUtil.actualTarget(this, op.target.number);
                     var firstInstruction = target.operations.get(0);
-                    if (firstInstruction.inst == JUMP && firstInstruction.count == Opcodes.GOTO) {
+                    if (firstInstruction.isGoto()) {
                         op.target = firstInstruction.target;
                         changed = true;
                     }

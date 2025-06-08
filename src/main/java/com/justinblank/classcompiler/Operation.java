@@ -1,5 +1,7 @@
 package com.justinblank.classcompiler;
 
+import org.objectweb.asm.Opcodes;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -195,6 +197,14 @@ public class Operation {
 
     public boolean isJump() {
         return inst == Inst.JUMP;
+    }
+
+    public boolean isGoto() {
+        return isJump() && count == Opcodes.GOTO;
+    }
+
+    public boolean isReturn() {
+        return inst == Inst.RETURN;
     }
 
     public boolean isSwitch() {
