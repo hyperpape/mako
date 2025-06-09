@@ -466,11 +466,11 @@ public class Method {
     }
 
     void resolveTopLevelElement(CodeElement element) {
-        resolve(element, false, false);
+        resolve(element, false, false, false);
     }
 
     Optional<Integer> resolve(CodeElement element) {
-        return resolve(element, true, false);
+        return resolve(element, true, false, false);
     }
 
     /**
@@ -482,7 +482,7 @@ public class Method {
      * @param asValue if the value produced by this expression will be stored/returned as a value, rather than used for
      *               a conditional
      */
-    Optional<Integer> resolve(CodeElement element, boolean asConsumedValue, boolean asValue) {
+    Optional<Integer> resolve(CodeElement element, boolean asConsumedValue, boolean asValue, boolean negated) {
         if (element instanceof Literal) {
             var lit = (Literal) element;
             if (lit.value instanceof Integer) {
@@ -516,7 +516,7 @@ public class Method {
         } else if (element instanceof ReturnExpression) {
             var returnExpression = (ReturnExpression) element;
             Expression expression = returnExpression.expression;
-            resolve(expression, true, true);
+            resolve(expression, true, true, false);
             var type = typeInference.analyze(expression, typeEnvironment);
             Builtin.from(returnType).ifPresent(returning -> {
                 applyCast(type, returning);
@@ -563,7 +563,7 @@ public class Method {
                     CompilerUtil.descriptor(fieldReference.type));
         } else if (element instanceof Assignment) {
             var assignment = (Assignment) element;
-            resolve(assignment.expression, true, true);
+            resolve(assignment.expression, true, true, false);
             currentBlock().setVar(getMatchingVars().get().indexByName(assignment.variable), descriptorForExpression(assignment.expression));
         } else if (element instanceof Binary) {
             var operation = (Binary) element;
@@ -616,8 +616,8 @@ public class Method {
                     asmOp = operation.asmOP(this);
                     if (asValue) {
                         withBlock(block, () -> {
-                            resolve(operation.left, true, true);
-                            resolve(operation.right, true, true);
+                            resolve(operation.left, true, true, false);
+                            resolve(operation.right, true, true, false);
                             var eqBlock = addBlock().push(1);
                             var finalBlock = addBlock();
 
@@ -637,13 +637,13 @@ public class Method {
                     var firstConditionBlock = addBlock();
 
                     withBlock(firstConditionBlock, () -> {
-                        resolve(operation.left, true, true);
+                        resolve(operation.left, true, true, false);
                     });
                     firstConditionBlock = addBlock();
 
                     var secondConditionBlock = addBlock();
                     withBlock(secondConditionBlock, () -> {
-                        resolve(operation.right, true, true);
+                        resolve(operation.right, true, true, false);
                     });
                     secondConditionBlock = addBlock();
 
@@ -663,13 +663,13 @@ public class Method {
                     firstConditionBlock = addBlock();
 
                     withBlock(firstConditionBlock, () -> {
-                        resolve(operation.left, true, true);
+                        resolve(operation.left, true, true, false);
                     });
                     firstConditionBlock = addBlock();
 
                     secondConditionBlock = addBlock();
                     withBlock(secondConditionBlock, () -> {
-                        resolve(operation.right, true, true);
+                        resolve(operation.right, true, true, false);
                     });
                     secondConditionBlock = addBlock();
 
@@ -692,12 +692,15 @@ public class Method {
             }
         } else if (element instanceof Unary) {
             var unary = (Unary) element;
-            var operation = resolve(unary.expression, true, true);
             switch (unary.operator) {
                 case NOT:
-                    addBlock().push(1).operate(IXOR);
-                    break;
+                    var operator = resolve(unary.expression, true, asValue, true);
+                    if (operator.isEmpty()) {
+                        addBlock().push(1).operate(IXOR);
+                    }
+                    return operator.map(ASMUtil::negateJump);
                 default:
+                    resolve(unary.expression, true, true, false);
                     currentBlock().operate(unary.operator.asmOP(typeInference.analyze(unary.expression, typeEnvironment)));
             }
         } else if (element instanceof Loop) {
@@ -706,7 +709,7 @@ public class Method {
             currentLoop.push(conditionsBlock);
             Optional<Integer> jumpOperation = Optional.empty();
             if (loop.condition != null) {
-                jumpOperation = resolve(loop.condition, true, false);
+                jumpOperation = resolve(loop.condition, true, false, false);
             }
             var postConditionsBlock = addBlock();
 
@@ -1003,7 +1006,7 @@ public class Method {
     private void resolveBody(ElementContainer container) {
         withBlock(addBlock(), () -> {
             for (var codeElement : container.getBody()) {
-                resolve(codeElement, false, false);
+                resolve(codeElement, false, false, false);
             }
         });
     }
