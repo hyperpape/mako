@@ -11,7 +11,14 @@ public enum UnaryOperator {
         return Unary.of(this, exp);
     }
 
-    public static Operation not(Expression expression) {
+    public static Expression not(Expression expression) {
+        // Canonicalize to avoid double-negation. This will slightly simplify method resolution later.
+        if (expression instanceof Unary) {
+            Unary un = (Unary) expression;
+            if (un.operator == NOT) {
+                return un.expression;
+            }
+        }
         return NOT.op(expression);
     }
 

@@ -450,6 +450,12 @@ public class TestSemantics {
     }
 
     @Test
+    public void testDoubleNegation() throws Exception {
+        apply_int(1, TestMethods::doubleNegation, 1);
+        apply_int(2, TestMethods::doubleNegation, -1);
+    }
+
+    @Test
     public void testConditionalWithElse() throws Exception {
         apply(TestMethods::conditionWithElse, 4);
     }

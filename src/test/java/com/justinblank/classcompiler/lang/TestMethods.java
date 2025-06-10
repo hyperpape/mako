@@ -395,6 +395,15 @@ public class TestMethods {
         return method;
     }
 
+    public static Method doubleNegation() {
+        var vars = new GenericVars();
+        vars.addVar("i");
+        var method = new Method(TEST_METHOD, List.of("I"), Builtin.I, vars);
+        method.cond(not(not(eq(read("i"), 1)))).withBody(returnValue(1));
+        method.returnValue(2);
+        return method;
+    }
+
     public static Method negatedConditional() {
         var vars = new GenericVars();
         vars.addVar("i");

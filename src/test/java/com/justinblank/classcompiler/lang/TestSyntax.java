@@ -340,6 +340,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testDoubleNegation() throws Exception {
+        apply(TestMethods.doubleNegation());
+    }
+
+    @Test
     public void testConditionalWithElse() throws Exception {
         apply(TestMethods.conditionWithElse());
     }
