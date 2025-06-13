@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.justinblank.classcompiler.Operation.Inst.JUMP;
 import static com.justinblank.classcompiler.lang.Literal.literal;
@@ -681,14 +682,16 @@ public class Method {
                 case AND:
                     firstConditionBlock = addBlock();
 
+                    var firstOperator = new AtomicReference<Optional<Integer>>();
                     withBlock(firstConditionBlock, () -> {
-                        resolve(operation.left, true, true, false);
+                        firstOperator.set(resolve(operation.left, true, false, false));
                     });
                     firstConditionBlock = addBlock();
 
                     secondConditionBlock = addBlock();
+                    var secondOperator = new AtomicReference<Optional<Integer>>();
                     withBlock(secondConditionBlock, () -> {
-                        resolve(operation.right, true, true, false);
+                        secondOperator.set(resolve(operation.right, true, false, false));
                     });
                     secondConditionBlock = addBlock();
 
@@ -700,8 +703,8 @@ public class Method {
                     postBlock = addBlock();
                     successBlock.jump(postBlock, GOTO);
 
-                    firstConditionBlock.jump(failureBlock, IFEQ);
-                    secondConditionBlock.jump(failureBlock, IFEQ);
+                    firstConditionBlock.jump(failureBlock, firstOperator.get().map(ASMUtil::negateJump).orElse(IFEQ));
+                    secondConditionBlock.jump(failureBlock, secondOperator.get().map(ASMUtil::negateJump).orElse(IFEQ));
                     return Optional.empty();
                 default:
                     resolve(operation.left);

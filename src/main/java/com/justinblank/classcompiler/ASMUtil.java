@@ -6,6 +6,9 @@ public class ASMUtil {
 
     public static int negateJump(int jump) {
         switch (jump) {
+            case (Opcodes.GOTO): {
+                return Opcodes.GOTO;
+            }
             case (Opcodes.IF_ICMPEQ): {
                 return Opcodes.IF_ICMPNE;
             }
