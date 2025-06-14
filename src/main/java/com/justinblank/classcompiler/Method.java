@@ -656,14 +656,16 @@ public class Method {
                     // TODO: this generates significantly more verbose bytecode than javac
                     var firstConditionBlock = addBlock();
 
+                    var firstOperator = new AtomicReference<Optional<Integer>>();
                     withBlock(firstConditionBlock, () -> {
-                        resolve(operation.left, true, true, false);
+                        firstOperator.set(resolve(operation.left, true, false, false));
                     });
                     firstConditionBlock = addBlock();
 
                     var secondConditionBlock = addBlock();
+                    var secondOperator = new AtomicReference<Optional<Integer>>();
                     withBlock(secondConditionBlock, () -> {
-                        resolve(operation.right, true, true, false);
+                        secondOperator.set(resolve(operation.right, true, false, false));
                     });
                     secondConditionBlock = addBlock();
 
@@ -675,21 +677,20 @@ public class Method {
                     var postBlock = addBlock();
                     successBlock.jump(postBlock, GOTO);
 
-                    firstConditionBlock.jump(successBlock, IFNE);
-                    secondConditionBlock.jump(failureBlock, IFEQ);
-
+                    firstConditionBlock.jump(successBlock, firstOperator.get().orElse(IFNE));
+                    secondConditionBlock.jump(failureBlock, secondOperator.get().map(ASMUtil::negateJump).orElse(IFEQ));
                     return Optional.empty();
                 case AND:
                     firstConditionBlock = addBlock();
 
-                    var firstOperator = new AtomicReference<Optional<Integer>>();
+                    firstOperator = new AtomicReference<Optional<Integer>>();
                     withBlock(firstConditionBlock, () -> {
                         firstOperator.set(resolve(operation.left, true, false, false));
                     });
                     firstConditionBlock = addBlock();
 
                     secondConditionBlock = addBlock();
-                    var secondOperator = new AtomicReference<Optional<Integer>>();
+                    secondOperator = new AtomicReference<Optional<Integer>>();
                     withBlock(secondConditionBlock, () -> {
                         secondOperator.set(resolve(operation.right, true, false, false));
                     });
@@ -703,7 +704,7 @@ public class Method {
                     postBlock = addBlock();
                     successBlock.jump(postBlock, GOTO);
 
-                    firstConditionBlock.jump(failureBlock, firstOperator.get().map(ASMUtil::negateJump).orElse(IFEQ));
+                    firstConditionBlock.jump(failureBlock, firstOperator.get().map(ASMUtil::negateJump).orElse(IFNE));
                     secondConditionBlock.jump(failureBlock, secondOperator.get().map(ASMUtil::negateJump).orElse(IFEQ));
                     return Optional.empty();
                 default:
