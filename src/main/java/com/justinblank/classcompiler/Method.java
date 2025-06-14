@@ -3,7 +3,6 @@ package com.justinblank.classcompiler;
 import com.justinblank.classcompiler.lang.*;
 import com.justinblank.classcompiler.lang.Void;
 import org.apache.commons.lang3.StringUtils;
-import org.objectweb.asm.Opcodes;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -318,10 +317,11 @@ public class Method {
         // maybe snapshot testing is the way, once we fix the low-hanging fruit of emitting decent bytecode?
         var changed = false;
         do {
-            changed = removeEmptyBlocks();
+            changed = pruneDeadInstructions();
             changed |= pruneDeadGotos();
-            changed |= pruneDeadInstructions();
             changed |= redirectRedundantJumps();
+            changed |= removeEmptyBlocks();
+            changed |= combineConsecutiveBlocks();
         } while (changed);
     }
 
@@ -329,17 +329,7 @@ public class Method {
         Set<Integer> blocksToTake = new HashSet<>();
         for (var b : blocks) {
             if (!b.isEmpty()) {
-                if (blocksToTake.isEmpty() || mustTake(b)) {
-                    blocksToTake.add(b.number);
-                }
-                else {
-                    var lastBlock = b.number;
-                    while (!blocksToTake.contains(lastBlock)) {
-                        lastBlock--;
-                    }
-                    var priorBlock = blocks.get(lastBlock);
-                    priorBlock.operations.addAll(b.operations);
-                }
+                blocksToTake.add(b.number);
                 for (var op : b.operations) {
                     if (op.inst == JUMP) {
                         var target = op.target;
@@ -349,6 +339,31 @@ public class Method {
                 }
             }
         }
+        return keepSpecifiedBlocks(blocksToTake);
+    }
+
+    private boolean combineConsecutiveBlocks() {
+        Set<Integer> blocksToTake = new HashSet<>();
+        for (var b : blocks) {
+            if (!b.isEmpty()) {
+                if (blocksToTake.isEmpty() || mustTake(b)) {
+                    blocksToTake.add(b.number);
+                }
+                else {
+                    // not the first block, not the target of a jump, so we can squash it
+                    var lastBlock = b.number;
+                    while (!blocksToTake.contains(lastBlock)) {
+                        lastBlock--;
+                    }
+                    var priorBlock = blocks.get(lastBlock);
+                    priorBlock.operations.addAll(b.operations);
+                }
+            }
+        }
+        return keepSpecifiedBlocks(blocksToTake);
+    }
+
+    private boolean keepSpecifiedBlocks(Set<Integer> blocksToTake) {
         var listBlocksToTake = new ArrayList<>(blocksToTake);
         Collections.sort(listBlocksToTake);
 
@@ -411,10 +426,13 @@ public class Method {
             for (var op : block.operations) {
                 if (op.inst == JUMP) {
                     var target = GraphUtil.actualTarget(this, op.target.number);
-                    var firstInstruction = target.operations.get(0);
-                    if (firstInstruction.isGoto()) {
-                        op.target = firstInstruction.target;
-                        changed = true;
+                    // Depending on phase ordering, we can have a jump pointing to an empty block
+                    if (!target.isEmpty()) {
+                        var firstInstruction = target.operations.get(0);
+                        if (firstInstruction.isGoto()) {
+                            op.target = firstInstruction.target;
+                            changed = true;
+                        }
                     }
                 }
             }
@@ -427,6 +445,7 @@ public class Method {
             return true;
         }
         else {
+            // This seems too quick...what if otherBlock is dead?
             for (var otherBlock : blocks) {
                 for (var op : otherBlock.operations) {
                     if (op.isJump() && op.target == b) {
