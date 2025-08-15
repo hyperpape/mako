@@ -81,6 +81,12 @@ public class ClassBuilder {
         return method;
     }
 
+    /**
+     * Add a stack block to this class. Multiple distinct static blocks will automatically be concatenated in the order
+     * that they're added to the class.
+     *
+     * @return the created block
+     */
     public Block addStaticBlock() {
         var b = new Block(staticBlocks.size(), new ArrayList<>());
         staticBlocks.add(b);
@@ -132,10 +138,119 @@ public class ClassBuilder {
     }
 
     public void addConstant(String name, String descriptor, Object value) {
+        Objects.requireNonNull(name);
         Objects.requireNonNull(value);
         var field = new Field(ACC_STATIC | ACC_PRIVATE | ACC_FINAL, name, descriptor, null, value);
         fields.add(field);
     }
+
+    public void addArrayConstant(String name, int accessModifier, boolean[] bools) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(bools);
+        Block.checkMaxArrayInitializerLength(bools.length);
+        var field = new Field(ACC_STATIC | ACC_FINAL | accessModifier, name, "[Z", null, null);
+        fields.add(field);
+        var block = addStaticBlock();
+        Block.pushInitializedArrayToStack(bools, block);
+        block.putStatic(name,
+                CompilerUtil.internalName(getClassName()),
+                "[Z");
+    }
+
+    public void addArrayConstant(String name, int accessModifier, int[] ints) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(ints);
+        Block.checkMaxArrayInitializerLength(ints.length);
+        var field = new Field(ACC_STATIC | ACC_FINAL | accessModifier, name, "[I", null, null);
+        fields.add(field);
+        var block = addStaticBlock();
+        Block.pushInitializedArrayToStack(ints, block);
+        block.putStatic(name,
+                CompilerUtil.internalName(getClassName()),
+                "[I");
+    }
+
+    public void addArrayConstant(String name, int accessModifier, long[] longs) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(longs);
+        Block.checkMaxArrayInitializerLength(longs.length);
+        var field = new Field(ACC_STATIC | ACC_FINAL | accessModifier, name, "[J", null, null);
+        fields.add(field);
+        var block = addStaticBlock();
+        Block.pushInitializedArrayToStack(longs, block);
+        block.putStatic(name,
+                CompilerUtil.internalName(getClassName()),
+                "[J");
+    }
+
+    public void addArrayConstant(String name, int accessModifier, float[] floats) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(floats);
+        Block.checkMaxArrayInitializerLength(floats.length);
+        var field = new Field(ACC_STATIC | ACC_FINAL | accessModifier, name, "[F", null, null);
+        fields.add(field);
+        var block = addStaticBlock();
+        Block.pushInitializedArrayToStack(floats, block);
+        block.putStatic(name,
+                CompilerUtil.internalName(getClassName()),
+                "[F");
+    }
+
+    public void addArrayConstant(String name, int accessModifier, double[] doubles) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(doubles);
+        Block.checkMaxArrayInitializerLength(doubles.length);
+        var field = new Field(ACC_STATIC | ACC_FINAL | accessModifier, name, "[D", null, null);
+        fields.add(field);
+        var block = addStaticBlock();
+        Block.pushInitializedArrayToStack(doubles, block);
+        block.putStatic(name,
+                CompilerUtil.internalName(getClassName()),
+                "[D");
+    }
+
+
+    public void addArrayConstant(String name, int accessModifier, char[] chars) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(chars);
+        Block.checkMaxArrayInitializerLength(chars.length);
+        var field = new Field(ACC_STATIC | ACC_FINAL | accessModifier, name, "[C", null, null);
+        fields.add(field);
+        var block = addStaticBlock();
+        Block.pushInitializedArrayToStack(chars, block);
+        block.putStatic(name,
+                CompilerUtil.internalName(getClassName()),
+                "[C");
+    }
+
+
+    public void addArrayConstant(String name, int accessModifier, byte[] bytes) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(bytes);
+        Block.checkMaxArrayInitializerLength(bytes.length);
+        var field = new Field(ACC_STATIC | ACC_FINAL | accessModifier, name, "[B", null, null);
+        fields.add(field);
+        var block = addStaticBlock();
+        Block.pushInitializedArrayToStack(bytes, block);
+        block.putStatic(name,
+                CompilerUtil.internalName(getClassName()),
+                "[B");
+    }
+
+
+    public void addArrayConstant(String name, int accessModifier, short[] shorts) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(shorts);
+        Block.checkMaxArrayInitializerLength(shorts.length);
+        var field = new Field(ACC_STATIC | ACC_FINAL | accessModifier, name, "[S", null, null);
+        fields.add(field);
+        var block = addStaticBlock();
+        Block.pushInitializedArrayToStack(shorts, block);
+        block.putStatic(name,
+                CompilerUtil.internalName(getClassName()),
+                "[S");
+    }
+
 
     public String getClassName() {
         return className;

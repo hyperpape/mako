@@ -1,10 +1,25 @@
 package com.justinblank.classcompiler;
 
 import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
 
 import java.util.*;
 
+import static org.objectweb.asm.Opcodes.*;
+
 public class Block {
+
+    /**
+     * The maximum size of an array literal. This value is somewhat arbitrary in a few ways.
+     *
+     * The maximum size of an array literal is indirectly limited by the max size of a method, which is 65536 bytes.
+     * The bytecode for populating an array requires more than one byte per array element. We could do math to make the
+     * boundary precise.
+     *
+     * However, since a method could have multiple array literals, or other contents that make any such bound fuzzy,
+     * the boundary is just a reasonably large power of 2.
+     */
+    public static final int MAX_ARRAY_LITERAL_LENGTH = 8192;
 
     public static final Block POSTLOOP = new Block(-1, Collections.unmodifiableList(new ArrayList<>()));
     int number;
@@ -158,6 +173,12 @@ public class Block {
         return this;
     }
 
+    /**
+     * Creates a new array. The array type comes from the asm constants, e.g. {@link org.objectweb.asm.Opcodes.T_BOOLEAN}.
+     *
+     * @param arrayType
+     * @return
+     */
     public Block newArray(int arrayType) {
         addOperation(new Operation(Operation.Inst.NEWARRAY, arrayType, null, null, null));
         return this;
@@ -167,6 +188,108 @@ public class Block {
         var spec = new RefSpec(null, null, arrayType);
         addOperation(new Operation(Operation.Inst.NEWARRAY, -1, null, spec, null));
         return this;
+    }
+
+    protected static void checkMaxArrayInitializerLength(int length) {
+        if (length > Block.MAX_ARRAY_LITERAL_LENGTH) {
+            throw new IllegalArgumentException("Cannot have a literal array of > " + Block.MAX_ARRAY_LITERAL_LENGTH + " elements");
+        }
+    }
+
+    protected static void pushInitializedArrayToStack(boolean[] bools, Block block) {
+        block.push(bools.length);
+        block.newArray(T_BOOLEAN);
+        block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        for (int i = 0; i < bools.length; i++) {
+            block.push(i);
+            block.push(bools[i] ? 1 : 0);
+            block.addOperation(Operation.mkOperation(Opcodes.BASTORE));
+            block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        }
+    }
+
+    protected static void pushInitializedArrayToStack(int[] ints, Block block) {
+        block.push(ints.length);
+        block.newArray(T_INT);
+        block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        for (int i = 0; i < ints.length; i++) {
+            block.push(i);
+            block.push(ints[i]);
+            block.addOperation(Operation.mkOperation(Opcodes.IASTORE));
+            block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        }
+    }
+
+    public static void pushInitializedArrayToStack(long[] longs, Block block) {
+        block.push(longs.length);
+        block.newArray(T_LONG);
+        block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        for (int i = 0; i < longs.length; i++) {
+            block.push(i);
+            block.push(longs[i]);
+            block.addOperation(Operation.mkOperation(Opcodes.LASTORE));
+            block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        }
+    }
+
+    public static void pushInitializedArrayToStack(float[] floats, Block block) {
+        block.push(floats.length);
+        block.newArray(T_FLOAT);
+        block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        for (int i = 0; i < floats.length; i++) {
+            block.push(i);
+            block.push(floats[i]);
+            block.addOperation(Operation.mkOperation(Opcodes.FASTORE));
+            block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        }
+    }
+
+    public static void pushInitializedArrayToStack(double[] doubles, Block block) {
+        block.push(doubles.length);
+        block.newArray(T_DOUBLE);
+        block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        for (int i = 0; i < doubles.length; i++) {
+            block.push(i);
+            block.push(doubles[i]);
+            block.addOperation(Operation.mkOperation(Opcodes.DASTORE));
+            block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        }
+    }
+
+    public static void pushInitializedArrayToStack(char[] chars, Block block) {
+        block.push(chars.length);
+        block.newArray(T_CHAR);
+        block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        for (int i = 0; i < chars.length; i++) {
+            block.push(i);
+            block.push(chars[i]);
+            block.addOperation(Operation.mkOperation(Opcodes.CASTORE));
+            block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        }
+    }
+
+    public static void pushInitializedArrayToStack(short[] shorts, Block block) {
+        block.push(shorts.length);
+        block.newArray(T_SHORT);
+        block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        for (int i = 0; i < shorts.length; i++) {
+            block.push(i);
+            block.push(shorts[i]);
+            block.addOperation(Operation.mkOperation(Opcodes.SASTORE));
+            block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        }
+    }
+
+    public static void pushInitializedArrayToStack(byte[] bytes, Block block) {
+        block.push(bytes.length);
+        block.newArray(T_BYTE);
+        block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        for (int i = 0; i < bytes.length; i++) {
+            block.push(i);
+            block.push(bytes[i]);
+            block.addOperation(Operation.mkOperation(Opcodes.BASTORE));
+            block.addOperation(Operation.mkOperation(Opcodes.DUP));
+        }
     }
 
     @Override
