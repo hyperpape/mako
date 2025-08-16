@@ -244,6 +244,11 @@ public class TestSyntax {
     }
 
     @Test
+    public void testLoopWithEscapeInCond() throws Exception {
+        apply(TestMethods.loopWithEscapeInCond());
+    }
+
+    @Test
     public void testReadField() throws Exception {
         apply(TestMethods.readField());
     }

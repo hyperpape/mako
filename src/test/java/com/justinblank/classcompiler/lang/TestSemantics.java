@@ -300,6 +300,11 @@ public class TestSemantics {
     }
 
     @Test
+    public void testLoopWithEscapeInCond() throws Exception {
+        apply(TestMethods::loopWithEscapeInCond, 3);
+    }
+
+    @Test
     public void testStaticCall() throws Exception {
         apply(TestMethods::staticCall, 0);
     }

@@ -217,6 +217,20 @@ public class TestMethods {
         return method;
     }
 
+    public static Method loopWithEscapeInCond() {
+        var vars = new GenericVars();
+        vars.addVar("a");
+        var method = new Method(TEST_METHOD, List.of(), Builtin.I, vars);
+        method.set("a", 1);
+        method.loop(lt(read("a"), 5),
+                List.of(
+                        cond(gt(read("a"), literal(2)))
+                                .withBody(escape())
+                                .orElse(set("a", plus(read("a"), literal(1))))));
+        method.returnValue(read("a"));
+        return method;
+    }
+
     public static Method nestedLoop() {
         var vars = new GenericVars();
         vars.addVar("a");
