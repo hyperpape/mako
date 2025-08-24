@@ -37,19 +37,20 @@ To illustrate, here is how to specify the recursive fibonacci method:
 
 ### Status
 
-This project is pre version 0.1 and has no users as of yet. Some important 
-constructs are missing. My current approach is to reimplement 
-[needle](https://github.com/hyperpape/needle/) using mako, which is uncovering 
-missing language constructs. 
+This project is pre version 0.1. It has been used to reimplement
+[needle](https://github.com/hyperpape/needle/) using mako, and
+supports the features necessary for that, but there are probably
+missing constructs or APIs that need more work.
 
-Experiments using mako, feedback/suggestions, and bug reports are welcome.
+Experiments using mako, feedback/suggestions, and bug reports are
+welcome.
 
 ## Language
 
 Semantically, Mako has many concepts in common with Java--its constructs compile 
 straightforwardly to Java bytecode--but differs in a few ways. In general, it 
 tends to implement less functionality than Java itself (i.e. no autoboxing, 
-and restricted forms of looping).
+and fewer forms of looping).
 
 Syntactically, Mako uses prefix notation (operators like `eq` or `plus` come
 before their arguments), like a lisp, but freely mixes method calls and static
@@ -211,7 +212,7 @@ To define a class, create a `ClassBuilder`, add methods to it, then pass it to a
 ```
 
 ## Building 
-The compiler requires Java 11. Builds with maven. The generated
+The compiler requires Java 11, and builds with maven. The generated
 classes should work with Java 8.
 
 ## Mako, ByteBuddy and ASM
