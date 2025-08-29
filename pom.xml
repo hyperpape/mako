@@ -53,6 +53,14 @@
                     to asm lib -->
                     <doclint>none</doclint>
                 </configuration>
+		<executions>
+		  <execution>
+		    <id>attach-javadocs</id>
+		    <goals>
+		      <goal>jar</goal>
+		    </goals>
+		  </execution>
+		</executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -67,6 +75,15 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+              <groupId>org.sonatype.central</groupId>
+              <artifactId>central-publishing-maven-plugin</artifactId>
+              <version>0.8.0</version>
+              <extensions>true</extensions>
+              <configuration>
+		<publishingServerId>central</publishingServerId>
+              </configuration>
             </plugin>
             <plugin>
                 <groupId>org.pitest</groupId>
