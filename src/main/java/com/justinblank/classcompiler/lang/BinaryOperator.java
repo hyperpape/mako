@@ -19,7 +19,13 @@ public enum BinaryOperator {
     SUBTRACT,
     MULTIPLY,
     DIVIDE,
-    MOD;
+    MOD,
+    BAND,
+    BOR,
+    BXOR,
+    USHR,
+    SHL,
+    SHR;
 
     public Operation op(Expression left, Expression right) {
         return Binary.of(this, left, right);
@@ -193,7 +199,6 @@ public enum BinaryOperator {
         return GREATER_THAN_OR_EQUALS.op(literal(left), literal(right));
     }
 
-
     public static Operation mod(Number left, Number right) {
         return MOD.op(literal(left), literal(right));
     }
@@ -208,6 +213,30 @@ public enum BinaryOperator {
 
     public static Operation mod(Expression left, Expression right) {
         return MOD.op(left, right);
+    }
+
+    public static Operation bitAnd(Expression left, Expression right) {
+        return BAND.op(left, right);
+    }
+
+    public static Operation bitOr(Expression left, Expression right) {
+        return BOR.op(left, right);
+    }
+
+    public static Operation bitXor(Expression left, Expression right) {
+        return BXOR.op(left, right);
+    }
+
+    public static Operation uShiftR(Expression left, Expression right) {
+        return USHR.op(left, right);
+    }
+
+    public static Operation shiftL(Expression left, Expression right) {
+        return SHL.op(left, right);
+    }
+
+    public static Operation shiftR(Expression left, Expression right) {
+        return SHR.op(left, right);
     }
 
     public int asmOP(Type left, Type right) {
@@ -284,6 +313,36 @@ public enum BinaryOperator {
                 return IAND;
             case OR:
                 return IOR;
+            case BAND:
+                if (left.type() == Builtin.L) {
+                    return LAND;
+                }
+                return IAND;
+            case BOR:
+                if (left.type() == Builtin.L) {
+                    return LOR;
+                }
+                return IOR;
+            case BXOR:
+                if (left.type() == Builtin.L) {
+                    return LXOR;
+                }
+                return IXOR;
+            case USHR:
+                if (left.type() == Builtin.L) {
+                    return LUSHR;
+                }
+                return IUSHR;
+            case SHR:
+                if (left.type() == Builtin.L) {
+                    return LSHR;
+                }
+                return ISHR;
+            case SHL:
+                if (left.type() == Builtin.L) {
+                    return LSHL;
+                }
+                return ISHL;
             default:
                 throw new UnsupportedOperationException("");
         }
@@ -293,7 +352,6 @@ public enum BinaryOperator {
     private static boolean isIntegerLike(Type left) {
         return left.type() == Builtin.I || left.type() == Builtin.C;
     }
-
 
     public Optional<Integer> comparisonOperation(Type left, Type right) {
         switch (this) {
@@ -322,6 +380,12 @@ public enum BinaryOperator {
             case MULTIPLY:
             case DIVIDE:
             case MOD:
+            case BAND:
+            case BOR:
+            case BXOR:
+            case USHR:
+            case SHL:
+            case SHR:
                 return left;
             case EQUALS:
             case NOT_EQUALS:

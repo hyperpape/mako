@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.justinblank.classcompiler.lang.BinaryOperator.*;
+import static com.justinblank.classcompiler.lang.Literal.literal;
 import static com.justinblank.classcompiler.lang.TestMethods.TEST_METHOD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -237,6 +238,41 @@ public class TestSemantics {
         apply(() -> TestOperators.binaryOperator(0.0, 1.0, (l, r) -> lt(l,r), Builtin.BOOL), true);
         apply(() -> TestOperators.binaryOperator(1.0, 1.0, (l, r) -> lt(l,r), Builtin.BOOL), false);
         apply(() -> TestOperators.binaryOperator(2.0, 1.0, (l, r) -> lt(l,r), Builtin.BOOL), false);
+    }
+
+
+    @Test
+    public void testBitOperationsInts() throws Exception {
+        apply(() -> TestOperators.binaryOperator(0, 1, (l, r) -> bitAnd(literal(l), literal(r)), Builtin.I), 0);
+        apply(() -> TestOperators.binaryOperator(1, 1, (l, r) -> bitAnd(literal(l), literal(r)), Builtin.I), 1);
+        apply(() -> TestOperators.binaryOperator(2, 1, (l, r) -> bitAnd(literal(l), literal(r)), Builtin.I), 0);
+
+        apply(() -> TestOperators.binaryOperator(0, 1, (l, r) -> bitOr(literal(l), literal(r)), Builtin.I), 1);
+        apply(() -> TestOperators.binaryOperator(1, 1, (l, r) -> bitOr(literal(l), literal(r)), Builtin.I), 1);
+        apply(() -> TestOperators.binaryOperator(2, 1, (l, r) -> bitOr(literal(l), literal(r)), Builtin.I), 3);
+
+        apply(() -> TestOperators.binaryOperator(0, 1, (l, r) -> bitXor(literal(l), literal(r)), Builtin.I), 1);
+        apply(() -> TestOperators.binaryOperator(1, 1, (l, r) -> bitXor(literal(l), literal(r)), Builtin.I), 0);
+        apply(() -> TestOperators.binaryOperator(2, 1, (l, r) -> bitXor(literal(l), literal(r)), Builtin.I), 3);
+    }
+
+    @Test
+    public void testShiftOperationsInts() throws Exception {
+        apply(() -> TestOperators.binaryOperator(0, 1, (l, r) -> uShiftR(literal(l), literal(r)), Builtin.I), 0 >>> 1);
+        apply(() -> TestOperators.binaryOperator(1, 1, (l, r) -> uShiftR(literal(l), literal(r)), Builtin.I), 1 >>> 1);
+        apply(() -> TestOperators.binaryOperator(2, 1, (l, r) -> uShiftR(literal(l), literal(r)), Builtin.I), 2 >>> 1);
+        apply(() -> TestOperators.binaryOperator(Integer.MIN_VALUE, 1, (l, r) -> uShiftR(literal(l), literal(r)), Builtin.I), Integer.MIN_VALUE >>> 1);
+
+        apply(() -> TestOperators.binaryOperator(0, 1, (l, r) -> shiftL(literal(l), literal(r)), Builtin.I), 0 << 1);
+        apply(() -> TestOperators.binaryOperator(1, 1, (l, r) -> shiftL(literal(l), literal(r)), Builtin.I), 1 << 1);
+        apply(() -> TestOperators.binaryOperator(2, 1, (l, r) -> shiftL(literal(l), literal(r)), Builtin.I), 2 << 1);
+        apply(() -> TestOperators.binaryOperator(Integer.MAX_VALUE, 1, (l, r) -> shiftL(literal(l), literal(r)), Builtin.I), Integer.MAX_VALUE << 1);
+
+        apply(() -> TestOperators.binaryOperator(0, 1, (l, r) -> shiftR(literal(l), literal(r)), Builtin.I), 0 >> 1);
+        apply(() -> TestOperators.binaryOperator(1, 1, (l, r) -> shiftR(literal(l), literal(r)), Builtin.I), 1 >> 1);
+        apply(() -> TestOperators.binaryOperator(2, 1, (l, r) -> shiftR(literal(l), literal(r)), Builtin.I), 2 >> 1);
+        apply(() -> TestOperators.binaryOperator(Integer.MIN_VALUE, 1, (l, r) -> shiftR(literal(l), literal(r)), Builtin.I), Integer.MIN_VALUE >> 1);
+        apply(() -> TestOperators.binaryOperator(Integer.MAX_VALUE, 1, (l, r) -> shiftR(literal(l), literal(r)), Builtin.I), Integer.MAX_VALUE >> 1);
     }
 
     @Test

@@ -5,7 +5,8 @@ import org.objectweb.asm.Opcodes;
 // TODO: this might clash with the standard library
 public enum UnaryOperator {
 
-    NOT;
+    NOT,
+    BNEG;
 
     Operation op(Expression exp) {
         return Unary.of(this, exp);
@@ -26,16 +27,26 @@ public enum UnaryOperator {
         switch (this) {
             case NOT:
                 return Opcodes.INEG;
+            case BNEG:
+                if (type == Builtin.L) {
+                    return Opcodes.LNEG;
+                }
+                else {
+                    return Opcodes.INEG;
+                }
+            default:
+                throw new UnsupportedOperationException("Unhandled case " + this);
         }
-        throw new UnsupportedOperationException();
     }
 
     public Type type(Type expressionType) {
         switch (this) {
             case NOT:
                 return Builtin.BOOL;
+            case BNEG:
+                return expressionType;
             default:
-                throw new UnsupportedOperationException("");
+                throw new UnsupportedOperationException("Unhandled case " + this);
         }
     }
 }
