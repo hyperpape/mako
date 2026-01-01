@@ -523,6 +523,9 @@ public class Method {
             } else if (lit.value instanceof Short) {
                 var value = (Short) lit.value;
                 currentBlock().push(value);
+            } else if (lit.value instanceof Boolean) {
+                var value = (Boolean) lit.value;
+                currentBlock().push(value);
             } else {
                 throw new IllegalStateException("Illegal literal value " + lit.value);
             }

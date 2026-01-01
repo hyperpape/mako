@@ -97,6 +97,10 @@ public class Operation {
         return new Operation(Inst.VALUE, val, null, null, null);
     }
 
+    public static Operation pushValue(boolean val) {
+        return new Operation(Inst.VALUE, val ? 1 : 0, null, null, null);
+    }
+
     public static Operation mkReadThis() {
         var spec = new RefSpec(null, null, "", true);
         return new Operation(Inst.READ_VAR, 0, null, spec, null);

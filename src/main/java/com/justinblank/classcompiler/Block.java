@@ -128,6 +128,11 @@ public class Block {
         return this;
     }
 
+    public Block push(boolean b) {
+        addOperation(Operation.pushValue(b));
+        return this;
+    }
+
     public Block cmp(Block target, int i) {
         addOperation(Operation.mkJump(target, i));
         return this;

@@ -49,6 +49,9 @@ public class TestSemantics {
         apply(() -> TestMethods.returnLiteral(Builtin.D, 1d), 1d);
         apply(() -> TestMethods.returnLiteral(Builtin.D, Double.MIN_VALUE), Double.MIN_VALUE);
         apply(() -> TestMethods.returnLiteral(Builtin.D, Double.MAX_VALUE), Double.MAX_VALUE);
+
+        apply(() -> TestMethods.returnLiteral(true), Boolean.TRUE);
+        apply(() -> TestMethods.returnLiteral(false), Boolean.FALSE);
     }
 
     @Test

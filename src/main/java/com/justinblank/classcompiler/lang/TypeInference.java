@@ -51,6 +51,9 @@ public class TypeInference {
             else if (lit.value instanceof Double) {
                 return TypeVariable.of(Builtin.D);
             }
+            else if (lit.value instanceof Boolean) {
+                return TypeVariable.of(Builtin.BOOL);
+            }
             else {
                 throw new IllegalStateException("Unrecognized class for literal value:" + lit.value.getClass());
             }

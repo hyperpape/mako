@@ -8,6 +8,7 @@ import java.util.List;
 import static com.justinblank.classcompiler.lang.ArrayRead.arrayRead;
 import static com.justinblank.classcompiler.lang.CodeElement.*;
 import static com.justinblank.classcompiler.lang.CodeElement.get;
+import static com.justinblank.classcompiler.lang.Literal.literal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -61,6 +62,9 @@ public class TestSyntax {
         apply(TestMethods.returnLiteral(Builtin.D, 1d));
         apply(TestMethods.returnLiteral(Builtin.D, Double.MIN_VALUE));
         apply(TestMethods.returnLiteral(Builtin.D, Double.MAX_VALUE));
+
+        apply(TestMethods.returnLiteral(true));
+        apply(TestMethods.returnLiteral(false));
     }
 
     @Test

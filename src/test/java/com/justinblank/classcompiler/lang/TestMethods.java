@@ -3,7 +3,6 @@ package com.justinblank.classcompiler.lang;
 import com.justinblank.classcompiler.CompilerUtil;
 import com.justinblank.classcompiler.GenericVars;
 import com.justinblank.classcompiler.Method;
-import org.quicktheories.core.Gen;
 
 import java.io.PrintStream;
 import java.time.temporal.ChronoField;
@@ -55,6 +54,12 @@ public class TestMethods {
     public static Method returnLiteral(Builtin type, Number n) {
         var method = new Method(TEST_METHOD, List.of(), type, null);
         method.returnValue(n);
+        return method;
+    }
+
+    public static Method returnLiteral(boolean b) {
+        var method = new Method(TEST_METHOD, List.of(), Builtin.BOOL, null);
+        method.returnValue(literal(b));
         return method;
     }
 

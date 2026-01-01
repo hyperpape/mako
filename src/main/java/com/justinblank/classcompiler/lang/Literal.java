@@ -14,6 +14,10 @@ public class Literal implements Expression {
         return new Literal(n);
     }
 
+    public static Literal literal(boolean b) {
+        return new Literal(b);
+    }
+
     @Override
     public String toString() {
         return value.toString();
