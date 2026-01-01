@@ -49,6 +49,16 @@ public enum Builtin implements Type {
         return this;
     }
 
+    public String typeDescriptor() {
+        if (this == L) {
+            return "J";
+        }
+        if (this == Builtin.OCTET || this == Builtin.BOOL || this == Builtin.C) {
+            return Builtin.I.typeDescriptor();
+        }
+        return this.toString();
+    }
+
     public int addOperation() {
         if (addOperation > 0) {
             return addOperation;

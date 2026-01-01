@@ -139,7 +139,7 @@ public class CompilerUtil {
             return getTypeString((Builtin) type);
         }
         else if (type instanceof ReferenceType) {
-            return ((ReferenceType) type).typeString;
+            return descriptor(((ReferenceType) type).typeString);
         }
         else if (type instanceof ArrayType) {
             return "[" + descriptorForType(((ArrayType) type).elementType);
@@ -148,7 +148,7 @@ public class CompilerUtil {
             var typeVar = (TypeVariable) type;
             var resolved = typeVar.type();
             if (resolved instanceof Builtin) {
-                return resolved.toString();
+                return ((Builtin) resolved).typeDescriptor();
             }
             if (resolved != null) {
                 return descriptor(resolved);

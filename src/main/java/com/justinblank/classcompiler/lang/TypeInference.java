@@ -54,6 +54,9 @@ public class TypeInference {
             else if (lit.value instanceof Boolean) {
                 return TypeVariable.of(Builtin.BOOL);
             }
+            else if (lit.value instanceof Short) {
+                return TypeVariable.of(Builtin.S);
+            }
             else {
                 throw new IllegalStateException("Unrecognized class for literal value:" + lit.value.getClass());
             }

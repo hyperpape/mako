@@ -259,7 +259,12 @@ public class TestSyntax {
 
     @Test
     public void testSetField() throws Exception {
-        apply(TestMethods.setField());
+        apply(TestMethods.setField(literal(0), "i", Builtin.I));
+        apply(TestMethods.setField(literal(0L), "l", Builtin.L));
+        apply(TestMethods.setField(literal(0.0f), "f", Builtin.F));
+        apply(TestMethods.setField(literal(0.0d), "d", Builtin.D));
+        apply(TestMethods.setField(literal((short) 0), "s", Builtin.S));
+        apply(TestMethods.setField(construct(ReferenceType.of(String.class)), "string", ReferenceType.of(String.class)));
     }
 
     @Test

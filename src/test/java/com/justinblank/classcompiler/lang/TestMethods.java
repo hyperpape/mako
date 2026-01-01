@@ -492,18 +492,18 @@ public class TestMethods {
         var method = new Method(TEST_METHOD, List.of(), Builtin.I, new GenericVars());
         method.returnValue(get("i", Builtin.I,
                 callStatic(
-                        CompilerUtil.internalName(ClassWithField.class),
-                        "create", ReferenceType.of(ClassWithField.class))));
+                        CompilerUtil.internalName(ClassWithFields.class),
+                        "create", ReferenceType.of(ClassWithFields.class))));
         return method;
     }
 
-    public static Method setField() {
+    public static Method setField(Expression expression, String fieldName, Type type) {
         var method = new Method(TEST_METHOD, List.of(), Void.VOID, new GenericVars());
         method.fieldSet(
-                get("i", Builtin.I,
+                get(fieldName, type,
                 callStatic(
-                        CompilerUtil.internalName(ClassWithField.class),
-                        "create", ReferenceType.of(ClassWithField.class))), literal(0));
+                        CompilerUtil.internalName(ClassWithFields.class),
+                        "create", ReferenceType.of(ClassWithFields.class))), expression);
         method.returnVoid();
         return method;
     }
