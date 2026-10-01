@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.justinblank.classcompiler.Operation.Inst.CALL;
+import static com.justinblank.classcompiler.Operation.Inst.PASSTHROUGH;
 
 public class ClassPrinter {
 
@@ -73,18 +74,19 @@ public class ClassPrinter {
     }
 
     protected void printOperation(Operation op, Optional<Vars> vars) {
+        if (op.inst == PASSTHROUGH) {
+            String rep = getRepresentation(op);
+            if (rep != null) {
+                println(rep);
+            }
+            else {
+                println(op.count);
+            }
+            return;
+        }
         print(op.inst);
         print(' ');
         switch (op.inst) {
-            case PASSTHROUGH:
-                String rep = getRepresentation(op);
-                if (rep != null) {
-                    println(rep);
-                }
-                else {
-                    println(op.count);
-                }
-                break;
             case VALUE:
                 if (op.number == null) {
                     println(op.count);
