@@ -122,7 +122,18 @@ public class ClassPrinter {
                     } else if (op.spec.name != null) {
                         println(op.spec.name);
                     } else {
-                        println(vars.map(v -> v.nameByIndex(op.count)).orElse(""));
+                        // The var slot may have been moved to a fresh local (see Method.paramVarOverrides),
+                        // in which case it is no longer a known variable index--fall back to the raw index.
+                        String name = null;
+                        if (vars.isPresent()) {
+                            try {
+                                name = vars.get().nameByIndex(op.count);
+                            }
+                            catch (IllegalStateException e) {
+                                name = null;
+                            }
+                        }
+                        println(name == null ? Integer.toString(op.count) : name);
                     }
                 } else {
                     println(op.count);

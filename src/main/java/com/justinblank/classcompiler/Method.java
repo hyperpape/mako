@@ -28,6 +28,13 @@ public class Method {
 
     // TODO: should matchingVars really be nullable?
     private final Vars matchingVars;
+    // Vars that alias a parameter slot get "homed" in a fresh local slot. The parameter value is
+    // copied into that slot at method entry. Reassigning a parameter slot inside a method (e.g. as a
+    // loop counter) produces bytecode that decompilers such as fernflower cannot handle (their SSA pass
+    // throws, and the method is emitted as "Couldn't be decompiled"). Maps var name -> fresh slot.
+    private final Map<String, Integer> paramVarOverrides = new HashMap<>();
+    // Copies to emit at method entry: (parameter slot, fresh slot, descriptor)
+    private final List<ParamCopy> paramCopies = new ArrayList<>();
     private final Map<String, Object> attributes = new HashMap<>();
     private List<CodeElement> elements = new ArrayList<>();
 
@@ -79,6 +86,68 @@ public class Method {
         this.blocks = new ArrayList<>();
         this.returnType = returnType;
         this.matchingVars = matchingVars;
+        setupInitialParamCopies();
+    }
+
+    private static final class ParamCopy {
+        final String name;
+        final int from;
+        final int to;
+        final String descriptor;
+
+        ParamCopy(String name, int from, int to, String descriptor) {
+            this.name = name;
+            this.from = from;
+            this.to = to;
+            this.descriptor = descriptor;
+        }
+    }
+
+    /**
+     * When a declared variable occupies a slot that is a method parameter, move it to a fresh local
+     * slot and plan a copy of the parameter's value at method entry.
+     *
+     * <p>The JVM permits (and callers such as needle deliberately exploit) reusing parameter slots as
+     * scratch/loop locals. Bytecode that writes to a parameter slot--especially the induction variable
+     * of a loop--confuses decompilers: fernflower's SSA construction throws a NullPointerException and
+     * the method cannot be decompiled at all. Copying the parameter into a distinct local produces the
+     * same shape javac emits and decompiles cleanly.
+     */
+    private void setupInitialParamCopies() {
+        if (matchingVars == null) {
+            return;
+        }
+        // Non-static methods: slot 0 is 'this', parameters follow at slots 1..
+        Map<Integer, String> parameterSlots = new HashMap<>();
+        int slot = 1;
+        for (String argument : arguments) {
+            parameterSlots.put(slot, argument);
+            slot += "J".equals(argument) || "D".equals(argument) ? 2 : 1;
+        }
+        // Fresh slots must not collide with any parameter slot or existing variable slot.
+        int free = slot;
+        for (var v : matchingVars.allVars()) {
+            free = Math.max(free, v.getRight() + 1);
+        }
+        for (var v : matchingVars.allVars()) {
+            String parameterDescriptor = parameterSlots.get(v.getRight());
+            if (parameterDescriptor != null) {
+                paramVarOverrides.put(v.getLeft(), free);
+                paramCopies.add(new ParamCopy(v.getLeft(), v.getRight(), free, parameterDescriptor));
+                free++;
+            }
+        }
+    }
+
+    /**
+     * Return the local-variable slot for a var, applying any parameter-alias sanitization.
+     */
+    int getVarSlot(String varName) {
+        Integer override = paramVarOverrides.get(varName);
+        if (override != null) {
+            return override;
+        }
+        return matchingVars.indexByName(varName);
     }
 
     public Block addBlock() {
@@ -284,6 +353,19 @@ public class Method {
 
             if (this.blocks.isEmpty()) {
                 this.addBlock();
+            }
+            // Parameter copies must run before anything else at method entry.
+            if (!paramCopies.isEmpty()) {
+                var entryBlock = this.blocks.get(0);
+                for (var i = 0; i < paramCopies.size(); i++) {
+                    var copy = paramCopies.get(i);
+                    entryBlock.operations.add(0,
+                            new Operation(Operation.Inst.SET_VAR, copy.to, null,
+                                    new RefSpec(copy.name, null, copy.descriptor), null));
+                    entryBlock.operations.add(0,
+                            new Operation(Operation.Inst.READ_VAR, copy.from, null,
+                                    new RefSpec(copy.name, null, copy.descriptor), null));
+                }
             }
             for (var element : elements) {
                 resolveTopLevelElement(element);
@@ -550,7 +632,7 @@ public class Method {
         } else if (element instanceof VariableRead) {
             var read = (VariableRead) element;
             try {
-                currentBlock().readVar(getMatchingVars().get().indexByName(read.variable), descriptorForExpression(read));
+                currentBlock().readVar(getVarSlot(read.variable), descriptorForExpression(read));
             }
             catch (Exception e) {
                 throw new IllegalStateException("Unable to read variable='" + read.variable + "'", e);
@@ -587,7 +669,7 @@ public class Method {
         } else if (element instanceof Assignment) {
             var assignment = (Assignment) element;
             resolve(assignment.expression, true, true, false);
-            currentBlock().setVar(getMatchingVars().get().indexByName(assignment.variable), descriptorForExpression(assignment.expression));
+            currentBlock().setVar(getVarSlot(assignment.variable), descriptorForExpression(assignment.expression));
         } else if (element instanceof Binary) {
             var operation = (Binary) element;
             switch (operation.operator) {

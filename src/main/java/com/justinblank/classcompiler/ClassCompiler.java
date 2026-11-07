@@ -163,7 +163,7 @@ public class ClassCompiler {
         mv.visitCode();
 
         for (var b : classBuilder.staticBlocks) {
-            visitBlock(mv, Optional.empty(), b);
+            visitBlock(mv, null, b);
         }
         mv.visitInsn(RETURN);
         if (debug) {
@@ -188,13 +188,11 @@ public class ClassCompiler {
     void writeMethod(Method method) {
         try {
             var mv = classVisitor.visitMethod(method.modifiers, method.methodName, method.descriptor(), null, null);
-            Optional<Vars> vars = method.getMatchingVars();
-
             mv.visitCode();
             Label startLabel = new Label();
             mv.visitLabel(startLabel);
             for (var block : method.getBlocks()) {
-                visitBlock(mv, vars, block);
+                visitBlock(mv, method, block);
             }
 
             Label endLabel = new Label();
@@ -237,22 +235,24 @@ public class ClassCompiler {
                     // Typically this is an unused variable, we can omit it from the debug info, rather than crash
                     continue;
                 }
-                mv.visitLocalVariable(variableName, typeDescriptor, null, startLabel, endLabel, pair.getRight());
+                mv.visitLocalVariable(variableName, typeDescriptor, null, startLabel, endLabel,
+                        method.getVarSlot(variableName));
             }
         });
     }
 
-    private void visitBlock(MethodVisitor mv, Optional<Vars> vars, Block block) {
+    private void visitBlock(MethodVisitor mv, Method method, Block block) {
         mv.visitLabel(block.getLabel());
         for (var op : block.operations) {
-            writeOperation(mv, vars, op);
+            writeOperation(mv, method, op);
         }
     }
 
-    private void writeOperation(MethodVisitor mv, Optional<Vars> vars, Operation op) {
+    private void writeOperation(MethodVisitor mv, Method method, Operation op) {
+        var vars = method == null ? Optional.<Vars>empty() : method.getMatchingVars();
         switch (op.inst) {
             case INCREMENT:
-                mv.visitIincInsn(vars.get().indexByName(op.spec.name), op.count);
+                mv.visitIincInsn(method.getVarSlot(op.spec.name), op.count);
                 return;
             case RETURN:
             case PASSTHROUGH:
